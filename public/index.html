@@ -407,7 +407,7 @@ function viewWorker(){
   if(S.flow?.kind==="wq")return viewWeeklyQuiz();
   if(S.me)return viewDash();
   const t=workerTopic();
-  if(!t)return `<div class="exam-wrap"><div class="card empty"><h3>Şu an aktif eğitim dönemi yok</h3><p>Konular sekmesinden bir dönemi aktif yapın.</p></div></div>`;
+  if(!t)return `<div class="exam-wrap"><div class="card empty"><h3>Şu an aktif eğitim dönemi yok</h3><p>${NET&&!window.TBX.isAdmin?"Yönetici giriş yapıp verileri yükledikten sonra eğitimler burada görünecek.":"Konular sekmesinden bir dönemi aktif yapın veya yedekten veri yükleyin."}</p>${NET?`<p>${window.TBX.isAdmin?`<a class="btn primary" href="#personel" data-act="tab" data-v="personel">Personel · yedekten yükle</a> <button class="btn" data-act="adm-out">Yönetici çıkışı</button>`:`<button class="btn primary" data-act="adm-in">Yönetici girişi</button>`}</p>`:""}</div></div>`;
   const rw=reviewWin(t),cw=cycleWeeks(t).find(w=>winStatus(winOf(t,w))==="current"),ed=examDay(t);
   const nowTxt=cw!=null?`Bu hafta: Hafta ${cw}`:winStatus(rw)==="current"?`Bu hafta: Tekrar haftası (H${reviewW(t)})`:t.finalOpen?"Genel tekrar sınavı açık":"";
   return `<div class="exam-wrap">
@@ -1270,6 +1270,7 @@ setInterval(()=>{if(S.me&&Date.now()-S.lastAct>IDLE_MS&&!(S.exam&&(S.exam.phase=
 document.querySelectorAll("#tabs a").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();if((S.exam&&S.exam.phase!=="result")||(S.flow?.kind==="wq"&&S.flow.phase==="q")){toast("Önce sınavı bitirin.");return}S.detailId=null;if(a.dataset.v!=="yeni")S.ed=null;go(a.dataset.v)}));
 function fromHash(){let h=location.hash.slice(1);if(h==="sinav")h="calisan";if(S.kiosk||(NET&&!window.TBX.isAdmin)){S.view="calisan";return}if(["calisan","takip","konular","rapor","personel","yeni","gecmis"].includes(h))S.view=h}
 window.addEventListener("hashchange",()=>{if(S.exam||S.flow)return;fromHash();render(false)});
+if(NET&&!window.TBX.isAdmin&&/^#(yonetici|admin)$/.test(location.hash))setTimeout(()=>adminLoginModal(),300);
 fromHash();render(false);
 
 /* ===== Veri ===== */
