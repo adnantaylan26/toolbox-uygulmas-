@@ -1,0 +1,9 @@
+{
+  "name": "isg-toolbox-egitim",
+  "private": true,
+  "type": "module",
+  "description": "İSG haftalık toolbox eğitimi, quiz ve genel tekrar sınavı uygulaması (Netlify)",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

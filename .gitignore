@@ -1,0 +1,4 @@
+node_modules/
+.netlify/
+*.json.bak
+toolbox_yedek_*.json
