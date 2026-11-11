@@ -78,12 +78,18 @@ async function syncContent() {
       contentHash: c.hash, auto: true, createdAt: cur?.createdAt || Date.now(), updatedAt: Date.now(),
     });
   }
+  // Elle girilmiş dönemler için İngilizce çeviriler (content/ceviri/<dönemId>.json)
+  for (const [id, tr] of Object.entries(CONTENT.ceviri || {})) {
+    const path = `topics/${id}`, cur = await getDoc(path);
+    if (!cur || cur.i18nHash === tr.hash) continue;
+    await setDoc(path, { ...cur, i18n: { ...(cur.i18n || {}), en: tr.en }, i18nHash: tr.hash, updatedAt: Date.now() });
+  }
   syncedHash = CONTENT.hash;
 }
 // Dil: İngilizce istenirse ve varsa i18n.en alanlarını kullan
 function inLang(t, lang) {
   const en = lang === "en" && t?.i18n?.en;
-  return en ? { ...t, title: en.title || t.title, subjects: en.subjects || t.subjects, content: en.content || t.content, pools: en.pools || t.pools } : t;
+  return en ? { ...t, lang: "en", title: en.title || t.title, subjects: en.subjects || t.subjects, content: en.content || t.content, pools: en.pools || t.pools } : { ...t, lang: "tr" };
 }
 async function activeTopics() {
   await syncContent();
@@ -99,7 +105,7 @@ async function examTopic(cur, today = L.todayISO()) {
   const ts = await activeTopics();
   return ts.find((t) => t.id !== cur?.id && L.finalOpenOf(t, today)) || null;
 }
-const sanTopic = (t, dk) => ({ id: t.id, title: t.title, date: t.date, active: !!t.active, weeksPlan: t.weeksPlan || null, finalMode: t.finalMode || (t.finalOpen ? "open" : "auto"), subjects: t.subjects || {}, content: dk ? { [dk]: (t.content || {})[dk] || {} } : {}, createdAt: t.createdAt || 0 });
+const sanTopic = (t, dk) => ({ id: t.id, lang: t.lang || "tr", title: t.title, date: t.date, active: !!t.active, weeksPlan: t.weeksPlan || null, finalMode: t.finalMode || (t.finalOpen ? "open" : "auto"), subjects: t.subjects || {}, content: dk ? { [dk]: (t.content || {})[dk] || {} } : {}, createdAt: t.createdAt || 0 });
 let histCache = null;
 async function history() {
   const meta = await getDoc("history/meta");

@@ -92,8 +92,12 @@ def main():
     cycles = dongu_listesi(T, H)
     if "--kontrol" in sys.argv:
         print(json.dumps([{"id": c["id"], "haftalar": c["weeks"], "tarih": c["date"]} for c in cycles], ensure_ascii=False)); return
-    payload = {"takvim": {k: T[k] for k in ("baslangic_hafta", "baslangic_tarih", "egitim_hafta_sayisi")}, "cycles": cycles}
-    payload["hash"] = hashlib.sha1("".join(c["hash"] for c in cycles).encode()).hexdigest()[:16]
+    ceviri = {}
+    for f in sorted(glob.glob(os.path.join(ROOT, "content", "ceviri", "*.json"))):
+        d = json.load(open(f, encoding="utf-8"))
+        ceviri[d["id"]] = {"en": d["en"], "hash": hashlib.sha1(json.dumps(d["en"], ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:16]}
+    payload = {"takvim": {k: T[k] for k in ("baslangic_hafta", "baslangic_tarih", "egitim_hafta_sayisi")}, "cycles": cycles, "ceviri": ceviri}
+    payload["hash"] = hashlib.sha1(("".join(c["hash"] for c in cycles) + "".join(v["hash"] for v in ceviri.values())).encode()).hexdigest()[:16]
     out = os.path.join(ROOT, "netlify", "functions", "lib", "content.mjs")
     with open(out, "w", encoding="utf-8") as f:
         f.write("// OTOMATİK ÜRETİLİR — elle düzenlemeyin. Kaynak: content/hafta/*.json (automation/icerik_derle.py)\n")

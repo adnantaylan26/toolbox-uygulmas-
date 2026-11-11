@@ -172,6 +172,10 @@ tr.expanded td{background:var(--bg)}
 
 .hero .motto{font-family:var(--display);font-size:1.25rem;font-weight:700;line-height:1.35;color:var(--brand-ink);border-left:4px solid var(--accent);padding:2px 0 2px 12px;margin-bottom:12px;max-width:34ch}
 
+.hdr-lang{position:absolute;right:16px;top:12px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.9rem;cursor:pointer;white-space:nowrap}
+.hdr-lang:hover{background:rgba(255,255,255,.22)}
+.top-inner{position:relative}
+
 /* v4: çalışan paneli ve takip */
 .hero{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:210px;height:210px;border-radius:50%;background:var(--brand-2);opacity:.9}
@@ -211,6 +215,7 @@ input[type=search]{border:1px solid var(--line);background:var(--bg);border-radi
 <header class="top">
   <div class="top-inner">
     <div class="brand"><span id="brandMark"><div class="brand-mark"><span>!</span></div></span><b>İSG Toolbox</b><small id="conn">Bağlanıyor…</small></div>
+    <button type="button" class="hdr-lang" id="hdrLang" data-act="lang">🇬🇧 EN</button>
     <nav class="tabs" id="tabs">
       <a href="#calisan" data-v="calisan">Çalışan girişi</a>
       <a href="#takip" data-v="takip">Takip</a>
@@ -255,7 +260,7 @@ const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Bu işte en önemli ek
 "Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.":"Automatic grading is not available right now. The HSE officer will check your open-ended answers; this score is provisional.","Klasik sorular":"Open-ended questions","Cevabınız: {0}":"Your answer: {0}","(boş)":"(blank)","Kontrol bekliyor":"Awaiting review","✓ Doğru":"✓ Correct","✗ Yanlış":"✗ Wrong","Beklenen: {0}":"Expected: {0}","Yanlış cevapladığınız sorular":"Questions you answered wrong",
 "Yarım kalan sınavınız aynı sorularla devam ediyor.":"Your unfinished exam continues with the same questions.","Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin.":"Could not reach the server. Check your internet connection.","Giriş yapılamadı.":"Login failed.","Bağlı":"Connected","Bağlantı hatası":"Connection error","Bağlanıyor…":"Connecting…",
 "Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.":"This employee number is not on the staff list. Enter your full name and department.","{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.":"{0}: no toolbox group is defined for your department. Select the group you attend.",
-"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
+"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Dil değiştirmek için önce quizi bitirin.":"Finish the quiz before changing the language.","Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.":"This training is currently available in Turkish only. An English version will be added.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
 const tx=(s,...a)=>{let o=LANG==="en"?(EN[s]??s):s;a.forEach((v,i)=>{o=o.split("{"+i+"}").join(v)});return o};
 const DEPT_EN={beyaz:"White collar",uretim:"Production",lojistik:"Logistics",kalite:"Quality",bakim:"Maintenance",dial:"Dial Lab",ortak:"Common"};
 const deptL=k=>LANG==="en"?(DEPT_EN[k]||deptLabel(k)):deptLabel(k);
@@ -416,7 +421,7 @@ function render(keep=true){
   if(keep){main.querySelectorAll("input[id],textarea[id],select[id]").forEach(el=>{if(el.type!=="file")saved[el.id]=el.type==="checkbox"?el.checked:el.value});
     const a=document.activeElement;if(a&&a.id&&main.contains(a)){focusId=a.id;try{sel=[a.selectionStart,a.selectionEnd]}catch(e){}}}
   document.body.classList.toggle("kiosk",S.kiosk||(NET&&!window.TBX.isAdmin));
-  {const bb=document.querySelector(".brand b");if(bb)bb.textContent=LANG==="en"?"HSE Toolbox":"İSG Toolbox";document.documentElement.lang=LANG}
+  {const bb=document.querySelector(".brand b");if(bb)bb.textContent=LANG==="en"?"HSE Toolbox":"İSG Toolbox";document.documentElement.lang=LANG;const hl=$("#hdrLang");if(hl){hl.textContent=LANG==="en"?"🇹🇷 TR":"🇬🇧 EN";hl.title=LANG==="en"?"Türkçe":"English";hl.style.display=(S.view==="calisan"||!window.TBX?.isAdmin)?"":"none"}}
   document.querySelectorAll("#tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===S.view||(S.view==="yeni"&&a.dataset.v==="konular")));
   let html;
   if(S.failed)html=`<div class="card empty"><h3>Veritabanına bağlanılamadı</h3><p>Kayıtlar için Claude hesabınızla giriş yapmış olmanız gerekiyor. Sayfayı claude.ai üzerinden açıp tekrar deneyin.</p></div>`;
@@ -447,7 +452,7 @@ function viewWorker(){
   return `<div class="exam-wrap">
     <div class="hero">
       <div class="logo-box">${S.brand.logo?`<img src="${esc(S.brand.logo)}" alt="${esc(S.brand.name)}">`:`<b>${esc(S.brand.name)}</b>`}</div>
-      <div class="spread" style="align-items:flex-start"><div><div class="motto">${tx("Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.")}</div><h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div>${langBtn()}</div>
+      <div class="spread" style="align-items:flex-start"><div><div class="motto">${tx("Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.")}</div><h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div></div>
       <div class="chip-row"><span>${esc(t.title)}</span>${nowTxt?`<span>${esc(nowTxt)}</span>`:""}${ed?`<span>${tx("Genel sınav: {0}",fmtLong(ed,{day:"numeric",month:"long"}))}</span>`:""}</div>
     </div>
     <form class="card stack" id="loginForm" novalidate>
@@ -506,8 +511,9 @@ function viewDash(){
   const X=NET&&S.wstate?.exam;const examCard=X?(X.fin?finDone(X.fin,tx("Önceki dönemin genel tekrar sınavı · {0}",esc(X.title))):finOpen(tx("Önceki dönemin genel tekrar sınavı · {0}",esc(X.title)),X.id)):"";
   const miss=subs.filter(sb=>cellOf(t,{tc:me.tc,dk:me.dk,start:me.start},sb.w).k==="miss").length+(rw&&!re_&&rst==="past"?1:0);
   return `<div class="exam-wrap">
-    <div class="spread"><div><h2>${tx("Merhaba {0}",esc(me.name.split(" ")[0]))}</h2><div class="muted">${esc(deptL(me.dk))} · ${esc(t.title)}</div></div><div class="row" style="gap:6px">${langBtn(true)}<button class="btn" data-act="logout">${tx("Çıkış")}</button></div></div>
+    <div class="spread"><div><h2>${tx("Merhaba {0}",esc(me.name.split(" ")[0]))}</h2><div class="muted">${esc(deptL(me.dk))} · ${esc(t.title)}</div></div><button class="btn" data-act="logout">${tx("Çıkış")}</button></div>
     ${examCard?`<div class="week-list">${examCard}</div>`:""}
+    ${LANG==="en"&&t.lang!=="en"?`<div class="note">${tx("Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.")}</div>`:""}
     <div class="card stack" style="gap:8px"><div class="spread"><b>${tx("İlerlemeniz")}</b><span class="num">${tx("{0} / {1} eğitim",doneN,subs.length)}</span></div><div class="bar ok"><i style="width:${subs.length?Math.round(100*doneN/subs.length):0}%"></i></div>
       ${miss?`<div class="err">${tx("{0} eğitiminiz gecikmiş durumda. Lütfen önce onları tamamlayın.",miss)}</div>`:""}</div>
     ${subs.length?`<div class="week-list">${cards}${revCard}${finCard}</div>`:`<div class="card empty"><h3>${tx("Departmanınız için bu dönemde konu tanımlı değil")}</h3><p>${tx("İSG sorumlusuna haber verin.")}</p></div>`}
@@ -519,7 +525,7 @@ function viewRead(){
   return `<div class="exam-wrap">
     <div><button class="btn ghost" data-act="dash">${tx("← Panele dön")}</button></div>
     <div class="stack" style="gap:4px"><span class="sec-label">${tx("Hafta")} ${w} · ${esc(deptL(S.me.dk))}</span><h1>${esc(sb?.t||"")}</h1></div>
-    <div class="card"><div class="lesson">${body?renderContent(body):`<p class="muted">${tx("Bu hafta için eğitim metni henüz eklenmemiş. Toolbox toplantısında anlatılan konuya göre quizi çözebilirsiniz.")}</p>`}</div></div>
+    ${LANG==="en"&&t.lang!=="en"?`<div class="note">${tx("Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.")}</div>`:""}<div class="card"><div class="lesson">${body?renderContent(body):`<p class="muted">${tx("Bu hafta için eğitim metni henüz eklenmemiş. Toolbox toplantısında anlatılan konuya göre quizi çözebilirsiniz.")}</p>`}</div></div>
     ${done?`<div class="note">${tx("Bu haftanın quizini tamamladınız ({0}/{1}).",done.score,done.total)}</div><button class="btn big" data-act="dash">${tx("Panele dön")}</button>`:`<button class="btn primary big" data-act="start-wq" data-w="${w}">${tx("Okudum, quiz'e geç (5 soru)")}</button>`}
   </div>`;
 }
@@ -1141,7 +1147,7 @@ async function loadHistSeed(){try{const r=await fetch("seed/history.json");if(!r
 
 
 /* ===== Netlify: çalışan işlemleri sunucuda ===== */
-function mapTopic(id,x){return{id,title:x.title||"",date:x.date||"",weeksPlan:x.weeksPlan||null,active:!!x.active,finalMode:x.finalMode||(x.finalOpen?"open":"auto"),get finalOpen(){return finalOpenOf(this)},pools:x.pools||{},subjects:x.subjects||{},content:x.content||{},createdAt:x.createdAt||0}}
+function mapTopic(id,x){return{id,title:x.title||"",date:x.date||"",weeksPlan:x.weeksPlan||null,lang:x.lang||"tr",active:!!x.active,finalMode:x.finalMode||(x.finalOpen?"open":"auto"),get finalOpen(){return finalOpenOf(this)},pools:x.pools||{},subjects:x.subjects||{},content:x.content||{},createdAt:x.createdAt||0}}
 const wApi=(p,body)=>window.TBX.api("w/"+p,body?{body}:{});
 const meBody=()=>({tc:S.me.tc,name:S.me.name,dk:S.me.dk,lang:LANG});
 function netErr(e){toast(e?.message||tx("Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin."))}
@@ -1200,9 +1206,12 @@ async function importBackup(file){
     toast("Yedek yükleniyor, lütfen bekleyin…");const r=await window.TBX.api("admin/import",{body:b});
     toast(`Yüklendi: ${r.topics} dönem, ${r.progress} haftalık kayıt, ${r.results} sınav sonucu.`);setTimeout(()=>location.reload(),1500)}
   catch(e){toast(e?.message||"Yedek yüklenemedi.")}}
+async function exportTopics(){if(!S.db||!S.dl){toast("Dışa aktarılamıyor.");return}
+  try{const ts=(await S.db.collection("topics").get()).docs.map(d=>({id:d.id,data:(({title,date,subjects,content,pools,weeksPlan})=>({title,date,subjects,content,pools,weeksPlan}))(d.data())}));
+    await S.dl.save({filename:`toolbox_konular_${todayISO()}.json`,data:JSON.stringify({version:1,kind:"topics-only",topics:ts})})}catch(e){if(e?.code!=="declined")toast("Dışa aktarılamadı.")}}
 function backupCard(){return `<div class="card stack"><h3>Yedek</h3>
   <div class="small">Tüm dönemleri, soruları, personel listesini, eğitim geçmişini ve sonuçları tek bir JSON dosyasına alır.${NET?"":" Bu dosyayı Netlify sürümüne yükleyerek tüm verilerinizi taşıyabilirsiniz."}</div>
-  <div class="row">${S.dl?`<button class="btn" data-act="backup-dl">Yedek indir (JSON)</button>`:""}</div>
+  <div class="row">${S.dl?`<button class="btn" data-act="backup-dl">Yedek indir (JSON)</button><button class="btn" data-act="topics-dl">Sadece konuları indir (çeviri için, kişisel veri yok)</button>`:""}</div>
   ${NET?`<label class="f" for="bkFile">Yedekten yükle <span class="muted small" style="font-weight:400">Claude sürümünden aldığınız yedeği seçin. Aynı adlı kayıtların üzerine yazılır.</span><input type="file" id="bkFile" accept=".json,application/json"></label>`:""}</div>`}
 
 /* ===== Olaylar ===== */
@@ -1243,8 +1252,10 @@ document.addEventListener("click",async ev=>{
     case"wq-finish":{if(NET){netFinishQuiz();break}const f=S.flow;f.score=f.items.filter((it,i)=>f.ans[i]===it.q.a).length;f.phase="res";saveWeekly();window.scrollTo(0,0);break}
     case"wq-save":saveWeekly();break;
     case"start-final":startFinal(el.dataset.tid||undefined);break;
-    case"lang":LANG=LANG==="en"?"tr":"en";try{localStorage.setItem("tbxLang",LANG)}catch(e){}document.documentElement.lang=LANG;
-      if(NET){if(S.me){S.flow=null;await netRefreshState()}else await netWorkerInit()}render(false);break;
+    case"lang":if((S.exam&&S.exam.phase!=="result")||(S.flow?.kind==="wq"&&S.flow.phase==="q")){toast(tx("Dil değiştirmek için önce quizi bitirin."));break}
+      LANG=LANG==="en"?"tr":"en";try{localStorage.setItem("tbxLang",LANG)}catch(e){}document.documentElement.lang=LANG;
+      if(S.exam)S.exam=null;if(S.flow?.kind==="wq")S.flow=null;
+      if(NET){if(S.me)await netRefreshState();else await netWorkerInit()}render(false);break;
     case"ans":{const e=S.exam,it=e.items[e.cur],v=el.dataset.v;e.answers[it.type][it.i]=it.type==="tf"?v==="true":+v;
       if(e.cur<e.items.length-1&&it.type!=="classic"){render(false);setTimeout(()=>{if(S.exam===e&&e.items[e.cur]===it){e.cur++;render(false);window.scrollTo(0,0)}},250)}else render(false);break}
     case"next":S.exam.cur++;render(false);window.scrollTo(0,0);break;
@@ -1267,6 +1278,7 @@ document.addEventListener("click",async ev=>{
     case"adm-in":adminLoginModal();break;
     case"adm-out":window.TBX.logout();break;
     case"backup-dl":exportBackup();break;
+    case"topics-dl":exportTopics();break;
     case"copy-link":try{await navigator.clipboard.writeText(APP_URL);toast("Bağlantı kopyalandı.")}catch(e){toast(APP_URL)}break;
     case"dl-qr":{const qc=$("#qrBox canvas");if(!qc)break;const b=await new Promise(r=>qc.toBlob(r,"image/png"));try{await S.dl.save({filename:"toolbox_qr.png",data:b})}catch(e){}break}
     case"dl-poster":{const b=await posterBlob();if(!b){toast("QR henüz hazır değil.");break}try{await S.dl.save({filename:"toolbox_afis_A4.png",data:b})}catch(e){}break}
