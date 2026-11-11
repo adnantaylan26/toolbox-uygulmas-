@@ -170,6 +170,8 @@ tr.expanded td{background:var(--bg)}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spinner{animation-duration:3s}}
 
+.hero .motto{font-family:var(--display);font-size:1.25rem;font-weight:700;line-height:1.35;color:var(--brand-ink);border-left:4px solid var(--accent);padding:2px 0 2px 12px;margin-bottom:12px;max-width:34ch}
+
 /* v4: çalışan paneli ve takip */
 .hero{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:210px;height:210px;border-radius:50%;background:var(--brand-2);opacity:.9}
@@ -236,7 +238,7 @@ const LET="ABCDEFGH";
 /* ===== Dil (TR/EN) ===== */
 let LANG=(()=>{const q=new URLSearchParams(location.search).get("lang");if(q==="en"||q==="tr"){try{localStorage.setItem("tbxLang",q)}catch(e){}return q}try{const v=localStorage.getItem("tbxLang");if(v==="en"||v==="tr")return v}catch(e){}return"tr"})();
 const LOC=()=>LANG==="en"?"en-GB":"tr-TR";
-const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.":"Read your department's training every week and take the 5-question quiz. A general review exam is held at the end of each 5-week period.",
+const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.":"You are the most important equipment on this job. Work safely and get home to the people waiting for you.","Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.":"Read your department's training every week and take the 5-question quiz. A general review exam is held at the end of each 5-week period.",
 "Sicil numaranız":"Your employee number","Örn. 300141":"e.g. 300141","Ad Soyad":"Full name","Departman":"Department","Seçin":"Select","Giriş":"Log in","Giriş yapılıyor…":"Logging in…","Yönetici girişi":"Admin login","Yönetici çıkışı":"Admin logout",
 "Şu an aktif eğitim dönemi yok":"There is no active training period","Bu hafta: Hafta {0}":"This week: Week {0}","Bu hafta: Tekrar haftası (H{0})":"This week: Review week (W{0})","Genel tekrar sınavı açık":"General review exam is open","Genel sınav: {0}":"General exam: {0}",
 "Geçerli bir sicil numarası girin.":"Enter a valid employee number.","Ad soyad gerekli.":"Full name is required.","Departmanınızı seçin.":"Select your department.","Bu sicil personel listesinde yok.":"This employee number is not on the staff list.","Bilgilerinizi girin.":"Enter your details.",
@@ -445,7 +447,7 @@ function viewWorker(){
   return `<div class="exam-wrap">
     <div class="hero">
       <div class="logo-box">${S.brand.logo?`<img src="${esc(S.brand.logo)}" alt="${esc(S.brand.name)}">`:`<b>${esc(S.brand.name)}</b>`}</div>
-      <div class="spread" style="align-items:flex-start"><div><h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div>${langBtn()}</div>
+      <div class="spread" style="align-items:flex-start"><div><div class="motto">${tx("Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.")}</div><h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div>${langBtn()}</div>
       <div class="chip-row"><span>${esc(t.title)}</span>${nowTxt?`<span>${esc(nowTxt)}</span>`:""}${ed?`<span>${tx("Genel sınav: {0}",fmtLong(ed,{day:"numeric",month:"long"}))}</span>`:""}</div>
     </div>
     <form class="card stack" id="loginForm" novalidate>
