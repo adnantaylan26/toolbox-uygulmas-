@@ -8,7 +8,6 @@ Her cuma 15:30'da (İstanbul) zamanlanmış görev bu aracı çalıştırır ve 
 - Tekrar haftası → departman başına 5 konuluk tekrar kartı + sınav tarihi
 - Sınav Pazartesisi → "Genel tekrar sınavı" kartı
 
-Konular `automation/plan.json` içindedir. Yeni dönem için `donemler` listesine
-`{ad, baslangic (ilk Pazartesi), haftalar, konular{departman{hafta{t, rules[3], key}}}}` eklenir.
-Departman anahtarları: uretim, lojistik, dial, bakim, kalite.
+Konular `automation/plan.json` içindedir. Döngü haftalıktır: 5 eğitim haftası + 1 tekrar haftası; tekrar haftasından sonraki Pazartesi genel sınav yapılır ve aynı gün yeni eğitim haftası başlar (H33–37 eğitim, H38 tekrar, H39 sınav + eğitim, ... H44 tekrar, H45 sınav + eğitim).
+Yeni konu: `konular[departman][hafta_no] = {t, rules[3], key}`. Departman anahtarları: uretim, lojistik, dial, bakim, kalite.
 Kişisel veri (personel listesi, yedek JSON) bu klasöre konmaz.

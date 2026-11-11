@@ -189,30 +189,41 @@ def main():
     monday = today + dt.timedelta(days=(7 - today.weekday()) % 7 or 7)
     plan = json.load(open(os.path.join(HERE, "plan.json"), encoding="utf-8"))
     os.makedirs(a.cikti, exist_ok=True)
-    result = {"pazartesi": monday.isoformat(), "kartlar": [], "notlar": []}
-    for cyc in plan.get("donemler", []):
-        start = dt.date.fromisoformat(cyc["baslangic"]); weeks = cyc["haftalar"]; n = len(weeks)
-        exam = start + dt.timedelta(days=7 * (n + 1))
-        idx = (monday - start).days // 7
-        if 0 <= idx < n:
-            w = weeks[idx]
-            for dk in DEPTS:
-                info = cyc.get("konular", {}).get(dk, {}).get(str(w))
-                if not info:
-                    result["notlar"].append(f"{DEPTS[dk]['ad']} için H{w} konusu planda yok"); continue
-                out = os.path.join(a.cikti, f"H{w}_{dk}.png"); week_card(dk, info, w, monday, out)
-                result["kartlar"].append({"dosya": out, "tur": "hafta", "hafta": w, "departman": DEPTS[dk]["ad"], "konu": info["t"]})
-        elif idx == n:
-            for dk in DEPTS:
-                items = [(w, (cyc.get("konular", {}).get(dk, {}).get(str(w)) or {}).get("t", "")) for w in weeks]
-                if not any(t for _, t in items): continue
-                out = os.path.join(a.cikti, f"H{weeks[-1] + 1}_tekrar_{dk}.png"); review_card(dk, items, weeks[-1] + 1, monday, exam, out)
-                result["kartlar"].append({"dosya": out, "tur": "tekrar", "hafta": weeks[-1] + 1, "departman": DEPTS[dk]["ad"]})
-        if monday == exam:
-            out = os.path.join(a.cikti, f"genel_sinav_{monday.isoformat()}.png"); exam_card(monday, cyc.get("ad", ""), out)
-            result["kartlar"].append({"dosya": out, "tur": "sinav", "donem": cyc.get("ad", "")})
-    if not result["kartlar"]:
-        result["notlar"].append(f"{tr_tarih(monday)} haftası için planda yeni dönem konusu yok; yeni dönemin konu listesi yüklenmeli")
+    konular = plan.get("konular", {})
+    h0 = int(plan["baslangic_hafta"]); d0 = dt.date.fromisoformat(plan["baslangic_tarih"])
+    egitim = int(plan.get("egitim_hafta_sayisi", 5)); L = egitim + 1
+    w = h0 + (monday - d0).days // 7          # bu Pazartesi'nin hafta numarası
+    pos = (w - h0) % L                          # 0..egitim-1 eğitim, egitim = tekrar haftası
+    result = {"pazartesi": monday.isoformat(), "hafta": w, "kartlar": [], "notlar": []}
+    def get(dk, h): return konular.get(dk, {}).get(str(h))
+    # Tekrar haftasından sonraki Pazartesi: genel sınav (önceki 5 eğitim haftası)
+    if pos == 0 and w > h0:
+        ilk, son = w - L, w - 2
+        out = os.path.join(a.cikti, f"genel_sinav_{monday.isoformat()}.png")
+        exam_card(monday, f"Hafta {ilk}–{son} genel tekrar", out)
+        result["kartlar"].append({"dosya": out, "tur": "sinav", "haftalar": f"{ilk}-{son}"})
+    if pos < egitim:
+        for dk in DEPTS:
+            info = get(dk, w)
+            if not info:
+                result["notlar"].append(f"{DEPTS[dk]['ad']} için H{w} konusu yüklenmemiş"); continue
+            out = os.path.join(a.cikti, f"H{w}_{dk}.png"); week_card(dk, info, w, monday, out)
+            result["kartlar"].append({"dosya": out, "tur": "hafta", "hafta": w, "departman": DEPTS[dk]["ad"], "konu": info["t"]})
+    else:
+        exam = monday + dt.timedelta(days=7)
+        weeks = list(range(w - egitim, w))
+        for dk in DEPTS:
+            items = [(h, (get(dk, h) or {}).get("t", "")) for h in weeks]
+            if not any(t for _, t in items):
+                result["notlar"].append(f"{DEPTS[dk]['ad']} için H{weeks[0]}–{weeks[-1]} konuları yok"); continue
+            out = os.path.join(a.cikti, f"H{w}_tekrar_{dk}.png"); review_card(dk, items, w, monday, exam, out)
+            result["kartlar"].append({"dosya": out, "tur": "tekrar", "hafta": w, "departman": DEPTS[dk]["ad"]})
+    # Gelecek haftaların eksik konuları için erken uyarı (2 eğitim haftası ileri)
+    for k in range(1, 3):
+        h = w + k
+        if (h - h0) % L == egitim: continue
+        eksik = [DEPTS[dk]["ad"] for dk in DEPTS if not get(dk, h)]
+        if eksik: result["notlar"].append(f"H{h} ({tr_tarih(monday + dt.timedelta(days=7*k))} haftası) konusu eksik: {', '.join(eksik)}")
     print(json.dumps(result, ensure_ascii=False, indent=1))
 
 
