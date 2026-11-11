@@ -1,0 +1,153 @@
+{
+ "aciklama": "Her dönem: baslangic = ilk haftanın Pazartesi'si; haftalar = hafta numaraları. Son haftadan sonraki hafta tekrar haftası, ondan sonraki Pazartesi genel sınav. konular[departman][hafta] = {t: konu, rules: 3 ana kural, key: unutmayın mesajı}.",
+ "donemler": [
+  {
+   "ad": "Hafta 33–37 Toolbox Sınavı",
+   "baslangic": "2026-10-05",
+   "haftalar": [
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "konular": {
+    "bakim": {
+     "33": {
+      "t": "Borularda Korozyon ve Kaçak Kontrolü",
+      "rules": [],
+      "key": ""
+     },
+     "34": {
+      "t": "Arıza Giderme, Onarım ve Kontrol Süreçlerinde İş Güvenliği",
+      "rules": [],
+      "key": ""
+     },
+     "35": {
+      "t": "Kaynak İşlerinde Yangın Güvenliği",
+      "rules": [],
+      "key": ""
+     },
+     "36": {
+      "t": "Patlayıcı Ortamlarda Bakım (ATEX)",
+      "rules": [],
+      "key": ""
+     },
+     "37": {
+      "t": "Havalandırma Sistemlerinin Bakımında İş Güvenliği",
+      "rules": [],
+      "key": ""
+     }
+    },
+    "dial": {
+     "33": {
+      "t": "Eldiven Seçimi ve Güvenli Kullanımı",
+      "rules": [],
+      "key": ""
+     },
+     "34": {
+      "t": "Kimyasalların Etiketlenmesi",
+      "rules": [],
+      "key": ""
+     },
+     "35": {
+      "t": "Laboratuvar İçi Kayma-Düşme Riskleri",
+      "rules": [],
+      "key": ""
+     },
+     "36": {
+      "t": "Keskin Aletlerle Çalışmalarda İş Güvenliği",
+      "rules": [],
+      "key": ""
+     },
+     "37": {
+      "t": "Ağır Kaldırma ve Ergonomi (Koli Kaldırma Örneği)",
+      "rules": [],
+      "key": ""
+     }
+    },
+    "kalite": {
+     "33": {
+      "t": "El Hijyeni ve Bulaşma Risklerinin Önlenmesi",
+      "rules": [],
+      "key": ""
+     },
+     "34": {
+      "t": "Kimyasal Göz ve Cilt Teması",
+      "rules": [],
+      "key": ""
+     },
+     "35": {
+      "t": "Yangın Güvenliği: Yanıcı Çözücülerin Kullanımı ve Depolanması",
+      "rules": [],
+      "key": ""
+     },
+     "36": {
+      "t": "Soğuk Oda Çalışma Güvenliği",
+      "rules": [],
+      "key": ""
+     },
+     "37": {
+      "t": "Otomatik Analiz Cihazlarında Temizlik İş Güvenliği",
+      "rules": [],
+      "key": ""
+     }
+    },
+    "lojistik": {
+     "33": {
+      "t": "Akülü Araçların Şarj Güvenliği",
+      "rules": [],
+      "key": ""
+     },
+     "34": {
+      "t": "Kaldırma Ekipmanlarında İş Güvenliği",
+      "rules": [],
+      "key": ""
+     },
+     "35": {
+      "t": "Titreşimli Ekipmanlarda Risk Kontrolü",
+      "rules": [],
+      "key": ""
+     },
+     "36": {
+      "t": "Raflarda Çapraz ve Ayağın Önemi",
+      "rules": [],
+      "key": ""
+     },
+     "37": {
+      "t": "Güvenli Davranışın Lojistikteki Önemi",
+      "rules": [],
+      "key": ""
+     }
+    },
+    "uretim": {
+     "33": {
+      "t": "Malzeme İstifleme ve Merdiven Basamağı Kuralları",
+      "rules": [],
+      "key": ""
+     },
+     "34": {
+      "t": "Sıvı ile Çalışmada Kayma-Düşme Riskleri",
+      "rules": [],
+      "key": ""
+     },
+     "35": {
+      "t": "Vardiya Değişimlerinde İş Güvenliği Bilgi Aktarımı",
+      "rules": [],
+      "key": ""
+     },
+     "36": {
+      "t": "Asit ve Alkali Kullanımında Dikkat Edilecek Noktalar",
+      "rules": [],
+      "key": ""
+     },
+     "37": {
+      "t": "Ambalajlama ve Paketleme Alanlarında Ergonomi ve Otomasyon",
+      "rules": [],
+      "key": ""
+     }
+    }
+   }
+  }
+ ]
+}
