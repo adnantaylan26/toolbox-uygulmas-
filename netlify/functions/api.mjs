@@ -91,7 +91,7 @@ async function resolveMe(body) {
     if (!bdk || (!p && !bname)) return { needInfo: true, name, dept: p?.dept || "" };
     name = name || bname; dk = bdk;
   }
-  return { me: { tc, name, dk } };
+  return { me: { tc, name, dk, start: p?.start || "" } };
 }
 async function workerState(t, me) {
   const prog = (await getDoc(`progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`))?.weeks || {};

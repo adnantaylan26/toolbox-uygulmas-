@@ -199,7 +199,7 @@ tr.expanded td{background:var(--bg)}
 .mx td.c{text-align:center;font-variant-numeric:tabular-nums;font-size:.85rem}
 .cell{display:inline-block;min-width:44px;padding:2px 6px;border-radius:6px;font-weight:600}
 .cell.done{background:var(--ok-soft);color:var(--ok)} .cell.late{background:var(--accent-soft);color:var(--ink)}
-.cell.miss{background:var(--bad-soft);color:var(--bad)} .cell.rec{border:1px solid var(--ok);color:var(--ok)} .cell.cur{border:1px dashed var(--accent);color:var(--muted)} .cell.up{color:var(--muted)}
+.cell.miss{background:var(--bad-soft);color:var(--bad)} .cell.rec{border:1px solid var(--ok);color:var(--ok)} .cell.cur{border:1px dashed var(--accent);color:var(--muted)} .cell.up,.cell.na{color:var(--muted)}
 .pct{display:inline-block;min-width:48px;padding:3px 6px;border-radius:6px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
 .ai-out{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--bg)}
 input[type=search]{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 12px;min-height:40px;width:100%;max-width:280px}
@@ -323,11 +323,12 @@ const isMeNet=tc=>NET&&S.wstate&&S.me&&String(tc)===String(S.me.tc);
 const progOf=(tid,tc)=>isMeNet(tc)?{weeks:S.wstate.prog||{}}:S.progMap.get(`${tid}__${tc}`);
 const isRec=(t,p,w)=>isMeNet(p.tc)?(S.wstate.rec||[]).includes(w):recSet(t).has(`${p.dk}|${w}|${p.tc}`);
 const finalOf=(tid,tc)=>isMeNet(tc)?S.wstate.fin:S.results.find(r=>r.topicId===tid&&String(r.tc)===String(tc)&&r.status!=="started");
-function staffAll(){const m=new Map();S.staff.forEach(p=>m.set(String(p.tc),{tc:String(p.tc),name:p.name,dk:p.deptKey||deptKeyOf(p.dept),inList:true}));
+function staffAll(){const m=new Map();S.staff.forEach(p=>m.set(String(p.tc),{tc:String(p.tc),name:p.name,dk:p.deptKey||deptKeyOf(p.dept),start:p.start||"",inList:true}));
   S.progress.forEach(p=>{if(!m.has(String(p.tc)))m.set(String(p.tc),{tc:String(p.tc),name:p.name,dk:p.dk,inList:false})});
   S.results.forEach(r=>{if(!m.has(String(r.tc)))m.set(String(r.tc),{tc:String(r.tc),name:r.name,dk:r.deptKey,inList:false})});
   return[...m.values()].sort((a,b)=>String(a.name).localeCompare(String(b.name),"tr"))}
 function cellOf(t,p,w){const e=progOf(t.id,p.tc)?.weeks?.[w];if(e)return{k:e.late?"late":"done",e};
+  if(p.start){const wn=w==="R"?reviewWin(t):winOf(t,w);if(wn&&wn.end<=p.start)return{k:"na"}}
   if(w!=="R"&&isRec(t,p,w))return{k:"rec"};
   const st=winStatus(w==="R"?reviewWin(t):winOf(t,w));return{k:st==="upcoming"?"up":st==="current"?"cur":"miss"}}
 const cellDone=c=>c.k==="done"||c.k==="late"||c.k==="rec";
@@ -443,7 +444,7 @@ function login(){if(NET)return netLogin();
   const p=staffMap().get(tc);let name=p?.name||"",dk=p?(p.deptKey||deptKeyOf(p.dept)):null;
   if(!p||!dk){name=$("#pname").value.trim()||name;dk=$("#pdept").value||null;
     if(!name){err.textContent="Ad soyad gerekli.";return}if(!dk){err.textContent="Departmanınızı seçin.";return}}
-  S.me={tc,name,dk};S.lastAct=Date.now();render(false);window.scrollTo(0,0)}
+  S.me={tc,name,dk,start:p?.start||""};S.lastAct=Date.now();render(false);window.scrollTo(0,0)}
 function logout(){clearTimeout(S.resetTimer);S.wstate=null;S.me=null;S.flow=null;S.exam=null;render(false);setTimeout(()=>$("#tc")?.focus(),50)}
 
 /* ===== Çalışan: panel ===== */
@@ -454,7 +455,9 @@ function viewDash(){
   const cards=subs.map(sb=>{const win=winOf(t,sb.w),st=winStatus(win),e=prog?.weeks?.[sb.w];
     let cls,stat,act;
     const rec=!e&&isRec(t,{tc:me.tc,dk:me.dk},sb.w);
-    if(e){cls="done";stat=`<span class="pill ok">Tamamlandı · ${e.score}/${e.total}</span>${e.late?` <span class="muted small">geç</span>`:""}`;act=`<button class="btn" data-act="read" data-w="${sb.w}">Tekrar oku</button>`}
+    const pre=!e&&me.start&&win&&win.end<=me.start;
+    if(pre){cls="up";stat=`<span class="pill">İşe girişinizden önce</span>`;act=`<button class="btn" data-act="read" data-w="${sb.w}">Yine de oku</button>`}
+    else if(e){cls="done";stat=`<span class="pill ok">Tamamlandı · ${e.score}/${e.total}</span>${e.late?` <span class="muted small">geç</span>`:""}`;act=`<button class="btn" data-act="read" data-w="${sb.w}">Tekrar oku</button>`}
     else if(rec){cls="done";stat=`<span class="pill ok">Toplantıya katıldınız</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">Quiz'i çöz</button>`}
     else if(st==="current"){cls="cur";stat=`<span class="pill active">Bu hafta</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">Eğitime başla</button>`}
     else if(st==="past"){cls="miss";stat=`<span class="pill bad">Gecikti</span>`;act=`<button class="btn danger" data-act="read" data-w="${sb.w}">Şimdi tamamla</button>`}
@@ -471,7 +474,7 @@ function viewDash(){
   if(fin){const p=fin.passed;finCard=`<div class="wk ${p?"done":"miss"}"><div class="no"><span>Genel</span><b>✓</b></div><div class="stack" style="gap:4px"><b>Genel tekrar sınavı</b><div class="row" style="gap:8px"><span class="pill ${p?"ok":"bad"}">${p?"Geçti":"Kaldı"} · ${fin.score} puan</span></div></div></div>`}
   else if(t.finalOpen)finCard=`<div class="wk cur"><div class="no"><span>Genel</span><b>17</b></div><div class="stack" style="gap:4px"><b>Genel tekrar sınavı</b><span class="muted small">17 soru · Geçme notu ${PASS} · Bir kez girilebilir</span></div><div class="act"><button class="btn primary" data-act="start-final">Sınava başla</button></div></div>`;
   else{const ed=examDay(t);finCard=`<div class="wk up"><div class="no"><span>Genel</span><b>–</b></div><div class="stack" style="gap:4px"><b>Genel tekrar sınavı</b><span class="muted small">${ed&&todayISO()<ed?`${new Date(ed+"T00:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long",weekday:"long"})} açılır`:"Şu an kapalı"}</span></div></div>`}
-  const miss=subs.filter(sb=>cellOf(t,{tc:me.tc,dk:me.dk},sb.w).k==="miss").length+(rw&&!re_&&rst==="past"?1:0);
+  const miss=subs.filter(sb=>cellOf(t,{tc:me.tc,dk:me.dk,start:me.start},sb.w).k==="miss").length+(rw&&!re_&&rst==="past"?1:0);
   return `<div class="exam-wrap">
     <div class="spread"><div><h2>Merhaba ${esc(me.name.split(" ")[0])}</h2><div class="muted">${esc(deptLabel(me.dk))} · ${esc(t.title)}</div></div><button class="btn" data-act="logout">Çıkış</button></div>
     <div class="card stack" style="gap:8px"><div class="spread"><b>İlerlemeniz</b><span class="num">${doneN} / ${subs.length} eğitim</span></div><div class="bar ok"><i style="width:${subs.length?Math.round(100*doneN/subs.length):0}%"></i></div>
@@ -631,7 +634,7 @@ function viewTakip(){
   const missPairs=missing.reduce((a,m)=>a+m.ws.length,0);
   const byDept={};missing.forEach(m=>{(byDept[m.p.dk]??=[]).push(m)});
   // haftalık oranlar
-  const rate=(dk,w)=>{const ps=people.filter(p=>p.dk===dk&&(w==="R"?subjectsOf(t,dk).length:subjectsOf(t,dk).some(s=>s.w===w)));if(!ps.length)return null;return Math.round(100*ps.filter(p=>cellDone(cellOf(t,p,w))).length/ps.length)};
+  const rate=(dk,w)=>{const ps=people.filter(p=>p.dk===dk&&(w==="R"?subjectsOf(t,dk).length:subjectsOf(t,dk).some(s=>s.w===w))&&cellOf(t,p,w).k!=="na");if(!ps.length)return null;return Math.round(100*ps.filter(p=>cellDone(cellOf(t,p,w))).length/ps.length)};
   const allEntries=[];S.progress.filter(p=>p.topicId===t.id).forEach(p=>Object.entries(p.weeks||{}).forEach(([w,e])=>allEntries.push({dk:p.dk,w:+w,e})));
   const avgQ=allEntries.length?Math.round(100*allEntries.reduce((s,x)=>s+x.e.score/x.e.total,0)/allEntries.length):null;
   const curCol=curW!=null?curW:(winStatus(rw)==="current"?"R":null);
@@ -663,7 +666,7 @@ function viewTakip(){
     <div class="scroll-x"><table class="mx"><thead><tr><th>Ad Soyad</th><th>Departman</th>${cols.map(w=>`<th class="c">${wLabel(w)}</th>`).join("")}<th class="c">Genel</th></tr></thead><tbody>
     ${shown.slice(0,400).map(p=>{const fin=finalOf(t.id,p.tc);const own=new Set(subjectsOf(t,p.dk).map(s=>s.w));
       return `<tr><td>${esc(p.name)}${p.inList?"":` <span class="muted small">(listede yok)</span>`}</td><td class="small">${esc(deptLabel(p.dk))}</td>${cols.map(w=>{if(w!=="R"&&!own.has(w))return `<td class="c muted">·</td>`;const c=cellOf(t,p,w);
-        return `<td class="c"><span class="cell ${c.k}">${c.e?`${c.e.score}/${c.e.total}`:c.k==="rec"?"✓ kayıt":c.k==="miss"?"✗":c.k==="cur"?"bekliyor":"–"}</span></td>`}).join("")}<td class="c">${fin?`<span class="cell ${fin.passed?"done":"miss"}">${fin.score}</span>`:`<span class="muted">–</span>`}</td></tr>`}).join("")}
+        return `<td class="c"><span class="cell ${c.k}">${c.e?`${c.e.score}/${c.e.total}`:c.k==="rec"?"✓ kayıt":c.k==="na"?"işe giriş öncesi":c.k==="miss"?"✗":c.k==="cur"?"bekliyor":"–"}</span></td>`}).join("")}<td class="c">${fin?`<span class="cell ${fin.passed?"done":"miss"}">${fin.score}</span>`:`<span class="muted">–</span>`}</td></tr>`}).join("")}
     </tbody></table></div>${shown.length>400?`<div class="muted small">İlk 400 kişi gösteriliyor; arama veya departman filtresi kullanın.</div>`:""}
   </div>`;
 }
@@ -862,6 +865,38 @@ async function posterBlob(){const qc=$("#qrBox canvas");if(!qc)return null;const
   g.fillStyle="#15202b";g.textAlign="center";g.font="bold 54px Arial";g.fillText("Kameranızla okutun",W/2,1380);g.font="40px Arial";g.fillText("Sicil numaranızla giriş yapın",W/2,1450);
   g.fillStyle=S.brand.primary;g.fillRect(0,H-120,W,120);g.fillStyle="#fff";g.font="30px Arial";g.fillText(APP_URL,W/2,H-50);
   return await new Promise(r=>c.toBlob(r,"image/png"))}
+function deptOptions(){const set=new Set(["Production","Logistic","DIAL","Technics","Quality"]);S.staff.forEach(p=>{if(p.dept)set.add(p.dept)});
+  const main=["Production","Logistic","DIAL","Technics","Quality"],rest=[...set].filter(d=>!main.includes(d)).sort((a,b)=>deptTR(a).localeCompare(deptTR(b),"tr"));
+  return `<optgroup label="Toolbox departmanları">${main.map(d=>`<option value="${esc(d)}">${esc(deptTR(d))}</option>`).join("")}</optgroup><optgroup label="Diğer departmanlar">${rest.map(d=>`<option value="${esc(d)}">${esc(deptTR(d))}</option>`).join("")}</optgroup>`}
+function staffQuickCard(){
+  const q=(S.stQ||"").toLocaleLowerCase("tr"),hits=q.length>=2?S.staff.filter(p=>(p.name+" "+p.tc).toLocaleLowerCase("tr").includes(q)).slice(0,15):[];
+  return `<div class="card stack"><h3>Yeni başlayan personel ekle</h3>
+    <div class="row" style="align-items:flex-end;gap:10px">
+      <label class="f" for="nsSicil" style="width:130px">Sicil No<input type="text" id="nsSicil" inputmode="numeric" maxlength="10" placeholder="300999"></label>
+      <label class="f" for="nsName" style="flex:1;min-width:180px">Ad Soyad<input type="text" id="nsName" placeholder="Ahmet Yılmaz"></label>
+      <label class="f" for="nsDept" style="width:190px">Departman<select id="nsDept">${deptOptions()}</select></label>
+      <label class="f" for="nsStart" style="width:160px">İşe giriş<input type="date" id="nsStart" value="${todayISO()}"></label>
+      <label class="f" for="nsCollar" style="width:110px">Yaka<select id="nsCollar"><option value="BC">Mavi (BC)</option><option value="WC">Beyaz (WC)</option></select></label>
+    </div>
+    <div id="nsErr" class="err"></div>
+    <div class="row"><button class="btn primary" data-act="ns-add">Personeli ekle</button><span class="muted small">Toolbox departmanındaki kişiler haftalık eğitime hemen dahil olur; işe giriş tarihinden önceki haftalar eksik sayılmaz.</span></div>
+    <div class="stack" style="gap:8px;border-top:1px solid var(--line);padding-top:12px">
+      <label class="f" for="stQ">Personel ara · işten ayrılanı çıkar<input type="search" id="stQ" placeholder="İsim veya sicil yazın" value="${esc(S.stQ||"")}" style="max-width:none"></label>
+      ${hits.length?`<div class="scroll-x"><table><tbody>${hits.map(p=>`<tr><td>${esc(p.name)}</td><td class="num small">${esc(p.tc)}</td><td class="small">${esc(deptTR(p.dept||deptLabel(p.deptKey)))}</td><td class="small muted">${p.start?fmtD(p.start):""}</td><td style="text-align:right"><button class="btn danger" data-act="ns-del" data-id="${esc(p.tc)}">Çıkar</button></td></tr>`).join("")}</tbody></table></div>`:q.length>=2?`<div class="muted small">Eşleşen personel yok.</div>`:""}
+    </div></div>`}
+async function saveStaffList(list,msg){
+  try{await S.db.doc("config/staff").set({list,updatedAt:Date.now()});S.staffDb=list;S.staff=list;S.staffVer++;S._hc=null;toast(msg);render(true)}
+  catch(e){toast("Kaydedilemedi. Tekrar deneyin.")}}
+async function addStaff(){
+  const tc=$("#nsSicil").value.replace(/\D/g,""),name=$("#nsName").value.trim().replace(/\s+/g," "),dept=$("#nsDept").value,start=$("#nsStart").value,collar=$("#nsCollar").value,err=$("#nsErr");err.textContent="";
+  if(!tcValid(tc)){err.textContent="Geçerli bir sicil numarası girin.";return}
+  if(name.length<3){err.textContent="Ad soyad girin.";return}
+  const ex=S.staff.find(p=>String(p.tc)===tc);if(ex){err.textContent=`Bu sicil zaten kayıtlı: ${ex.name} (${deptTR(ex.dept)}).`;return}
+  const list=[...S.staff,{tc,name,dept,deptKey:deptKeyOf(dept),start,collar}];
+  await saveStaffList(list,`${name} eklendi${deptKeyOf(dept)?`; ${deptLabel(deptKeyOf(dept))} toolbox grubuna dahil oldu`:""}.`);
+  ["nsSicil","nsName"].forEach(id=>{const el=$("#"+id);if(el)el.value=""})}
+function delStaff(tc){const p=S.staff.find(x=>String(x.tc)===String(tc));if(!p)return;
+  confirmModal(`${p.name} personel listesinden çıkarılacak. Geçmiş eğitim ve sınav kayıtları silinmez; sadece takip ve eksik listelerinde artık görünmez.`,"Çıkar",()=>saveStaffList(S.staff.filter(x=>String(x.tc)!==String(tc)),`${p.name} listeden çıkarıldı.`))}
 function viewStaff(){
   const cnt={};S.staff.forEach(p=>{const k=p.dept||deptLabel(p.deptKey)||"—";cnt[k]=(cnt[k]||0)+1});
   const tb={};S.staff.forEach(p=>{const k=p.deptKey||deptKeyOf(p.dept);if(k)tb[k]=(tb[k]||0)+1});
@@ -869,6 +904,7 @@ function viewStaff(){
   return `<div><h1>Personel listesi</h1><div class="muted">Giriş, eğitim takibi ve eksik listeleri bu listeye göre hesaplanır.</div></div>
   <div class="grid-tiles"><div class="tile"><div class="k">Kayıtlı çalışan</div><div class="v num">${S.staff.length}</div><div class="s">${src}</div></div>
     ${DEPTS.map(([k,l])=>`<div class="tile"><div class="k">${l} · toolbox</div><div class="v num">${tb[k]||0}</div></div>`).join("")}</div>
+  ${staffQuickCard()}
   <div class="card stack"><h3>Departmanlar</h3><div class="small">${Object.entries(cnt).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${esc(deptTR(k))} <b>${v}</b>`).join(" · ")}</div>
     <div class="muted small">Üretim, Lojistik, Dial Lab, Bakım (Technics) ve Kalite çalışanları haftalık toolbox'a otomatik yönlendirilir. Diğer departmanlar Eğitim geçmişi sekmesinde takip edilir.</div></div>
   <div class="card stack">
@@ -1193,6 +1229,8 @@ document.addEventListener("click",async ev=>{
     case"hdept":S.hDept=el.dataset.k;S.hOpen=null;render(true);break;
     case"hopen":S.hOpen=S.hOpen===el.dataset.id?null:el.dataset.id;render(true);break;
     case"ai-hist":aiHist();break;
+    case"ns-add":addStaff();break;
+    case"ns-del":delStaff(el.dataset.id);break;
     case"adm-in":adminLoginModal();break;
     case"adm-out":window.TBX.logout();break;
     case"backup-dl":exportBackup();break;
@@ -1250,6 +1288,7 @@ document.addEventListener("input",e=>{const id=e.target.id;S.lastAct=Date.now();
   if(id==="edDate"&&S.ed)S.ed.date=e.target.value;
   if(id==="stText")updateStaffPreview();
   if(id==="tkQ"){S.tkQ=e.target.value;clearTimeout(S._tq);S._tq=setTimeout(()=>render(true),250)}
+  if(id==="stQ"){S.stQ=e.target.value;clearTimeout(S._sq);S._sq=setTimeout(()=>render(true),250)}
   if(id==="hQ"){S.hQ=e.target.value;clearTimeout(S._hq);S._hq=setTimeout(()=>render(true),250)}
 });
 document.addEventListener("change",e=>{const id=e.target.id;
