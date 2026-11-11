@@ -2,6 +2,7 @@
 import { getStore } from "@netlify/blobs";
 import crypto from "node:crypto";
 import * as L from "./lib/logic.mjs";
+import CONTENT from "./lib/content.mjs";
 
 export const config = { path: "/api/*" };
 
@@ -63,11 +64,42 @@ async function aiGrade(qs, answers) {
 }
 
 // ---------- çalışan tarafı yardımcıları
-async function activeTopic() {
-  const ts = (await listCol("topics")).filter((t) => t.data.active).sort((a, b) => (b.data.date || "").localeCompare(a.data.date || ""));
-  return ts[0] ? { id: ts[0].id, ...ts[0].data } : null;
+// ---------- haftalık içerik dosyalarından otomatik dönem (content/hafta/*.json)
+let syncedHash = null;
+async function syncContent() {
+  if (!CONTENT?.cycles || syncedHash === CONTENT.hash) return;
+  for (const c of CONTENT.cycles) {
+    const path = `topics/${c.id}`, cur = await getDoc(path);
+    if (cur?.contentHash === c.hash) continue;
+    await setDoc(path, {
+      ...(cur || {}), title: c.title, date: c.date, passPct: L.PASS, weeksPlan: c.weeksPlan,
+      active: cur ? cur.active !== false : true, finalMode: cur?.finalMode || "auto",
+      subjects: c.subjects, content: c.content, pools: c.pools, i18n: c.i18n,
+      contentHash: c.hash, auto: true, createdAt: cur?.createdAt || Date.now(), updatedAt: Date.now(),
+    });
+  }
+  syncedHash = CONTENT.hash;
 }
-const sanTopic = (t, dk) => ({ id: t.id, title: t.title, date: t.date, active: !!t.active, finalMode: t.finalMode || (t.finalOpen ? "open" : "auto"), subjects: t.subjects || {}, content: dk ? { [dk]: (t.content || {})[dk] || {} } : {}, createdAt: t.createdAt || 0 });
+// Dil: İngilizce istenirse ve varsa i18n.en alanlarını kullan
+function inLang(t, lang) {
+  const en = lang === "en" && t?.i18n?.en;
+  return en ? { ...t, title: en.title || t.title, subjects: en.subjects || t.subjects, content: en.content || t.content, pools: en.pools || t.pools } : t;
+}
+async function activeTopics() {
+  await syncContent();
+  return (await listCol("topics")).filter((t) => t.data.active).map((t) => ({ id: t.id, ...t.data })).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+}
+// Bugün başlamış en yeni aktif dönem (yoksa en eski aktif dönem)
+async function activeTopic(today = L.todayISO()) {
+  const ts = await activeTopics();
+  return ts.find((t) => (t.date || "") <= today) || ts[ts.length - 1] || null;
+}
+// Genel sınavı şu an açık olan, mevcut dönemden farklı dönem (sınav Pazartesi'si yeni hafta ile çakışır)
+async function examTopic(cur, today = L.todayISO()) {
+  const ts = await activeTopics();
+  return ts.find((t) => t.id !== cur?.id && L.finalOpenOf(t, today)) || null;
+}
+const sanTopic = (t, dk) => ({ id: t.id, title: t.title, date: t.date, active: !!t.active, weeksPlan: t.weeksPlan || null, finalMode: t.finalMode || (t.finalOpen ? "open" : "auto"), subjects: t.subjects || {}, content: dk ? { [dk]: (t.content || {})[dk] || {} } : {}, createdAt: t.createdAt || 0 });
 let histCache = null;
 async function history() {
   const meta = await getDoc("history/meta");
@@ -93,31 +125,40 @@ async function resolveMe(body) {
   }
   return { me: { tc, name, dk, start: p?.start || "" } };
 }
-async function workerState(t, me) {
+async function workerState(t, me, xt) {
   const prog = (await getDoc(`progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`))?.weeks || {};
   const r = await getDoc(`results/${L.safeId(t.id)}__${L.safeId(me.tc)}`);
   const fin = r && r.status !== "started" ? { status: r.status, score: r.score, passed: r.passed, at: r.at } : null;
   let rec = [];
   try { rec = L.recWeeks(t, me.dk, me.tc, await history()); } catch {}
-  return { me, topic: sanTopic(t, me.dk), prog, fin, rec };
+  let exam = null;
+  if (xt) {
+    const xr = await getDoc(`results/${L.safeId(xt.id)}__${L.safeId(me.tc)}`);
+    exam = { id: xt.id, title: xt.title, date: xt.date, fin: xr && xr.status !== "started" ? { status: xr.status, score: xr.score, passed: xr.passed, at: xr.at } : null };
+  }
+  return { me, topic: sanTopic(t, me.dk), prog, fin, rec, exam };
 }
 
-async function worker(p, req) {
+async function worker(p, req, url) {
   if (p === "public" && req.method === "GET") {
+    const lang = url.searchParams.get("lang") === "en" ? "en" : "tr";
     const t = await activeTopic();
-    return json({ topic: t ? sanTopic(t, null) : null, brand: await getDoc("config/brand") });
+    return json({ topic: t ? sanTopic(inLang(t, lang), null) : null, brand: await getDoc("config/brand") });
   }
   if (req.method !== "POST") return err("Bulunamadı", 404);
   const body = await req.json().catch(() => ({}));
-  const t = await activeTopic();
-  if (!t) return err("Aktif eğitim dönemi yok.", 409);
+  const lang = body.lang === "en" ? "en" : "tr";
+  const t0 = await activeTopic();
+  if (!t0) return err(lang === "en" ? "No active training period." : "Aktif eğitim dönemi yok.", 409);
+  const xt0 = await examTopic(t0);
+  const t = inLang(t0, lang), xt = xt0 ? inLang(xt0, lang) : null;
   const who = await resolveMe(body);
   if (who.error) return err(who.error);
   if (who.needInfo) return json({ needInfo: true, name: who.name, dept: who.dept });
   const me = who.me, today = L.todayISO();
   const progKey = `progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`;
 
-  if (p === "login") return json(await workerState(t, me));
+  if (p === "login") return json(await workerState(t, me, xt));
 
   if (p === "quiz/start" || p === "quiz/submit") {
     const w = body.w === "R" ? "R" : Number(body.w);
@@ -150,6 +191,14 @@ async function worker(p, req) {
   }
 
   if (p === "final/start" || p === "final/submit") {
+    if (xt && (body.topicId === xt.id || !L.finalOpenOf(t, today))) return await finalFlow(p, xt, me, body, today);
+    return await finalFlow(p, t, me, body, today);
+  }
+  return err("Bulunamadı", 404);
+}
+
+async function finalFlow(p, t, me, body, today) {
+  {
     if (!L.finalOpenOf(t, today)) return err("Genel tekrar sınavı şu an açık değil.", 403);
     const key = `results/${L.safeId(t.id)}__${L.safeId(me.tc)}`;
     const prev = await getDoc(key);
@@ -211,11 +260,12 @@ export default async (req) => {
       const exp = Date.now() + 12 * 3600e3;
       return json({ token: `${exp}.${sign(exp)}` });
     }
-    if (p.startsWith("w/")) return await worker(p.slice(2), req);
+    if (p.startsWith("w/")) return await worker(p.slice(2), req, url);
 
     if (!isAdmin(req)) return err("Yönetici girişi gerekli.", 401, "unauthorized");
     if (p === "db" && req.method === "GET") {
       const col = url.searchParams.get("col"), doc = url.searchParams.get("doc");
+      if (col === "topics") await syncContent();
       if (col && validCol(col)) return json({ docs: await listCol(col) });
       if (doc && validDoc(doc)) return json({ doc: await getDoc(doc) });
       return err("Geçersiz yol", 400, "invalid_argument");

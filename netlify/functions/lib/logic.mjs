@@ -48,7 +48,7 @@ export const shufMC = (q) => { const idx = shuffle(q.opts.map((_, i) => i)); ret
 
 // ---- takvim
 export const subjectsOf = (t, dk) => [...((t?.subjects || {})[dk] || [])].sort((a, b) => a.w - b.w);
-export function cycleWeeks(t) { const set = new Set(); DEPTS.forEach((k) => subjectsOf(t, k).forEach((s) => set.add(s.w))); return [...set].sort((a, b) => a - b); }
+export function cycleWeeks(t) { if (Array.isArray(t?.weeksPlan) && t.weeksPlan.length) return [...t.weeksPlan]; const set = new Set(); DEPTS.forEach((k) => subjectsOf(t, k).forEach((s) => set.add(s.w))); return [...set].sort((a, b) => a - b); }
 export function winOf(t, w) { const ws = cycleWeeks(t), i = ws.indexOf(w); if (i < 0 || !t.date) return null; return { start: addDays(t.date, 7 * i), end: addDays(t.date, 7 * i + 7) }; }
 export function reviewWin(t) { const n = cycleWeeks(t).length; if (!n || !t.date) return null; return { start: addDays(t.date, 7 * n), end: addDays(t.date, 7 * n + 7) }; }
 export const examDay = (t) => { const n = cycleWeeks(t).length; return n && t.date ? addDays(t.date, 7 * (n + 1)) : null; };

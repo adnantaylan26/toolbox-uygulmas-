@@ -233,6 +233,32 @@ const POOLS=[["ortak","Ortak"],...DEPTS];
 const PLAN={tf:{n:10,pt:4,l:"Doğru / Yanlış"},mc:{n:5,pt:8,l:"Çoktan seçmeli"},classic:{n:2,pt:10,l:"Klasik"}};
 const ORDER=["tf","mc","classic"];
 const LET="ABCDEFGH";
+/* ===== Dil (TR/EN) ===== */
+let LANG=(()=>{const q=new URLSearchParams(location.search).get("lang");if(q==="en"||q==="tr"){try{localStorage.setItem("tbxLang",q)}catch(e){}return q}try{const v=localStorage.getItem("tbxLang");if(v==="en"||v==="tr")return v}catch(e){}return"tr"})();
+const LOC=()=>LANG==="en"?"en-GB":"tr-TR";
+const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.":"Read your department's training every week and take the 5-question quiz. A general review exam is held at the end of each 5-week period.",
+"Sicil numaranız":"Your employee number","Örn. 300141":"e.g. 300141","Ad Soyad":"Full name","Departman":"Department","Seçin":"Select","Giriş":"Log in","Giriş yapılıyor…":"Logging in…","Yönetici girişi":"Admin login","Yönetici çıkışı":"Admin logout",
+"Şu an aktif eğitim dönemi yok":"There is no active training period","Bu hafta: Hafta {0}":"This week: Week {0}","Bu hafta: Tekrar haftası (H{0})":"This week: Review week (W{0})","Genel tekrar sınavı açık":"General review exam is open","Genel sınav: {0}":"General exam: {0}",
+"Geçerli bir sicil numarası girin.":"Enter a valid employee number.","Ad soyad gerekli.":"Full name is required.","Departmanınızı seçin.":"Select your department.","Bu sicil personel listesinde yok.":"This employee number is not on the staff list.","Bilgilerinizi girin.":"Enter your details.",
+"İşe girişinizden önce":"Before your start date","Yine de oku":"Read anyway","Tamamlandı · {0}/{1}":"Completed · {0}/{1}","geç":"late","Tekrar oku":"Read again","Toplantıya katıldınız":"You attended the meeting","Quiz'i çöz":"Take the quiz","Bu hafta":"This week","Eğitime başla":"Start training","Gecikti":"Overdue","Şimdi tamamla":"Complete now","Yakında":"Coming soon","{0} tarihinde açılır":"Opens on {0}","Hafta":"Week",
+"Tekrar et":"Review","Tekrar haftası · 5 konunun özeti":"Review week · summary of 5 topics","Genel":"Exam","Genel tekrar sınavı":"General review exam","Geçti":"Passed","Kaldı":"Failed","{0} puan":"{0} points","17 soru · Geçme notu {0} · Bir kez girilebilir":"17 questions · Pass mark {0} · One attempt only","Sınava başla":"Start exam","{0} açılır":"Opens {0}","Şu an kapalı":"Currently closed",
+"Merhaba {0}":"Hello {0}","Çıkış":"Log out","İlerlemeniz":"Your progress","{0} / {1} eğitim":"{0} / {1} trainings","{0} eğitiminiz gecikmiş durumda. Lütfen önce onları tamamlayın.":"{0} of your trainings are overdue. Please complete them first.","Departmanınız için bu dönemde konu tanımlı değil":"No topics are defined for your department in this period","İSG sorumlusuna haber verin.":"Please inform the HSE officer.",
+"← Panele dön":"← Back to dashboard","Panele dön":"Back to dashboard","Bu hafta için eğitim metni henüz eklenmemiş. Toolbox toplantısında anlatılan konuya göre quizi çözebilirsiniz.":"The training text for this week has not been added yet. You can take the quiz based on the toolbox meeting.","Bu haftanın quizini tamamladınız ({0}/{1}).":"You have completed this week's quiz ({0}/{1}).","Okudum, quiz'e geç (5 soru)":"I have read it, go to the quiz (5 questions)",
+"Tekrar haftası":"Review week","5 haftanın özeti":"Summary of the 5 weeks","Genel tekrar sınavı {0} yapılacak. Aşağıdaki ana kuralları tekrar edin.":"The general review exam will be held on {0}. Review the key rules below.","Tüm metni oku":"Read full text","Tekrar quizini tamamladınız ({0}/{1}).":"You have completed the review quiz ({0}/{1}).","Tekrar quizine geç (5 soru)":"Go to the review quiz (5 questions)",
+"Cevaplarınız kontrol ediliyor":"Checking your answers","Doğru":"True","Yanlış":"False","Tebrikler, hepsi doğru.":"Well done, all correct.","İyi iş. Yanlışlarınızı aşağıda inceleyin.":"Good job. Review your mistakes below.","Bu konuyu tekrar okumanızı öneririz.":"We recommend reading this topic again.","Kaydediliyor…":"Saving…","✓ Kaydedildi":"✓ Saved","Kaydedilemedi.":"Could not be saved.","Tekrar kaydet":"Save again",
+"Yanlış cevaplar":"Wrong answers","✗ Sizin cevabınız: {0}":"✗ Your answer: {0}","✓ Doğru cevap: {0}":"✓ Correct answer: {0}","DOĞRU":"TRUE","YANLIŞ":"FALSE","{0} quizi":"{0} quiz","Geri":"Back","Bitir":"Finish","İleri":"Next",
+"Cevabınız":"Your answer","Cevabınızı kendi cümlelerinizle yazın.":"Write your answer in your own words.","Cevabınızı yapay zeka, eğitmenin belirlediği doğru cevapla karşılaştırarak değerlendirir.":"Your answer is assessed by comparing it with the expected answer set by the trainer.","Soru {0}":"Question {0}","Genel tekrar · {0}":"General review · {0}","Sınavı bitir":"Finish exam","Cevaplanmamış soru var: {0}. Numaralara dokunarak geri dönün.":"Unanswered questions: {0}. Tap the numbers to go back.",
+"Doğru / Yanlış":"True / False","Çoktan seçmeli":"Multiple choice","Klasik":"Open-ended","{0} klasik soruyu boş bıraktınız. Boş cevaplar yanlış sayılır. Yine de bitirmek istiyor musunuz?":"You left {0} open-ended question(s) blank. Blank answers are marked wrong. Finish anyway?","Dikkat":"Warning",
+"Cevaplarınız değerlendiriliyor":"Your answers are being assessed","Yapay zeka klasik sorulardaki cevaplarınızı kontrol ediyor. Bu işlem 30-60 saniye sürebilir, lütfen sayfayı kapatmayın.":"Your open-ended answers are being checked. This can take 30–60 seconds; please do not close the page.","GEÇTİ":"PASSED","KALDI":"FAILED","✓ Sonuç kaydedildi":"✓ Result saved","Sonuç kaydedilemedi.":"Result could not be saved.",
+"Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.":"Automatic grading is not available right now. The HSE officer will check your open-ended answers; this score is provisional.","Klasik sorular":"Open-ended questions","Cevabınız: {0}":"Your answer: {0}","(boş)":"(blank)","Kontrol bekliyor":"Awaiting review","✓ Doğru":"✓ Correct","✗ Yanlış":"✗ Wrong","Beklenen: {0}":"Expected: {0}","Yanlış cevapladığınız sorular":"Questions you answered wrong",
+"Yarım kalan sınavınız aynı sorularla devam ediyor.":"Your unfinished exam continues with the same questions.","Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin.":"Could not reach the server. Check your internet connection.","Giriş yapılamadı.":"Login failed.","Bağlı":"Connected","Bağlantı hatası":"Connection error","Bağlanıyor…":"Connecting…",
+"Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.":"This employee number is not on the staff list. Enter your full name and department.","{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.":"{0}: no toolbox group is defined for your department. Select the group you attend.",
+"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
+const tx=(s,...a)=>{let o=LANG==="en"?(EN[s]??s):s;a.forEach((v,i)=>{o=o.split("{"+i+"}").join(v)});return o};
+const DEPT_EN={uretim:"Production",lojistik:"Logistics",kalite:"Quality",bakim:"Maintenance",dial:"Dial Lab",ortak:"Common"};
+const deptL=k=>LANG==="en"?(DEPT_EN[k]||deptLabel(k)):deptLabel(k);
+const fmtLong=(iso,o)=>new Date(iso+"T00:00:00").toLocaleDateString(LOC(),o);
+const langBtn=(sm)=>`<button class="btn ${sm?"":"ghost small"} lang-btn" data-act="lang" title="${LANG==="en"?"Türkçe":"English"}">${LANG==="en"?"🇹🇷 TR":"🇬🇧 EN"}</button>`;
 
 const S={db:null,dl:null,sample:null,ready:false,failed:false,
   topics:[],results:[],progress:[],progMap:new Map(),staff:[],settings:{pin:"0000",hz:"tehlikeli"},got:{t:false,r:false,p:false,s:false,c:false},
@@ -249,7 +275,7 @@ const pad=n=>String(n).padStart(2,"0");
 const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
 const addDays=(iso,n)=>{const d=new Date(iso+"T00:00:00");d.setDate(d.getDate()+n);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
 const fmtD=iso=>iso?new Date(iso+"T00:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"";
-const fmtS=iso=>iso?new Date(iso+"T00:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"short"}):"";
+const fmtS=iso=>iso?new Date(iso+"T00:00:00").toLocaleDateString(LOC(),{day:"numeric",month:"short"}):"";
 const fmtDT=ms=>ms?new Date(ms).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
 const deptLabel=k=>(POOLS.find(d=>d[0]===k)||[null,k||"—"])[1];
 const maskTc=t=>String(t??"");
@@ -267,7 +293,7 @@ function renderContent(txt){const lines=String(txt||"").replace(/\r/g,"").split(
   for(const raw of lines){const l=raw.trim();
     if(/^[-•]\s+/.test(l)){if(!inList){h+="<ul>";inList=true}h+=`<li>${esc(l.replace(/^[-•]\s+/,""))}</li>`;continue}
     if(inList){h+="</ul>";inList=false}if(!l)continue;
-    if(l.startsWith("## ")){const t=l.slice(3);h+=`<h3 class="${/yapma|yasak|asla/i.test(t)?"bad":/unutma|acil/i.test(t)?"ok":""}">${esc(t)}</h3>`}else h+=`<p>${esc(l)}</p>`}
+    if(l.startsWith("## ")){const t=l.slice(3);h+=`<h3 class="${/yapma|yasak|asla|never|don.t/i.test(t)?"bad":/unutma|acil|remember|emergenc/i.test(t)?"ok":""}">${esc(t)}</h3>`}else h+=`<p>${esc(l)}</p>`}
   if(inList)h+="</ul>";return h}
 
 /* ===== Soru biçimleri ===== */
@@ -301,7 +327,7 @@ const PARSE={tf:parseTF,mc:parseMC,classic:parseClassic}, SER={tf:serTF,mc:serMC
 const shufMC=q=>{const idx=shuffle(q.opts.map((_,i)=>i));return{...q,opts:idx.map(i=>q.opts[i]),a:idx.indexOf(q.a)}};
 
 /* ===== Döngü / hafta takvimi ===== */
-function cycleWeeks(t){const set=new Set();DEPTS.forEach(([k])=>(t?.subjects?.[k]||[]).forEach(s=>set.add(s.w)));return[...set].sort((a,b)=>a-b)}
+function cycleWeeks(t){if(Array.isArray(t?.weeksPlan)&&t.weeksPlan.length)return[...t.weeksPlan];const set=new Set();DEPTS.forEach(([k])=>(t?.subjects?.[k]||[]).forEach(s=>set.add(s.w)));return[...set].sort((a,b)=>a-b)}
 function winOf(t,w){const ws=cycleWeeks(t),i=ws.indexOf(w);if(i<0||!t.date)return null;return{start:addDays(t.date,7*i),end:addDays(t.date,7*i+7)}}
 function winStatus(win){if(!win)return"current";const d=todayISO();return d<win.start?"upcoming":d<win.end?"current":"past"}
 const reviewW=t=>{const ws=cycleWeeks(t);return ws.length?ws[ws.length-1]+1:null};
@@ -387,6 +413,7 @@ function render(keep=true){
   if(keep){main.querySelectorAll("input[id],textarea[id],select[id]").forEach(el=>{if(el.type!=="file")saved[el.id]=el.type==="checkbox"?el.checked:el.value});
     const a=document.activeElement;if(a&&a.id&&main.contains(a)){focusId=a.id;try{sel=[a.selectionStart,a.selectionEnd]}catch(e){}}}
   document.body.classList.toggle("kiosk",S.kiosk||(NET&&!window.TBX.isAdmin));
+  {const bb=document.querySelector(".brand b");if(bb)bb.textContent=LANG==="en"?"HSE Toolbox":"İSG Toolbox";document.documentElement.lang=LANG}
   document.querySelectorAll("#tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===S.view||(S.view==="yeni"&&a.dataset.v==="konular")));
   let html;
   if(S.failed)html=`<div class="card empty"><h3>Veritabanına bağlanılamadı</h3><p>Kayıtlar için Claude hesabınızla giriş yapmış olmanız gerekiyor. Sayfayı claude.ai üzerinden açıp tekrar deneyin.</p></div>`;
@@ -411,26 +438,26 @@ function viewWorker(){
   if(S.flow?.kind==="wq")return viewWeeklyQuiz();
   if(S.me)return viewDash();
   const t=workerTopic();
-  if(!t)return `<div class="exam-wrap"><div class="card empty"><h3>Şu an aktif eğitim dönemi yok</h3><p>${NET&&!window.TBX.isAdmin?"Yönetici giriş yapıp verileri yükledikten sonra eğitimler burada görünecek.":"Konular sekmesinden bir dönemi aktif yapın veya yedekten veri yükleyin."}</p>${NET?`<p>${window.TBX.isAdmin?`<a class="btn primary" href="#personel" data-act="tab" data-v="personel">Personel · yedekten yükle</a> <button class="btn" data-act="adm-out">Yönetici çıkışı</button>`:`<button class="btn primary" data-act="adm-in">Yönetici girişi</button>`}</p>`:""}</div></div>`;
+  if(!t)return `<div class="exam-wrap"><div class="card empty"><h3>${tx("Şu an aktif eğitim dönemi yok")}</h3><p>${NET&&!window.TBX.isAdmin?"Yönetici giriş yapıp verileri yükledikten sonra eğitimler burada görünecek.":"Konular sekmesinden bir dönemi aktif yapın veya yedekten veri yükleyin."}</p>${NET?`<p>${window.TBX.isAdmin?`<a class="btn primary" href="#personel" data-act="tab" data-v="personel">Personel · yedekten yükle</a> <button class="btn" data-act="adm-out">Yönetici çıkışı</button>`:`<button class="btn primary" data-act="adm-in">Yönetici girişi</button>`}</p>`:""}</div></div>`;
   const rw=reviewWin(t),cw=cycleWeeks(t).find(w=>winStatus(winOf(t,w))==="current"),ed=examDay(t);
-  const nowTxt=cw!=null?`Bu hafta: Hafta ${cw}`:winStatus(rw)==="current"?`Bu hafta: Tekrar haftası (H${reviewW(t)})`:t.finalOpen?"Genel tekrar sınavı açık":"";
+  const nowTxt=cw!=null?tx("Bu hafta: Hafta {0}",cw):winStatus(rw)==="current"?tx("Bu hafta: Tekrar haftası (H{0})",reviewW(t)):t.finalOpen?tx("Genel tekrar sınavı açık"):"";
   return `<div class="exam-wrap">
     <div class="hero">
       <div class="logo-box">${S.brand.logo?`<img src="${esc(S.brand.logo)}" alt="${esc(S.brand.name)}">`:`<b>${esc(S.brand.name)}</b>`}</div>
-      <div><h1>İSG Toolbox Eğitimi</h1><div class="sub">Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.</div></div>
-      <div class="chip-row"><span>${esc(t.title)}</span>${nowTxt?`<span>${esc(nowTxt)}</span>`:""}${ed?`<span>Genel sınav: ${new Date(ed+"T00:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long"})}</span>`:""}</div>
+      <div class="spread" style="align-items:flex-start"><div><h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div>${langBtn()}</div>
+      <div class="chip-row"><span>${esc(t.title)}</span>${nowTxt?`<span>${esc(nowTxt)}</span>`:""}${ed?`<span>${tx("Genel sınav: {0}",fmtLong(ed,{day:"numeric",month:"long"}))}</span>`:""}</div>
     </div>
     <form class="card stack" id="loginForm" novalidate>
-      <label class="f" for="tc">Sicil numaranız<input type="text" id="tc" class="input-xl" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="Örn. 300141"></label>
+      <label class="f" for="tc">${tx("Sicil numaranız")}<input type="text" id="tc" class="input-xl" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="${tx("Örn. 300141")}"></label>
       <div id="who"></div>
       <div id="extra" class="stack" style="display:none">
-        <label class="f" for="pname">Ad Soyad<input type="text" id="pname" autocomplete="off"></label>
-        <label class="f" for="pdept">Departman<select id="pdept"><option value="">Seçin</option>${DEPTS.map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</select></label>
+        <label class="f" for="pname">${tx("Ad Soyad")}<input type="text" id="pname" autocomplete="off"></label>
+        <label class="f" for="pdept">${tx("Departman")}<select id="pdept"><option value="">${tx("Seçin")}</option>${DEPTS.map(([k,l])=>`<option value="${k}">${deptL(k)}</option>`).join("")}</select></label>
       </div>
       <div id="startErr" class="err"></div>
-      <button class="btn primary big" type="submit">Giriş</button>
+      <button class="btn primary big" type="submit">${tx("Giriş")}</button>
     </form>
-    ${NET?`<div class="row" style="justify-content:center">${window.TBX.isAdmin?`<button class="btn ghost small" data-act="adm-out">Yönetici çıkışı</button>`:`<button class="btn ghost small" data-act="adm-in">Yönetici girişi</button>`}</div>`:S.kiosk?"":`<div class="row"><button class="btn" data-act="kiosk-on">Kiosk modunu aç</button><span class="muted small">Tablette sekmeleri gizler ve yapay zeka iznini önceden alır.</span></div>`}
+    ${NET?`<div class="row" style="justify-content:center">${window.TBX.isAdmin?`<button class="btn ghost small" data-act="adm-out">${tx("Yönetici çıkışı")}</button>`:`<button class="btn ghost small" data-act="adm-in">${tx("Yönetici girişi")}</button>`}</div>`:S.kiosk?"":`<div class="row"><button class="btn" data-act="kiosk-on">Kiosk modunu aç</button><span class="muted small">Tablette sekmeleri gizler ve yapay zeka iznini önceden alır.</span></div>`}
   </div>`;
 }
 function updateWho(){const inp=$("#tc");if(!inp)return;if(NET&&!S.staff.length)return;const v=inp.value.replace(/\D/g,""),box=$("#who"),extra=$("#extra");
@@ -440,10 +467,10 @@ function updateWho(){const inp=$("#tc");if(!inp)return;if(NET&&!S.staff.length)r
   else{box.innerHTML=`<div class="who warn">${p?`${esc(p.name)} · ${esc(deptTR(p.dept))}: departmanınız için toolbox eğitimi tanımlı değil. Hangi toolbox grubuna katılıyorsanız seçin.`:"Bu sicil personel listesinde yok."} Bilgilerinizi girin.</div>`;extra.style.display="flex";if(p&&!$("#pname").value)$("#pname").value=p.name||""}}
 function login(){if(NET)return netLogin();
   const tc=$("#tc").value.replace(/\D/g,""),err=$("#startErr");err.textContent="";
-  if(!tcValid(tc)){err.textContent="Geçerli bir sicil numarası girin.";return}
+  if(!tcValid(tc)){err.textContent=tx("Geçerli bir sicil numarası girin.");return}
   const p=staffMap().get(tc);let name=p?.name||"",dk=p?(p.deptKey||deptKeyOf(p.dept)):null;
   if(!p||!dk){name=$("#pname").value.trim()||name;dk=$("#pdept").value||null;
-    if(!name){err.textContent="Ad soyad gerekli.";return}if(!dk){err.textContent="Departmanınızı seçin.";return}}
+    if(!name){err.textContent=tx("Ad soyad gerekli.");return}if(!dk){err.textContent=tx("Departmanınızı seçin.");return}}
   S.me={tc,name,dk,start:p?.start||""};S.lastAct=Date.now();render(false);window.scrollTo(0,0)}
 function logout(){clearTimeout(S.resetTimer);S.wstate=null;S.me=null;S.flow=null;S.exam=null;render(false);setTimeout(()=>$("#tc")?.focus(),50)}
 
@@ -456,51 +483,55 @@ function viewDash(){
     let cls,stat,act;
     const rec=!e&&isRec(t,{tc:me.tc,dk:me.dk},sb.w);
     const pre=!e&&me.start&&win&&win.end<=me.start;
-    if(pre){cls="up";stat=`<span class="pill">İşe girişinizden önce</span>`;act=`<button class="btn" data-act="read" data-w="${sb.w}">Yine de oku</button>`}
-    else if(e){cls="done";stat=`<span class="pill ok">Tamamlandı · ${e.score}/${e.total}</span>${e.late?` <span class="muted small">geç</span>`:""}`;act=`<button class="btn" data-act="read" data-w="${sb.w}">Tekrar oku</button>`}
-    else if(rec){cls="done";stat=`<span class="pill ok">Toplantıya katıldınız</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">Quiz'i çöz</button>`}
-    else if(st==="current"){cls="cur";stat=`<span class="pill active">Bu hafta</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">Eğitime başla</button>`}
-    else if(st==="past"){cls="miss";stat=`<span class="pill bad">Gecikti</span>`;act=`<button class="btn danger" data-act="read" data-w="${sb.w}">Şimdi tamamla</button>`}
-    else{cls="up";stat=`<span class="pill">Yakında</span>`;act=`<span class="muted small">${fmtS(win?.start)} tarihinde açılır</span>`}
-    return `<div class="wk ${cls}"><div class="no"><span>Hafta</span><b>${sb.w}</b></div><div class="stack" style="gap:4px"><b>${esc(sb.t)}</b><div class="row" style="gap:8px">${stat}<span class="muted small">${fmtRange(win)}</span></div></div><div class="act">${act}</div></div>`}).join("");
+    if(pre){cls="up";stat=`<span class="pill">${tx("İşe girişinizden önce")}</span>`;act=`<button class="btn" data-act="read" data-w="${sb.w}">${tx("Yine de oku")}</button>`}
+    else if(e){cls="done";stat=`<span class="pill ok">${tx("Tamamlandı · {0}/{1}",e.score,e.total)}</span>${e.late?` <span class="muted small">${tx("geç")}</span>`:""}`;act=`<button class="btn" data-act="read" data-w="${sb.w}">${tx("Tekrar oku")}</button>`}
+    else if(rec){cls="done";stat=`<span class="pill ok">${tx("Toplantıya katıldınız")}</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">${tx("Quiz'i çöz")}</button>`}
+    else if(st==="current"){cls="cur";stat=`<span class="pill active">${tx("Bu hafta")}</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">${tx("Eğitime başla")}</button>`}
+    else if(st==="past"){cls="miss";stat=`<span class="pill bad">${tx("Gecikti")}</span>`;act=`<button class="btn danger" data-act="read" data-w="${sb.w}">${tx("Şimdi tamamla")}</button>`}
+    else{cls="up";stat=`<span class="pill">${tx("Yakında")}</span>`;act=`<span class="muted small">${tx("{0} tarihinde açılır",fmtS(win?.start))}</span>`}
+    return `<div class="wk ${cls}"><div class="no"><span>${tx("Hafta")}</span><b>${sb.w}</b></div><div class="stack" style="gap:4px"><b>${esc(sb.t)}</b><div class="row" style="gap:8px">${stat}<span class="muted small">${fmtRange(win)}</span></div></div><div class="act">${act}</div></div>`}).join("");
   const rw=reviewWin(t),rst=winStatus(rw),re_=prog?.weeks?.R;let revCard="";
   if(subs.length&&rw){let cls,stat,act;
-    if(re_){cls="done";stat=`<span class="pill ok">Tamamlandı · ${re_.score}/${re_.total}</span>`;act=`<button class="btn" data-act="review">Tekrar oku</button>`}
-    else if(rst==="current"){cls="cur";stat=`<span class="pill active">Bu hafta</span>`;act=`<button class="btn primary" data-act="review">Tekrar et</button>`}
-    else if(rst==="past"){cls="miss";stat=`<span class="pill bad">Gecikti</span>`;act=`<button class="btn danger" data-act="review">Şimdi tamamla</button>`}
-    else{cls="up";stat=`<span class="pill">Yakında</span>`;act=`<span class="muted small">${fmtS(rw.start)} tarihinde açılır</span>`}
-    revCard=`<div class="wk ${cls}"><div class="no"><span>Hafta</span><b>${reviewW(t)}</b></div><div class="stack" style="gap:4px"><b>Tekrar haftası · 5 konunun özeti</b><div class="row" style="gap:8px">${stat}<span class="muted small">${fmtRange(rw)}</span></div></div><div class="act">${act}</div></div>`}
+    if(re_){cls="done";stat=`<span class="pill ok">${tx("Tamamlandı · {0}/{1}",re_.score,re_.total)}</span>`;act=`<button class="btn" data-act="review">${tx("Tekrar oku")}</button>`}
+    else if(rst==="current"){cls="cur";stat=`<span class="pill active">${tx("Bu hafta")}</span>`;act=`<button class="btn primary" data-act="review">${tx("Tekrar et")}</button>`}
+    else if(rst==="past"){cls="miss";stat=`<span class="pill bad">${tx("Gecikti")}</span>`;act=`<button class="btn danger" data-act="review">${tx("Şimdi tamamla")}</button>`}
+    else{cls="up";stat=`<span class="pill">${tx("Yakında")}</span>`;act=`<span class="muted small">${tx("{0} tarihinde açılır",fmtS(rw.start))}</span>`}
+    revCard=`<div class="wk ${cls}"><div class="no"><span>${tx("Hafta")}</span><b>${reviewW(t)}</b></div><div class="stack" style="gap:4px"><b>${tx("Tekrar haftası · 5 konunun özeti")}</b><div class="row" style="gap:8px">${stat}<span class="muted small">${fmtRange(rw)}</span></div></div><div class="act">${act}</div></div>`}
+  const finDone=(fin,title)=>{const p=fin.passed;return `<div class="wk ${p?"done":"miss"}"><div class="no"><span>${tx("Genel")}</span><b>✓</b></div><div class="stack" style="gap:4px"><b>${title}</b><div class="row" style="gap:8px"><span class="pill ${p?"ok":"bad"}">${p?tx("Geçti"):tx("Kaldı")} · ${tx("{0} puan",fin.score)}</span></div></div></div>`};
+  const finOpen=(title,tid)=>`<div class="wk cur"><div class="no"><span>${tx("Genel")}</span><b>17</b></div><div class="stack" style="gap:4px"><b>${title}</b><span class="muted small">${tx("17 soru · Geçme notu {0} · Bir kez girilebilir",PASS)}</span></div><div class="act"><button class="btn primary" data-act="start-final"${tid?` data-tid="${esc(tid)}"`:""}>${tx("Sınava başla")}</button></div></div>`;
   let finCard;
-  if(fin){const p=fin.passed;finCard=`<div class="wk ${p?"done":"miss"}"><div class="no"><span>Genel</span><b>✓</b></div><div class="stack" style="gap:4px"><b>Genel tekrar sınavı</b><div class="row" style="gap:8px"><span class="pill ${p?"ok":"bad"}">${p?"Geçti":"Kaldı"} · ${fin.score} puan</span></div></div></div>`}
-  else if(t.finalOpen)finCard=`<div class="wk cur"><div class="no"><span>Genel</span><b>17</b></div><div class="stack" style="gap:4px"><b>Genel tekrar sınavı</b><span class="muted small">17 soru · Geçme notu ${PASS} · Bir kez girilebilir</span></div><div class="act"><button class="btn primary" data-act="start-final">Sınava başla</button></div></div>`;
-  else{const ed=examDay(t);finCard=`<div class="wk up"><div class="no"><span>Genel</span><b>–</b></div><div class="stack" style="gap:4px"><b>Genel tekrar sınavı</b><span class="muted small">${ed&&todayISO()<ed?`${new Date(ed+"T00:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long",weekday:"long"})} açılır`:"Şu an kapalı"}</span></div></div>`}
+  if(fin)finCard=finDone(fin,tx("Genel tekrar sınavı"));
+  else if(t.finalOpen)finCard=finOpen(tx("Genel tekrar sınavı"));
+  else{const ed=examDay(t);finCard=`<div class="wk up"><div class="no"><span>${tx("Genel")}</span><b>–</b></div><div class="stack" style="gap:4px"><b>${tx("Genel tekrar sınavı")}</b><span class="muted small">${ed&&todayISO()<ed?tx("{0} açılır",fmtLong(ed,{day:"numeric",month:"long",weekday:"long"})):tx("Şu an kapalı")}</span></div></div>`}
+  const X=NET&&S.wstate?.exam;const examCard=X?(X.fin?finDone(X.fin,tx("Önceki dönemin genel tekrar sınavı · {0}",esc(X.title))):finOpen(tx("Önceki dönemin genel tekrar sınavı · {0}",esc(X.title)),X.id)):"";
   const miss=subs.filter(sb=>cellOf(t,{tc:me.tc,dk:me.dk,start:me.start},sb.w).k==="miss").length+(rw&&!re_&&rst==="past"?1:0);
   return `<div class="exam-wrap">
-    <div class="spread"><div><h2>Merhaba ${esc(me.name.split(" ")[0])}</h2><div class="muted">${esc(deptLabel(me.dk))} · ${esc(t.title)}</div></div><button class="btn" data-act="logout">Çıkış</button></div>
-    <div class="card stack" style="gap:8px"><div class="spread"><b>İlerlemeniz</b><span class="num">${doneN} / ${subs.length} eğitim</span></div><div class="bar ok"><i style="width:${subs.length?Math.round(100*doneN/subs.length):0}%"></i></div>
-      ${miss?`<div class="err">${miss} eğitiminiz gecikmiş durumda. Lütfen önce onları tamamlayın.</div>`:""}</div>
-    ${subs.length?`<div class="week-list">${cards}${revCard}${finCard}</div>`:`<div class="card empty"><h3>Departmanınız için bu dönemde konu tanımlı değil</h3><p>İSG sorumlusuna haber verin.</p></div>`}
+    <div class="spread"><div><h2>${tx("Merhaba {0}",esc(me.name.split(" ")[0]))}</h2><div class="muted">${esc(deptL(me.dk))} · ${esc(t.title)}</div></div><div class="row" style="gap:6px">${langBtn(true)}<button class="btn" data-act="logout">${tx("Çıkış")}</button></div></div>
+    ${examCard?`<div class="week-list">${examCard}</div>`:""}
+    <div class="card stack" style="gap:8px"><div class="spread"><b>${tx("İlerlemeniz")}</b><span class="num">${tx("{0} / {1} eğitim",doneN,subs.length)}</span></div><div class="bar ok"><i style="width:${subs.length?Math.round(100*doneN/subs.length):0}%"></i></div>
+      ${miss?`<div class="err">${tx("{0} eğitiminiz gecikmiş durumda. Lütfen önce onları tamamlayın.",miss)}</div>`:""}</div>
+    ${subs.length?`<div class="week-list">${cards}${revCard}${finCard}</div>`:`<div class="card empty"><h3>${tx("Departmanınız için bu dönemde konu tanımlı değil")}</h3><p>${tx("İSG sorumlusuna haber verin.")}</p></div>`}
   </div>`;
 }
 function viewRead(){
   const t=workerTopic(),w=S.flow.w,sb=subjectsOf(t,S.me.dk).find(s=>s.w===w),body=t.content?.[S.me.dk]?.[w];
   const done=progOf(t.id,S.me.tc)?.weeks?.[w];
   return `<div class="exam-wrap">
-    <div><button class="btn ghost" data-act="dash">← Panele dön</button></div>
-    <div class="stack" style="gap:4px"><span class="sec-label">Hafta ${w} · ${esc(deptLabel(S.me.dk))}</span><h1>${esc(sb?.t||"")}</h1></div>
-    <div class="card"><div class="lesson">${body?renderContent(body):`<p class="muted">Bu hafta için eğitim metni henüz eklenmemiş. Toolbox toplantısında anlatılan konuya göre quizi çözebilirsiniz.</p>`}</div></div>
-    ${done?`<div class="note">Bu haftanın quizini tamamladınız (${done.score}/${done.total}).</div><button class="btn big" data-act="dash">Panele dön</button>`:`<button class="btn primary big" data-act="start-wq" data-w="${w}">Okudum, quiz'e geç (5 soru)</button>`}
+    <div><button class="btn ghost" data-act="dash">${tx("← Panele dön")}</button></div>
+    <div class="stack" style="gap:4px"><span class="sec-label">${tx("Hafta")} ${w} · ${esc(deptL(S.me.dk))}</span><h1>${esc(sb?.t||"")}</h1></div>
+    <div class="card"><div class="lesson">${body?renderContent(body):`<p class="muted">${tx("Bu hafta için eğitim metni henüz eklenmemiş. Toolbox toplantısında anlatılan konuya göre quizi çözebilirsiniz.")}</p>`}</div></div>
+    ${done?`<div class="note">${tx("Bu haftanın quizini tamamladınız ({0}/{1}).",done.score,done.total)}</div><button class="btn big" data-act="dash">${tx("Panele dön")}</button>`:`<button class="btn primary big" data-act="start-wq" data-w="${w}">${tx("Okudum, quiz'e geç (5 soru)")}</button>`}
   </div>`;
 }
 
 function lessonDigest(txt){const L=String(txt||"").split("\n").map(l=>l.trim());let sec="",rules=[],key="";
   L.forEach(l=>{if(l.startsWith("## ")){sec=l.slice(3).toLocaleLowerCase("tr");return}if(!l)return;
-    if(/kural/.test(sec)&&/^[-•]\s+/.test(l)&&rules.length<3)rules.push(l.replace(/^[-•]\s+/,""));if(/unutma/.test(sec)&&!key)key=l});return{rules,key}}
+    if(/kural|rule/.test(sec)&&/^[-•]\s+/.test(l)&&rules.length<3)rules.push(l.replace(/^[-•]\s+/,""));if(/unutma|remember/.test(sec)&&!key)key=l});return{rules,key}}
 function viewReview(){const t=workerTopic(),dk=S.me.dk,subs=subjectsOf(t,dk),done=progOf(t.id,S.me.tc)?.weeks?.R;
-  return `<div class="exam-wrap"><div><button class="btn ghost" data-act="dash">← Panele dön</button></div>
-    <div class="stack" style="gap:4px"><span class="sec-label">Hafta ${reviewW(t)} · Tekrar haftası</span><h1>5 haftanın özeti</h1><div class="muted">Genel tekrar sınavı ${(()=>{const d=examDay(t);return d?new Date(d+"T00:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long",weekday:"long"}):""})()} yapılacak. Aşağıdaki ana kuralları tekrar edin.</div></div>
-    ${subs.map(sb=>{const d=lessonDigest(t.content?.[dk]?.[sb.w]);return `<div class="card stack" style="gap:6px"><span class="sec-label">Hafta ${sb.w}</span><h3>${esc(sb.t)}</h3>${d.rules.length?`<ul style="margin:0;padding-left:20px">${d.rules.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>`:""}${d.key?`<div class="note">${esc(d.key)}</div>`:""}<div><button class="btn ghost small" data-act="read" data-w="${sb.w}">Tüm metni oku</button></div></div>`}).join("")}
-    ${done?`<div class="note">Tekrar quizini tamamladınız (${done.score}/${done.total}).</div><button class="btn big" data-act="dash">Panele dön</button>`:`<button class="btn primary big" data-act="start-review">Tekrar quizine geç (5 soru)</button>`}</div>`}
+  return `<div class="exam-wrap"><div><button class="btn ghost" data-act="dash">${tx("← Panele dön")}</button></div>
+    <div class="stack" style="gap:4px"><span class="sec-label">${tx("Hafta")} ${reviewW(t)} · ${tx("Tekrar haftası")}</span><h1>${tx("5 haftanın özeti")}</h1><div class="muted">${tx("Genel tekrar sınavı {0} yapılacak. Aşağıdaki ana kuralları tekrar edin.",(()=>{const d=examDay(t);return d?fmtLong(d,{day:"numeric",month:"long",weekday:"long"}):""})())}</div></div>
+    ${subs.map(sb=>{const d=lessonDigest(t.content?.[dk]?.[sb.w]);return `<div class="card stack" style="gap:6px"><span class="sec-label">${tx("Hafta")} ${sb.w}</span><h3>${esc(sb.t)}</h3>${d.rules.length?`<ul style="margin:0;padding-left:20px">${d.rules.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>`:""}${d.key?`<div class="note">${esc(d.key)}</div>`:""}<div><button class="btn ghost small" data-act="read" data-w="${sb.w}">${tx("Tüm metni oku")}</button></div></div>`}).join("")}
+    ${done?`<div class="note">${tx("Tekrar quizini tamamladınız ({0}/{1}).",done.score,done.total)}</div><button class="btn big" data-act="dash">${tx("Panele dön")}</button>`:`<button class="btn primary big" data-act="start-review">${tx("Tekrar quizine geç (5 soru)")}</button>`}</div>`}
 function startReview(){if(NET)return netStartQuiz("R");const t=workerTopic(),dk=S.me.dk;if(progOf(t.id,S.me.tc)?.weeks?.R){toast("Tekrar quizini zaten tamamladınız.");return}
   const P=t.pools?.[dk]||{},items=[];
   subjectsOf(t,dk).forEach(sb=>{const c=shuffle([...(P.tf||[]).filter(q=>q.w===sb.w).map(q=>({type:"tf",q})),...(P.mc||[]).filter(q=>q.w===sb.w).map(q=>({type:"mc",q:shufMC(q)}))]);if(c.length)items.push(c[0])});
@@ -520,26 +551,26 @@ function startWeekly(w){if(NET)return netStartQuiz(w);
   if(!pick.length){toast("Bu hafta için soru tanımlı değil. İSG sorumlusuna haber verin.");return}
   S.flow={kind:"wq",w,items:shuffle(pick),ans:new Array(pick.length).fill(null),cur:0,phase:"q",readAt:Date.now()};render(false);window.scrollTo(0,0)}
 function viewWeeklyQuiz(){
-  const f=S.flow,t=workerTopic(),sb=f.w==="R"?{t:"Tekrar haftası"}:subjectsOf(t,S.me.dk).find(s=>s.w===f.w);const wl=f.w==="R"?`Hafta ${reviewW(t)}`:`Hafta ${f.w}`;
-  if(f.phase==="res"&&NET&&f.saving)return `<div class="exam-wrap"><div class="card stack" style="align-items:center;text-align:center;padding:40px 18px"><div class="spinner"></div><h2>Cevaplarınız kontrol ediliyor</h2></div></div>`;
+  const f=S.flow,t=workerTopic(),sb=f.w==="R"?{t:tx("Tekrar haftası")}:subjectsOf(t,S.me.dk).find(s=>s.w===f.w);const wl=`${tx("Hafta")} ${f.w==="R"?reviewW(t):f.w}`;
+  if(f.phase==="res"&&NET&&f.saving)return `<div class="exam-wrap"><div class="card stack" style="align-items:center;text-align:center;padding:40px 18px"><div class="spinner"></div><h2>${tx("Cevaplarınız kontrol ediliyor")}</h2></div></div>`;
   if(f.phase==="res"){const wrong=f.items.map((it,i)=>({it,a:f.ans[i]})).filter(x=>x.a!==x.it.q.a);
-    const fa=(it,a)=>it.type==="tf"?(a?"Doğru":"Yanlış"):esc(it.q.opts[a]);
+    const fa=(it,a)=>it.type==="tf"?(a?tx("Doğru"):tx("Yanlış")):esc(it.q.opts[a]);
     return `<div class="exam-wrap"><div class="card stack" style="text-align:center;align-items:center">
       <div class="muted">${wl} · ${esc(sb?.t||"")}</div>
       <div class="num" style="font-family:var(--display);font-size:3.2rem;font-weight:700;line-height:1">${f.score}<span class="muted" style="font-size:1.5rem"> / ${f.items.length}</span></div>
-      <div>${f.score===f.items.length?"Tebrikler, hepsi doğru.":f.score>=3?"İyi iş. Yanlışlarınızı aşağıda inceleyin.":"Bu konuyu tekrar okumanızı öneririz."}</div>
-      <div class="small">${f.saving?"Kaydediliyor…":f.saved?"✓ Kaydedildi":`<span class="err">Kaydedilemedi.</span> <button class="btn" data-act="wq-save">Tekrar kaydet</button>`}</div></div>
-      ${wrong.length?`<div class="card"><h3 style="margin-bottom:10px">Yanlış cevaplar</h3><ol class="review">${wrong.map(x=>`<li><div><b>${esc(x.it.q.q)}</b></div><div class="yours">✗ Sizin cevabınız: ${fa(x.it,x.a)}</div><div class="right">✓ Doğru cevap: ${fa(x.it,x.it.q.a)}</div></li>`).join("")}</ol></div>`:""}
-      <button class="btn primary big" data-act="dash" ${f.saving?"disabled":""}>Panele dön</button></div>`}
+      <div>${f.score===f.items.length?tx("Tebrikler, hepsi doğru."):f.score>=3?tx("İyi iş. Yanlışlarınızı aşağıda inceleyin."):tx("Bu konuyu tekrar okumanızı öneririz.")}</div>
+      <div class="small">${f.saving?tx("Kaydediliyor…"):f.saved?tx("✓ Kaydedildi"):`<span class="err">${tx("Kaydedilemedi.")}</span> <button class="btn" data-act="wq-save">${tx("Tekrar kaydet")}</button>`}</div></div>
+      ${wrong.length?`<div class="card"><h3 style="margin-bottom:10px">${tx("Yanlış cevaplar")}</h3><ol class="review">${wrong.map(x=>`<li><div><b>${esc(x.it.q.q)}</b></div><div class="yours">${tx("✗ Sizin cevabınız: {0}",fa(x.it,x.a))}</div><div class="right">${tx("✓ Doğru cevap: {0}",fa(x.it,x.it.q.a))}</div></li>`).join("")}</ol></div>`:""}
+      <button class="btn primary big" data-act="dash" ${f.saving?"disabled":""}>${tx("Panele dön")}</button></div>`}
   const it=f.items[f.cur],a=f.ans[f.cur],last=f.cur===f.items.length-1,all=f.ans.every(x=>x!==null);
-  const body=it.type==="tf"?`<div class="tf-btns"><button class="tf-btn t ${a===true?"sel":""}" data-act="wq-ans" data-v="true">DOĞRU</button><button class="tf-btn f ${a===false?"sel":""}" data-act="wq-ans" data-v="false">YANLIŞ</button></div>`
+  const body=it.type==="tf"?`<div class="tf-btns"><button class="tf-btn t ${a===true?"sel":""}" data-act="wq-ans" data-v="true">${tx("DOĞRU")}</button><button class="tf-btn f ${a===false?"sel":""}" data-act="wq-ans" data-v="false">${tx("YANLIŞ")}</button></div>`
     :`<div class="opts">${it.q.opts.map((o,i)=>`<button class="opt ${a===i?"sel":""}" data-act="wq-ans" data-v="${i}"><span class="l">${LET[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
   return `<div class="exam-wrap">
-    <div class="exam-head"><span class="muted">${wl} quizi · ${esc(sb?.t||"")}</span><span class="num"><b>${f.cur+1}</b> / ${f.items.length}</span></div>
+    <div class="exam-head"><span class="muted">${tx("{0} quizi",wl)} · ${esc(sb?.t||"")}</span><span class="num"><b>${f.cur+1}</b> / ${f.items.length}</span></div>
     <div class="bar"><i style="width:${Math.round(100*(f.cur+1)/f.items.length)}%"></i></div>
     <div class="qtext">${esc(it.q.q)}</div>${body}
-    <div class="spread"><button class="btn big" data-act="wq-prev" ${f.cur===0?"disabled":""}>Geri</button>
-      ${last?`<button class="btn primary big" data-act="wq-finish" ${all?"":"disabled"}>Bitir</button>`:`<button class="btn primary big" data-act="wq-next" ${a===null?"disabled":""}>İleri</button>`}</div>
+    <div class="spread"><button class="btn big" data-act="wq-prev" ${f.cur===0?"disabled":""}>${tx("Geri")}</button>
+      ${last?`<button class="btn primary big" data-act="wq-finish" ${all?"":"disabled"}>${tx("Bitir")}</button>`:`<button class="btn primary big" data-act="wq-next" ${a===null?"disabled":""}>${tx("İleri")}</button>`}</div>
   </div>`;
 }
 async function saveWeekly(){
@@ -554,8 +585,8 @@ async function saveWeekly(){
   f.saving=false;if(S.flow===f)render(false)}
 
 /* ===== Genel tekrar sınavı ===== */
-async function startFinal(){
-  const t=workerTopic(),me=S.me;if(!t?.finalOpen){toast("Genel tekrar sınavı henüz açık değil.");return}if(NET)return netStartFinal();
+async function startFinal(tid){
+  const t=workerTopic(),me=S.me;if(NET)return netStartFinal(tid);if(!t?.finalOpen){toast(tx("Genel tekrar sınavı henüz açık değil."));return}
   try{const ref=S.db.doc(resId(t.id,me.tc));const snap=await ref.get();const prev=snap.exists?snap.data():null;
     if(prev&&prev.status!=="started"){toast("Bu sınava zaten girdiniz.");return}
     let questions;
@@ -570,20 +601,20 @@ function viewQuestion(){
   const e=S.exam,it=e.items[e.cur],q=e.questions[it.type][it.i],N=e.items.length,last=e.cur===N-1,ans=e.answers[it.type][it.i];
   const objMissing=e.items.map((x,k)=>({...x,k})).filter(x=>x.type!=="classic"&&e.answers[x.type][x.i]===null);
   let body="";
-  if(it.type==="tf")body=`<div class="tf-btns"><button class="tf-btn t ${ans===true?"sel":""}" data-act="ans" data-v="true">DOĞRU</button><button class="tf-btn f ${ans===false?"sel":""}" data-act="ans" data-v="false">YANLIŞ</button></div>`;
+  if(it.type==="tf")body=`<div class="tf-btns"><button class="tf-btn t ${ans===true?"sel":""}" data-act="ans" data-v="true">${tx("DOĞRU")}</button><button class="tf-btn f ${ans===false?"sel":""}" data-act="ans" data-v="false">${tx("YANLIŞ")}</button></div>`;
   else if(it.type==="mc")body=`<div class="opts">${q.opts.map((o,i)=>`<button class="opt ${ans===i?"sel":""}" data-act="ans" data-v="${i}"><span class="l">${LET[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
-  else body=`<label class="f" for="clAns">Cevabınız<textarea id="clAns" class="answer" placeholder="Cevabınızı kendi cümlelerinizle yazın.">${esc(ans)}</textarea></label><div class="muted small">Cevabınızı yapay zeka, eğitmenin belirlediği doğru cevapla karşılaştırarak değerlendirir.</div>`;
+  else body=`<label class="f" for="clAns">${tx("Cevabınız")}<textarea id="clAns" class="answer" placeholder="${tx("Cevabınızı kendi cümlelerinizle yazın.")}">${esc(ans)}</textarea></label><div class="muted small">${tx("Cevabınızı yapay zeka, eğitmenin belirlediği doğru cevapla karşılaştırarak değerlendirir.")}</div>`;
   let dots="",prevType=null;e.items.forEach((x,k)=>{if(prevType&&x.type!==prevType)dots+=`<span class="dot-sep"></span>`;prevType=x.type;
     const done=x.type==="classic"?String(e.answers.classic[x.i]).trim().length>0:e.answers[x.type][x.i]!==null;
-    dots+=`<button class="dot ${done?"done":""} ${k===e.cur?"cur":""}" data-act="jump" data-k="${k}" aria-label="Soru ${k+1}">${k+1}</button>`});
+    dots+=`<button class="dot ${done?"done":""} ${k===e.cur?"cur":""}" data-act="jump" data-k="${k}" aria-label="${tx("Soru {0}",k+1)}">${k+1}</button>`});
   return `<div class="exam-wrap">
-    <div class="exam-head"><span class="muted">Genel tekrar · ${esc(e.name)}</span><span class="num"><b>Soru ${e.cur+1}</b> / ${N}</span></div>
+    <div class="exam-head"><span class="muted">${tx("Genel tekrar · {0}",esc(e.name))}</span><span class="num"><b>${tx("Soru {0}",e.cur+1)}</b> / ${N}</span></div>
     <div class="dots">${dots}</div>
-    <div class="stack" style="gap:6px"><span class="sec-label">${PLAN[it.type].l} · ${it.i+1}/${PLAN[it.type].n} · ${PLAN[it.type].pt} puan</span>${q.w?`<span class="small muted">Hafta ${q.w}${subjOf(e.topicId,e.deptKey,q.w)?` · ${esc(subjOf(e.topicId,e.deptKey,q.w))}`:""}</span>`:""}<div class="qtext">${esc(q.q)}</div></div>
+    <div class="stack" style="gap:6px"><span class="sec-label">${tx(PLAN[it.type].l)} · ${it.i+1}/${PLAN[it.type].n} · ${tx("{0} puan",PLAN[it.type].pt)}</span>${q.w?`<span class="small muted">${tx("Hafta")} ${q.w}${subjOf(e.topicId,e.deptKey,q.w)?` · ${esc(subjOf(e.topicId,e.deptKey,q.w))}`:""}</span>`:""}<div class="qtext">${esc(q.q)}</div></div>
     ${body}
-    <div class="spread"><button class="btn big" data-act="prev" ${e.cur===0?"disabled":""}>Geri</button>
-      ${last?`<button class="btn primary big" data-act="finish" ${objMissing.length?"disabled":""}>Sınavı bitir</button>`:`<button class="btn primary big" data-act="next">İleri</button>`}</div>
-    ${last&&objMissing.length?`<div class="muted small">Cevaplanmamış soru var: ${objMissing.map(x=>x.k+1).join(", ")}. Numaralara dokunarak geri dönün.</div>`:""}
+    <div class="spread"><button class="btn big" data-act="prev" ${e.cur===0?"disabled":""}>${tx("Geri")}</button>
+      ${last?`<button class="btn primary big" data-act="finish" ${objMissing.length?"disabled":""}>${tx("Sınavı bitir")}</button>`:`<button class="btn primary big" data-act="next">${tx("İleri")}</button>`}</div>
+    ${last&&objMissing.length?`<div class="muted small">${tx("Cevaplanmamış soru var: {0}. Numaralara dokunarak geri dönün.",objMissing.map(x=>x.k+1).join(", "))}</div>`:""}
   </div>`;
 }
 async function finishExam(){
@@ -596,30 +627,30 @@ async function finishExam(){
     e.result=doc;e.phase="result";e.saving=true;render(false);
     try{await S.db.doc(resId(e.topicId,e.tc)).set(doc);e.saved=true}catch(x){e.saveErr=true}
     e.saving=false;if(S.exam===e)render(false)};
-  if(emptyCl)confirmModal(`${emptyCl} klasik soruyu boş bıraktınız. Boş cevaplar yanlış sayılır. Yine de bitirmek istiyor musunuz?`,"Bitir",go,"Dikkat");else go()}
+  if(emptyCl)confirmModal(tx("{0} klasik soruyu boş bıraktınız. Boş cevaplar yanlış sayılır. Yine de bitirmek istiyor musunuz?",emptyCl),tx("Bitir"),go,tx("Dikkat"));else go()}
 function viewExamResult(){
   const e=S.exam;
-  if(e.phase==="grading")return `<div class="exam-wrap"><div class="card stack" style="align-items:center;text-align:center;padding:40px 18px"><div class="spinner"></div><h2>Cevaplarınız değerlendiriliyor</h2><div class="muted">Yapay zeka klasik sorulardaki cevaplarınızı kontrol ediyor. Bu işlem 30-60 saniye sürebilir, lütfen sayfayı kapatmayın.</div></div></div>`;
+  if(e.phase==="grading")return `<div class="exam-wrap"><div class="card stack" style="align-items:center;text-align:center;padding:40px 18px"><div class="spinner"></div><h2>${tx("Cevaplarınız değerlendiriliyor")}</h2><div class="muted">${tx("Yapay zeka klasik sorulardaki cevaplarınızı kontrol ediyor. Bu işlem 30-60 saniye sürebilir, lütfen sayfayı kapatmayın.")}</div></div></div>`;
   const r=e.result,sc=scoreOf(r);
   const wrongObj=["tf","mc"].flatMap(type=>r.questions[type].map((q,i)=>({type,q,a:r.answers[type][i]})).filter(x=>x.a!==x.q.a));
-  const fmtA=(type,q,a)=>type==="tf"?(a?"Doğru":"Yanlış"):esc(q.opts[a]);
+  const fmtA=(type,q,a)=>type==="tf"?(a?tx("Doğru"):tx("Yanlış")):esc(q.opts[a]);
   return `<div class="exam-wrap">
     <div class="card stack" style="text-align:center;align-items:center">
-      <div class="muted">${esc(r.name)} · ${esc(deptLabel(r.deptKey))}</div>
-      <div class="stamp ${sc.passed?"ok":"bad"}">${sc.passed?"GEÇTİ":"KALDI"}</div>
+      <div class="muted">${esc(r.name)} · ${esc(deptL(r.deptKey))}</div>
+      <div class="stamp ${sc.passed?"ok":"bad"}">${sc.passed?tx("GEÇTİ"):tx("KALDI")}</div>
       <div class="num" style="font-family:var(--display);font-size:3rem;font-weight:700;line-height:1">${sc.score}<span class="muted" style="font-size:1.4rem"> / 100</span></div>
       <div class="breakdown">
-        <span>Doğru / Yanlış</span><span class="muted num">${sc.tf}/${PLAN.tf.n}</span><b>${sc.tf*PLAN.tf.pt} / ${PLAN.tf.n*PLAN.tf.pt}</b>
-        <span>Çoktan seçmeli</span><span class="muted num">${sc.mc}/${PLAN.mc.n}</span><b>${sc.mc*PLAN.mc.pt} / ${PLAN.mc.n*PLAN.mc.pt}</b>
-        <span>Klasik</span><span class="muted num">${sc.cl}/${PLAN.classic.n}</span><b>${sc.cl*PLAN.classic.pt} / ${PLAN.classic.n*PLAN.classic.pt}</b></div>
-      <div class="small">${e.saving?"Kaydediliyor…":e.saved?"✓ Sonuç kaydedildi":`<span class="err">Sonuç kaydedilemedi.</span>`}</div>
-      ${e.saveErr?`<button class="btn" data-act="retry-save">Tekrar kaydet</button>`:""}
-      ${sc.pending?`<div class="note" style="text-align:left">Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.</div>`:""}
+        <span>${tx("Doğru / Yanlış")}</span><span class="muted num">${sc.tf}/${PLAN.tf.n}</span><b>${sc.tf*PLAN.tf.pt} / ${PLAN.tf.n*PLAN.tf.pt}</b>
+        <span>${tx("Çoktan seçmeli")}</span><span class="muted num">${sc.mc}/${PLAN.mc.n}</span><b>${sc.mc*PLAN.mc.pt} / ${PLAN.mc.n*PLAN.mc.pt}</b>
+        <span>${tx("Klasik")}</span><span class="muted num">${sc.cl}/${PLAN.classic.n}</span><b>${sc.cl*PLAN.classic.pt} / ${PLAN.classic.n*PLAN.classic.pt}</b></div>
+      <div class="small">${e.saving?tx("Kaydediliyor…"):e.saved?tx("✓ Sonuç kaydedildi"):`<span class="err">${tx("Sonuç kaydedilemedi.")}</span>`}</div>
+      ${e.saveErr?`<button class="btn" data-act="retry-save">${tx("Tekrar kaydet")}</button>`:""}
+      ${sc.pending?`<div class="note" style="text-align:left">${tx("Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.")}</div>`:""}
     </div>
-    <div class="card stack"><h3>Klasik sorular</h3>
-      ${r.questions.classic.map((q,i)=>{const v=r.classicEval[i];return `<div class="verdict ${!v?"pend":v.correct?"ok":"bad"}"><b>${esc(q.q)}</b><div class="small">Cevabınız: ${esc(r.answers.classic[i]||"(boş)")}</div><div class="small">${!v?"Kontrol bekliyor":v.correct?`<span style="color:var(--ok);font-weight:600">✓ Doğru</span>`:`<span style="color:var(--bad);font-weight:600">✗ Yanlış</span>`}${v?.reason?` · ${esc(v.reason)}`:""}</div>${v&&!v.correct?`<div class="small muted">Beklenen: ${esc(q.key)}</div>`:""}</div>`}).join("")}</div>
-    ${wrongObj.length?`<div class="card"><h3 style="margin-bottom:10px">Yanlış cevapladığınız sorular</h3><ol class="review">${wrongObj.map(x=>`<li><div><b>${esc(x.q.q)}</b></div><div class="yours">✗ Sizin cevabınız: ${fmtA(x.type,x.q,x.a)}</div><div class="right">✓ Doğru cevap: ${fmtA(x.type,x.q,x.q.a)}</div></li>`).join("")}</ol></div>`:""}
-    <button class="btn primary big" data-act="exam-done" ${e.saving?"disabled":""}>Panele dön</button>
+    <div class="card stack"><h3>${tx("Klasik sorular")}</h3>
+      ${r.questions.classic.map((q,i)=>{const v=r.classicEval[i];return `<div class="verdict ${!v?"pend":v.correct?"ok":"bad"}"><b>${esc(q.q)}</b><div class="small">${tx("Cevabınız: {0}",esc(r.answers.classic[i]||tx("(boş)")))}</div><div class="small">${!v?tx("Kontrol bekliyor"):v.correct?`<span style="color:var(--ok);font-weight:600">${tx("✓ Doğru")}</span>`:`<span style="color:var(--bad);font-weight:600">${tx("✗ Yanlış")}</span>`}${v?.reason?` · ${esc(v.reason)}`:""}</div>${v&&!v.correct?`<div class="small muted">${tx("Beklenen: {0}",esc(q.key))}</div>`:""}</div>`}).join("")}</div>
+    ${wrongObj.length?`<div class="card"><h3 style="margin-bottom:10px">${tx("Yanlış cevapladığınız sorular")}</h3><ol class="review">${wrongObj.map(x=>`<li><div><b>${esc(x.q.q)}</b></div><div class="yours">${tx("✗ Sizin cevabınız: {0}",fmtA(x.type,x.q,x.a))}</div><div class="right">${tx("✓ Doğru cevap: {0}",fmtA(x.type,x.q,x.q.a))}</div></li>`).join("")}</ol></div>`:""}
+    <button class="btn primary big" data-act="exam-done" ${e.saving?"disabled":""}>${tx("Panele dön")}</button>
   </div>`;
 }
 
@@ -889,7 +920,7 @@ async function saveStaffList(list,msg){
   catch(e){toast("Kaydedilemedi. Tekrar deneyin.")}}
 async function addStaff(){
   const tc=$("#nsSicil").value.replace(/\D/g,""),name=$("#nsName").value.trim().replace(/\s+/g," "),dept=$("#nsDept").value,start=$("#nsStart").value,collar=$("#nsCollar").value,err=$("#nsErr");err.textContent="";
-  if(!tcValid(tc)){err.textContent="Geçerli bir sicil numarası girin.";return}
+  if(!tcValid(tc)){err.textContent=tx("Geçerli bir sicil numarası girin.");return}
   if(name.length<3){err.textContent="Ad soyad girin.";return}
   const ex=S.staff.find(p=>String(p.tc)===tc);if(ex){err.textContent=`Bu sicil zaten kayıtlı: ${ex.name} (${deptTR(ex.dept)}).`;return}
   const list=[...S.staff,{tc,name,dept,deptKey:deptKeyOf(dept),start,collar}];
@@ -1110,22 +1141,22 @@ async function loadHistSeed(){try{const r=await fetch("seed/history.json");if(!r
 
 
 /* ===== Netlify: çalışan işlemleri sunucuda ===== */
-function mapTopic(id,x){return{id,title:x.title||"",date:x.date||"",active:!!x.active,finalMode:x.finalMode||(x.finalOpen?"open":"auto"),get finalOpen(){return finalOpenOf(this)},pools:x.pools||{},subjects:x.subjects||{},content:x.content||{},createdAt:x.createdAt||0}}
+function mapTopic(id,x){return{id,title:x.title||"",date:x.date||"",weeksPlan:x.weeksPlan||null,active:!!x.active,finalMode:x.finalMode||(x.finalOpen?"open":"auto"),get finalOpen(){return finalOpenOf(this)},pools:x.pools||{},subjects:x.subjects||{},content:x.content||{},createdAt:x.createdAt||0}}
 const wApi=(p,body)=>window.TBX.api("w/"+p,body?{body}:{});
-const meBody=()=>({tc:S.me.tc,name:S.me.name,dk:S.me.dk});
-function netErr(e){toast(e?.message||"Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin.")}
+const meBody=()=>({tc:S.me.tc,name:S.me.name,dk:S.me.dk,lang:LANG});
+function netErr(e){toast(e?.message||tx("Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin."))}
 function applyWState(r){S.wstate=r;S.me=r.me;S.topics=[mapTopic(r.topic.id,r.topic)];}
 async function netLogin(){
   const tc=$("#tc").value.replace(/\D/g,""),err=$("#startErr");err.textContent="";
-  if(!tcValid(tc)){err.textContent="Geçerli bir sicil numarası girin.";return}
-  const body={tc,name:$("#pname")?.value.trim()||"",dk:$("#pdept")?.value||""};
-  const btn=$("#loginForm button[type=submit]");if(btn){btn.disabled=true;btn.textContent="Giriş yapılıyor…"}
+  if(!tcValid(tc)){err.textContent=tx("Geçerli bir sicil numarası girin.");return}
+  const body={tc,name:$("#pname")?.value.trim()||"",dk:$("#pdept")?.value||"",lang:LANG};
+  const btn=$("#loginForm button[type=submit]");if(btn){btn.disabled=true;btn.textContent=tx("Giriş yapılıyor…")}
   try{const r=await wApi("login",body);
     if(r.needInfo){const x=$("#extra");x.style.display="flex";if(r.name&&!$("#pname").value)$("#pname").value=r.name;
-      $("#who").innerHTML=`<div class="who warn">${r.name?`${esc(r.name)}${r.dept?` · ${esc(deptTR(r.dept))}`:""}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.`:"Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin."}</div>`;return}
+      $("#who").innerHTML=`<div class="who warn">${r.name?tx("{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.",`${esc(r.name)}${r.dept?` · ${esc(deptTR(r.dept))}`:""}`):tx("Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.")}</div>`;return}
     applyWState(r);S.lastAct=Date.now();render(false);window.scrollTo(0,0)}
-  catch(e){err.textContent=e?.message||"Giriş yapılamadı."}
-  finally{if(btn){btn.disabled=false;btn.textContent="Giriş"}}}
+  catch(e){err.textContent=e?.message||tx("Giriş yapılamadı.")}
+  finally{if(btn){btn.disabled=false;btn.textContent=tx("Giriş")}}}
 async function netRefreshState(){try{applyWState(await wApi("login",meBody()))}catch(e){}}
 async function netStartQuiz(w){
   try{const r=await wApi("quiz/start",{...meBody(),w});
@@ -1137,21 +1168,21 @@ async function netFinishQuiz(){
     f.items=r.items;f.score=r.score;f.saved=true;await netRefreshState()}
   catch(e){f.phase="q";netErr(e)}
   f.saving=false;if(S.flow===f)render(false)}
-async function netStartFinal(){
-  try{const r=await wApi("final/start",meBody());const questions=r.questions;if(r.resumed)toast("Yarım kalan sınavınız aynı sorularla devam ediyor.");
-    const t=workerTopic(),me=S.me,items=ORDER.flatMap(type=>questions[type].map((_,i)=>({type,i})));
+async function netStartFinal(tid){
+  try{const r=await wApi("final/start",{...meBody(),topicId:tid||undefined});const questions=r.questions;if(r.resumed)toast(tx("Yarım kalan sınavınız aynı sorularla devam ediyor."));
+    const X=tid&&S.wstate?.exam?.id===tid?S.wstate.exam:null,t=X||workerTopic(),me=S.me,items=ORDER.flatMap(type=>questions[type].map((_,i)=>({type,i})));
     S.exam={topicId:t.id,topicTitle:t.title,tc:me.tc,name:me.name,deptKey:me.dk,questions,items,cur:0,phase:"question",
       answers:{tf:new Array(questions.tf.length).fill(null),mc:new Array(questions.mc.length).fill(null),classic:new Array(questions.classic.length).fill("")},startedAt:r.startedAt};
     render(false);window.scrollTo(0,0)}catch(e){netErr(e)}}
 async function netFinishExam(){
   const e=S.exam;e.phase="grading";render(false);window.scrollTo(0,0);
-  try{const doc=await wApi("final/submit",{...meBody(),answers:e.answers});e.result=doc;e.questions=doc.questions;e.phase="result";e.saved=true;await netRefreshState()}
+  try{const doc=await wApi("final/submit",{...meBody(),topicId:e.topicId,answers:e.answers});e.result=doc;e.questions=doc.questions;e.phase="result";e.saved=true;await netRefreshState()}
   catch(x){e.phase="question";netErr(x)}
   if(S.exam===e)render(false)}
 async function netWorkerInit(){
   const conn=$("#conn");
-  try{const r=await wApi("public");mergeBrand(r.brand);S.topics=r.topic?[mapTopic(r.topic.id,r.topic)]:[];conn.textContent="Bağlı"}
-  catch(e){conn.textContent="Bağlantı hatası"}
+  try{const r=await window.TBX.api("w/public?lang="+LANG);mergeBrand(r.brand);S.topics=r.topic?[mapTopic(r.topic.id,r.topic)]:[];conn.textContent=tx("Bağlı")}
+  catch(e){conn.textContent=tx("Bağlantı hatası")}
   S.ready=true;render(false)}
 function adminLoginModal(){const bg=modal(`<form id="admF" class="stack"><h3>Yönetici girişi</h3><input type="password" id="admPw" autocomplete="current-password" placeholder="Şifre"><div class="err" id="admErr"></div><div class="row"><button class="btn primary" type="submit">Giriş</button><button class="btn" type="button" id="admCancel">Vazgeç</button></div></form>`);
   $("#admPw",bg).focus();$("#admCancel",bg).onclick=()=>bg.remove();
@@ -1211,7 +1242,9 @@ document.addEventListener("click",async ev=>{
     case"wq-prev":S.flow.cur--;render(false);break;
     case"wq-finish":{if(NET){netFinishQuiz();break}const f=S.flow;f.score=f.items.filter((it,i)=>f.ans[i]===it.q.a).length;f.phase="res";saveWeekly();window.scrollTo(0,0);break}
     case"wq-save":saveWeekly();break;
-    case"start-final":startFinal();break;
+    case"start-final":startFinal(el.dataset.tid||undefined);break;
+    case"lang":LANG=LANG==="en"?"tr":"en";try{localStorage.setItem("tbxLang",LANG)}catch(e){}document.documentElement.lang=LANG;
+      if(NET){if(S.me){S.flow=null;await netRefreshState()}else await netWorkerInit()}render(false);break;
     case"ans":{const e=S.exam,it=e.items[e.cur],v=el.dataset.v;e.answers[it.type][it.i]=it.type==="tf"?v==="true":+v;
       if(e.cur<e.items.length-1&&it.type!=="classic"){render(false);setTimeout(()=>{if(S.exam===e&&e.items[e.cur]===it){e.cur++;render(false);window.scrollTo(0,0)}},250)}else render(false);break}
     case"next":S.exam.cur++;render(false);window.scrollTo(0,0);break;

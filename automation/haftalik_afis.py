@@ -26,6 +26,16 @@ DEPTS = {
     "bakim":    {"ad": "Bakım",        "renk": RED},
     "kalite":   {"ad": "Kalite",       "renk": (164, 52, 147)},
 }
+DIL = "tr"
+EN = {"Üretim": "Production", "Lojistik": "Logistics", "Dial Lab": "Dial Lab", "Bakım": "Maintenance", "Kalite": "Quality",
+      "Ana kurallar": "Key rules", "UNUTMAYIN": "REMEMBER", "HAFTA": "WEEK", "TEKRAR HAFTASI": "REVIEW WEEK",
+      "5 haftanın konularını": "Review the topics", "tekrar edin": "of the last 5 weeks", "GENEL TEKRAR SINAVI": "GENERAL REVIEW EXAM",
+      "Pazartesi": "Monday", "Tüm departmanlar": "All departments", "Genel tekrar sınavı": "General review exam",
+      "17 soru · Geçme notu 70": "17 questions · Pass mark 70", "Sınav o hafta boyunca açık kalır": "The exam stays open all week",
+      "Yalnızca bir kez girilebilir": "One attempt only", "Eğitimi okuyup 5 soruluk": "Read the training and take", "quizi uygulamadan çözün": "the 5-question quiz in the app",
+      "Tekrar için eğitimleri": "Re-read the trainings", "uygulamadan yeniden okuyun": "in the app to review", "Sınava Sicil No ile": "Log in with your employee", "uygulamadan girin": "number to take the exam"}
+def T(x): return EN.get(x, x) if DIL == "en" else x
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 AYLAR = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
 W, H = 1080, 1350
 
@@ -45,7 +55,7 @@ def font(size, bold=False):
 
 
 def tr_tarih(d):
-    return f"{d.day} {AYLAR[d.month - 1]}"
+    return f"{d.day} {(MONTHS if DIL == 'en' else AYLAR)[d.month - 1]}"
 
 
 def wrap(draw, text, fnt, width):
@@ -101,8 +111,9 @@ def header(img, draw, chip_text, chip_color):
 
 
 def footer(img, draw, line, l1="Eğitimi okuyup 5 soruluk", l2="quizi uygulamadan çözün"):
+    l1, l2 = T(l1), T(l2)
     draw.rectangle([0, H - 230, W, H], fill=SOFT)
-    q = qr_image(APP_URL, 6).resize((170, 170), Image.NEAREST)
+    q = qr_image(APP_URL + ("/?lang=en" if DIL == "en" else ""), 6).resize((170, 170), Image.NEAREST)
     img.paste(q, (60, H - 200))
     draw.text((260, H - 170), l1, font=font(32), fill=INK)
     draw.text((260, H - 128), l2, font=font(32), fill=INK)
@@ -111,15 +122,15 @@ def footer(img, draw, line, l1="Eğitimi okuyup 5 soruluk", l2="quizi uygulamada
 
 def week_card(dept, info, week, monday, out):
     d = DEPTS[dept]; img = Image.new("RGB", (W, H), WHITE); draw = ImageDraw.Draw(img)
-    header(img, draw, d["ad"], d["renk"])
+    header(img, draw, T(d["ad"]), d["renk"])
     icon(draw, 120, 300, 60, d["renk"])
-    draw.text((205, 268), f"HAFTA {week}", font=font(30, True), fill=GREY)
+    draw.text((205, 268), f"{T('HAFTA')} {week}", font=font(30, True), fill=GREY)
     draw.text((205, 306), f"{tr_tarih(monday)} – {tr_tarih(monday + dt.timedelta(days=4))}", font=font(30), fill=GREY)
     y = 400; ft = font(54, True)
     for ln in wrap(draw, info["t"], ft, W - 120)[:4]:
         draw.text((60, y), ln, font=ft, fill=NAVY); y += 66
     y += 24
-    draw.text((60, y), "Ana kurallar", font=font(34, True), fill=d["renk"]); y += 56
+    draw.text((60, y), T("Ana kurallar"), font=font(34, True), fill=d["renk"]); y += 56
     fr = font(32)
     for rule in info.get("rules", [])[:3]:
         draw.ellipse([62, y + 6, 92, y + 36], fill=d["renk"])
@@ -134,7 +145,7 @@ def week_card(dept, info, week, monday, out):
         y = max(y + 10, H - 250 - bh - 20)
         draw.rounded_rectangle([50, y, W - 50, y + bh], 18, fill=(255, 244, 214))
         draw.rectangle([50, y, 62, y + bh], fill=YELLOW)
-        draw.text((90, y + 22), "UNUTMAYIN", font=font(24, True), fill=(133, 79, 11))
+        draw.text((90, y + 22), T("UNUTMAYIN"), font=font(24, True), fill=(133, 79, 11))
         yy = y + 58
         for ln in lines:
             draw.text((90, yy), ln, font=fk, fill=INK); yy += 44
@@ -144,13 +155,13 @@ def week_card(dept, info, week, monday, out):
 
 def review_card(dept, items, week, monday, exam, out):
     d = DEPTS[dept]; img = Image.new("RGB", (W, H), WHITE); draw = ImageDraw.Draw(img)
-    header(img, draw, d["ad"], d["renk"])
+    header(img, draw, T(d["ad"]), d["renk"])
     icon(draw, 120, 300, 60, YELLOW)
-    draw.text((205, 268), f"HAFTA {week} · TEKRAR HAFTASI", font=font(30, True), fill=GREY)
+    draw.text((205, 268), f"{T('HAFTA')} {week} · {T('TEKRAR HAFTASI')}", font=font(30, True), fill=GREY)
     draw.text((205, 306), f"{tr_tarih(monday)} – {tr_tarih(monday + dt.timedelta(days=4))}", font=font(30), fill=GREY)
     y = 400
-    draw.text((60, y), "5 haftanın konularını", font=font(52, True), fill=NAVY); y += 64
-    draw.text((60, y), "tekrar edin", font=font(52, True), fill=NAVY); y += 90
+    draw.text((60, y), T("5 haftanın konularını"), font=font(52, True), fill=NAVY); y += 64
+    draw.text((60, y), T("tekrar edin"), font=font(52, True), fill=NAVY); y += 90
     fr = font(30)
     for i, (w, t) in enumerate(items[:5]):
         draw.text((60, y), f"H{w}", font=font(30, True), fill=d["renk"])
@@ -161,21 +172,21 @@ def review_card(dept, items, week, monday, exam, out):
         y = max(y + 10, H - 400)
         draw.rounded_rectangle([50, y, W - 50, y + 120], 18, fill=(255, 244, 214))
         draw.rectangle([50, y, 62, y + 120], fill=YELLOW)
-        draw.text((90, y + 22), "GENEL TEKRAR SINAVI", font=font(24, True), fill=(133, 79, 11))
-        draw.text((90, y + 60), f"{tr_tarih(exam)} Pazartesi", font=font(36, True), fill=INK)
+        draw.text((90, y + 22), T("GENEL TEKRAR SINAVI"), font=font(24, True), fill=(133, 79, 11))
+        draw.text((90, y + 60), f"{tr_tarih(exam)} {T('Pazartesi')}" if DIL == "tr" else f"{T('Pazartesi')}, {tr_tarih(exam)}", font=font(36, True), fill=INK)
     footer(img, draw, APP_URL.replace("https://", ""), "Tekrar için eğitimleri", "uygulamadan yeniden okuyun")
     img.save(out, optimize=True)
 
 
 def exam_card(monday, title, out):
     img = Image.new("RGB", (W, H), WHITE); draw = ImageDraw.Draw(img)
-    header(img, draw, "Tüm departmanlar", NAVY)
+    header(img, draw, T("Tüm departmanlar"), NAVY)
     icon(draw, W // 2, 420, 110, NAVY)
     y = 590
-    for ln, f, c in [("Genel tekrar sınavı", font(64, True), NAVY), (f"{tr_tarih(monday)} Pazartesi", font(48, True), GREEN), (title, font(32), GREY)]:
+    for ln, f, c in [(T("Genel tekrar sınavı"), font(64, True), NAVY), (f"{tr_tarih(monday)} {T('Pazartesi')}" if DIL == "tr" else f"Monday, {tr_tarih(monday)}", font(48, True), GREEN), (title, font(32), GREY)]:
         draw.text((W // 2, y), ln, font=f, fill=c, anchor="mm"); y += 90
     y += 10
-    for ln in ["17 soru · Geçme notu 70", "Sınav o hafta boyunca açık kalır", "Yalnızca bir kez girilebilir"]:
+    for ln in [T("17 soru · Geçme notu 70"), T("Sınav o hafta boyunca açık kalır"), T("Yalnızca bir kez girilebilir")]:
         draw.text((W // 2, y), ln, font=font(34), fill=INK, anchor="mm"); y += 56
     footer(img, draw, APP_URL.replace("https://", ""), "Sınava Sicil No ile", "uygulamadan girin")
     img.save(out, optimize=True)
@@ -183,8 +194,9 @@ def exam_card(monday, title, out):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tarih"); ap.add_argument("--cikti", default="cikti")
+    ap.add_argument("--tarih"); ap.add_argument("--cikti", default="cikti"); ap.add_argument("--dil", default="tr", choices=["tr", "en"])
     a = ap.parse_args()
+    global DIL; DIL = a.dil
     today = dt.date.fromisoformat(a.tarih) if a.tarih else dt.datetime.now(dt.timezone(dt.timedelta(hours=3))).date()
     monday = today + dt.timedelta(days=(7 - today.weekday()) % 7 or 7)
     plan = json.load(open(os.path.join(HERE, "plan.json"), encoding="utf-8"))
@@ -195,19 +207,30 @@ def main():
     w = h0 + (monday - d0).days // 7          # bu Pazartesi'nin hafta numarası
     pos = (w - h0) % L                          # 0..egitim-1 eğitim, egitim = tekrar haftası
     result = {"pazartesi": monday.isoformat(), "hafta": w, "kartlar": [], "notlar": []}
-    def get(dk, h): return konular.get(dk, {}).get(str(h))
+    import glob
+    icerik = {}
+    for f in glob.glob(os.path.join(os.path.dirname(HERE), "content", "hafta", "H*.json")):
+        d = json.load(open(f, encoding="utf-8"))
+        icerik[int(d["hafta"])] = d.get("departmanlar", {})
+    yp = os.path.join(os.path.dirname(HERE), "content", "yillik_plan.json")
+    yillik = json.load(open(yp, encoding="utf-8")) if os.path.exists(yp) else {}
+    def get(dk, h):
+        v = icerik.get(h, {}).get(dk)
+        if v: return v.get(DIL) or v.get("tr")
+        return konular.get(dk, {}).get(str(h))
     # Tekrar haftasından sonraki Pazartesi: genel sınav (önceki 5 eğitim haftası)
     if pos == 0 and w > h0:
         ilk, son = w - L, w - 2
-        out = os.path.join(a.cikti, f"genel_sinav_{monday.isoformat()}.png")
-        exam_card(monday, f"Hafta {ilk}–{son} genel tekrar", out)
+        out = os.path.join(a.cikti, f"genel_sinav_{monday.isoformat()}{'_en' if DIL == 'en' else ''}.png")
+        exam_card(monday, f"Hafta {ilk}–{son} genel tekrar" if DIL == "tr" else f"Weeks {ilk}–{son} general review", out)
         result["kartlar"].append({"dosya": out, "tur": "sinav", "haftalar": f"{ilk}-{son}"})
     if pos < egitim:
         for dk in DEPTS:
             info = get(dk, w)
             if not info:
-                result["notlar"].append(f"{DEPTS[dk]['ad']} için H{w} konusu yüklenmemiş"); continue
-            out = os.path.join(a.cikti, f"H{w}_{dk}.png"); week_card(dk, info, w, monday, out)
+                bas = yillik.get(str(w), {}).get(dk)
+                result["notlar"].append(f"{DEPTS[dk]['ad']} H{w}: başlık var ('{bas}') ama içerik dosyası yok — content/hafta/H{w}.json yazılmalı" if bas else f"{DEPTS[dk]['ad']} için H{w} konu başlığı yok"); continue
+            out = os.path.join(a.cikti, f"H{w}_{dk}{'_en' if DIL == 'en' else ''}.png"); week_card(dk, info, w, monday, out)
             result["kartlar"].append({"dosya": out, "tur": "hafta", "hafta": w, "departman": DEPTS[dk]["ad"], "konu": info["t"]})
     else:
         exam = monday + dt.timedelta(days=7)
@@ -216,7 +239,7 @@ def main():
             items = [(h, (get(dk, h) or {}).get("t", "")) for h in weeks]
             if not any(t for _, t in items):
                 result["notlar"].append(f"{DEPTS[dk]['ad']} için H{weeks[0]}–{weeks[-1]} konuları yok"); continue
-            out = os.path.join(a.cikti, f"H{w}_tekrar_{dk}.png"); review_card(dk, items, w, monday, exam, out)
+            out = os.path.join(a.cikti, f"H{w}_tekrar_{dk}{'_en' if DIL == 'en' else ''}.png"); review_card(dk, items, w, monday, exam, out)
             result["kartlar"].append({"dosya": out, "tur": "tekrar", "hafta": w, "departman": DEPTS[dk]["ad"]})
     # Gelecek haftaların eksik konuları için erken uyarı (2 eğitim haftası ileri)
     for k in range(1, 3):

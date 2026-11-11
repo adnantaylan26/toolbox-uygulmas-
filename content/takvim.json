@@ -1,0 +1,7 @@
+{
+ "aciklama": "Takvim çapası. H33 = 5 Ekim 2026 Pazartesi. Döngü: 5 eğitim haftası + 1 tekrar haftası; tekrar haftasından sonraki Pazartesi genel sınav ve yeni eğitim haftası. otomatik_baslangic ve sonrasındaki haftalar content/hafta/H*.json dosyalarından uygulamaya otomatik yüklenir.",
+ "baslangic_hafta": 33,
+ "baslangic_tarih": "2026-10-05",
+ "egitim_hafta_sayisi": 5,
+ "otomatik_baslangic": 39
+}

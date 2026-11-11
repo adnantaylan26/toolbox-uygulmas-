@@ -61,3 +61,13 @@ sunucuda kalır; çalışanın telefonuna cevap anahtarı gönderilmez, puanlama
   Kurum içi onay ve aydınlatma metninizi buna göre güncelleyin. Yönetici olmayan ziyaretçiler hiçbir
   personel listesine veya sonuca erişemez; yalnızca kendi sicilleriyle kendi durumlarını görürler.
 - **Yedek:** *Personel → Yedek indir* ile düzenli yedek alın.
+
+## Haftalık içerik otomasyonu (Kasım 2026)
+
+- `content/hafta/H{n}.json`: haftanın 5 departman içeriği (TR + EN): metin, 3 kural, unutmayın, 5 D/Y, 3 ÇS, 1 klasik.
+- `content/yillik_plan.json`: yıllık Excel planından gelen başlıklar (`automation/yillik_plan_yukle.py plan.xlsx`).
+- `automation/icerik_derle.py` → `netlify/functions/lib/content.mjs`. Sunucu ilk istekte 5 haftalık dönemi
+  (`auto_H39`, `auto_H45`, …) kendisi oluşturur/günceller; ayrıca yedek yüklemeye gerek yok.
+- Döngü: 5 eğitim + 1 tekrar haftası; tekrar sonrası Pazartesi önceki dönemin genel sınavı açılır ve yeni dönem başlar.
+  Çalışan o hafta hem yeni haftanın eğitimini hem önceki dönemin sınavını görür.
+- Dil: çalışan ekranında TR/EN düğmesi; `?lang=en` bağlantısı İngilizce açar. Kartlar: `haftalik_afis.py --dil en`.
