@@ -3,7 +3,7 @@
 Kaynak başlıklar: `content/yillik_plan.json` (Excel'den) veya kullanıcının sohbette yazdığı konular.
 Örnek ve tam biçim: `content/hafta/H39.json`.
 
-Her departman (`uretim`, `lojistik`, `kalite`, `bakim`, `dial`) için `tr` ve `en` blokları:
+Her grup (`uretim`, `lojistik`, `kalite`, `bakim`, `dial`, `beyaz` = beyaz yaka/ofis çalışanları) için `tr` ve `en` blokları:
 
 - `t`: konu başlığı (kullanıcının başlığı; yazım hatası varsa düzelt, anlamını değiştirme)
 - `metin`: 180–300 kelime, sade dil, Döhler meyve suyu/gıda fabrikası bağlamı. `## Başlık` ve `- madde` biçimi.

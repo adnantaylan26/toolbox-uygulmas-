@@ -8,8 +8,8 @@ netlify/functions/lib/content.mjs dosyasını üretir.
 import datetime as dt, glob, hashlib, json, os, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEPTS = ["uretim", "lojistik", "kalite", "bakim", "dial"]
-DEPT_TR = {"uretim": "Üretim", "lojistik": "Lojistik", "kalite": "Kalite", "bakim": "Bakım", "dial": "Dial Lab"}
+DEPTS = ["uretim", "lojistik", "kalite", "bakim", "dial", "beyaz"]
+DEPT_TR = {"uretim": "Üretim", "lojistik": "Lojistik", "kalite": "Kalite", "bakim": "Bakım", "dial": "Dial Lab", "beyaz": "Beyaz Yaka"}
 
 
 def takvim():

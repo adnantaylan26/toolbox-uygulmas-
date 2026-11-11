@@ -2,13 +2,13 @@
 """Yıllık toolbox planı Excel'ini (Yıllık Plan sayfası) content/yillik_plan.json dosyasına çevirir.
 
     python3 automation/yillik_plan_yukle.py plan.xlsx
-Sütunlar: Hafta | Pazartesi | Tür | Üretim | Lojistik | Kalite | Teknik Bakım | Dial Lab
+Sütunlar: Hafta | Pazartesi | Tür | Üretim | Lojistik | Kalite | Teknik Bakım | Dial Lab | Beyaz Yaka
 """
 import json, os, sys
 import openpyxl
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-COLS = {"üretim": "uretim", "lojistik": "lojistik", "kalite": "kalite", "teknik bakım": "bakim", "bakım": "bakim", "dial lab": "dial", "dial": "dial"}
+COLS = {"üretim": "uretim", "lojistik": "lojistik", "kalite": "kalite", "teknik bakım": "bakim", "bakım": "bakim", "dial lab": "dial", "dial": "dial", "beyaz yaka": "beyaz"}
 
 
 def main(path):

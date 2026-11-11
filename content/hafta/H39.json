@@ -5,43 +5,141 @@
    "tr": {
     "t": "CIP İşlemlerinde İş Güvenliği",
     "metin": "## Neden önemli?\nCIP (yerinde temizlik) sırasında hatlarda sıcak kostik ve asit çözeltileri basınçla dolaşır. Bir sızıntı, yanlış açılan vana ya da temizlik sürerken açılan bir kapak ciddi kimyasal yanığa ve göz yaralanmasına yol açabilir.\n\n## Başlamadan önce\n- CIP programını ve hangi hatların temizliğe alındığını kontrol edin.\n- Temizlenen hattaki tank, vana ve kapaklara uyarı etiketi asın; ilgili ekipmanı kilitleyin.\n- Kimyasal KKD'nizi giyin: yüz siperi veya kimyasal gözlük, kimyasal eldiven, önlük ve çizme.\n- En yakın göz duşu ve acil duşun yerini bilin, çalıştığını kontrol edin.\n\n## CIP sırasında\n- Döngü çalışırken tank kapağı, rakor, filtre veya numune vanası açmayın.\n- Hortum ve rakor bağlantılarını basınç yokken yapın; bağlantıyı kontrol etmeden pompayı çalıştırmayın.\n- Sıcak yüzeylere ve hatlara çıplak elle dokunmayın.\n- Sızıntı görürseniz yaklaşmayın, CIP'i durdurun ve vardiya amirine haber verin.\n\n## Kimyasal dolum ve bitiş\n- Konsantre kimyasalı yalnızca kapalı dolum sistemi veya pompayla aktarın; asidi ve kostiği asla karıştırmayın.\n- Durulama tamamlanmadan ve iletkenlik/pH kontrolü yapılmadan hattı üretime açmayın.\n- Etiketleri ve kilitleri işi yapan kişi kaldırır.\n\n## Kimyasal sıçrarsa\nGöze veya cilde sıçrayan kimyasalı en az 15 dakika bol suyla yıkayın, kirlenen giysiyi çıkarın ve hemen ilk yardım ekibine haber verin.",
-    "rules": ["CIP çalışırken tank kapağı, rakor veya vana açmayın.", "Kimyasal ile çalışırken yüz siperi, kimyasal eldiven ve önlük kullanın.", "Durulama ve pH kontrolü bitmeden hattı üretime açmayın."],
+    "rules": [
+     "CIP çalışırken tank kapağı, rakor veya vana açmayın.",
+     "Kimyasal ile çalışırken yüz siperi, kimyasal eldiven ve önlük kullanın.",
+     "Durulama ve pH kontrolü bitmeden hattı üretime açmayın."
+    ],
     "key": "CIP hattı temiz görünür ama içinde sıcak kimyasal vardır; döngü bitmeden açmayın.",
     "tf": [
-     {"q": "CIP döngüsü çalışırken numune almak için tank kapağı açılabilir.", "a": false},
-     {"q": "Asit ve kostik çözeltiler aynı kapta karıştırılmamalıdır.", "a": true},
-     {"q": "Kimyasal göze sıçradığında en az 15 dakika bol suyla yıkanmalıdır.", "a": true},
-     {"q": "Hortum bağlantıları hat basınç altındayken yapılabilir.", "a": false},
-     {"q": "Temizlenen hattaki tank ve vanalara uyarı etiketi asılmalıdır.", "a": true}
+     {
+      "q": "CIP döngüsü çalışırken numune almak için tank kapağı açılabilir.",
+      "a": false
+     },
+     {
+      "q": "Asit ve kostik çözeltiler aynı kapta karıştırılmamalıdır.",
+      "a": true
+     },
+     {
+      "q": "Kimyasal göze sıçradığında en az 15 dakika bol suyla yıkanmalıdır.",
+      "a": true
+     },
+     {
+      "q": "Hortum bağlantıları hat basınç altındayken yapılabilir.",
+      "a": false
+     },
+     {
+      "q": "Temizlenen hattaki tank ve vanalara uyarı etiketi asılmalıdır.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "CIP sırasında hatta sızıntı gördünüz. Ne yaparsınız?", "opts": ["Sızıntıyı elle kapatmaya çalışırım", "CIP'i durdurur, yaklaşmaz ve amirime haber veririm", "Döngü bitene kadar beklerim", "Sızan yere su tutarım"], "a": 1},
-     {"q": "Konsantre kimyasal dolumu nasıl yapılmalıdır?", "opts": ["Kova ile taşıyarak", "Kapalı dolum sistemi veya pompayla", "Doğrudan bidondan dökerek", "Asit ve kostiği birlikte dökerek"], "a": 1},
-     {"q": "Hat üretime ne zaman açılabilir?", "opts": ["Kostik turu bitince", "Durulama tamamlanıp pH/iletkenlik kontrolü yapılınca", "CIP başladıktan 10 dakika sonra", "Vardiya değişiminde"], "a": 1}
+     {
+      "q": "CIP sırasında hatta sızıntı gördünüz. Ne yaparsınız?",
+      "opts": [
+       "Sızıntıyı elle kapatmaya çalışırım",
+       "CIP'i durdurur, yaklaşmaz ve amirime haber veririm",
+       "Döngü bitene kadar beklerim",
+       "Sızan yere su tutarım"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Konsantre kimyasal dolumu nasıl yapılmalıdır?",
+      "opts": [
+       "Kova ile taşıyarak",
+       "Kapalı dolum sistemi veya pompayla",
+       "Doğrudan bidondan dökerek",
+       "Asit ve kostiği birlikte dökerek"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Hat üretime ne zaman açılabilir?",
+      "opts": [
+       "Kostik turu bitince",
+       "Durulama tamamlanıp pH/iletkenlik kontrolü yapılınca",
+       "CIP başladıktan 10 dakika sonra",
+       "Vardiya değişiminde"
+      ],
+      "a": 1
+     }
     ],
     "classic": [
-     {"q": "CIP işlemine başlamadan önce yapmanız gereken iki güvenlik kontrolünü yazın.", "key": "Uygun KKD (yüz siperi, kimyasal eldiven, önlük) giymek; temizlenen hattı etiketlemek/kilitlemek; göz duşu ve acil duşun yerini ve çalıştığını kontrol etmek; CIP programını ve hatları kontrol etmek. Herhangi ikisi yeterli."}
+     {
+      "q": "CIP işlemine başlamadan önce yapmanız gereken iki güvenlik kontrolünü yazın.",
+      "key": "Uygun KKD (yüz siperi, kimyasal eldiven, önlük) giymek; temizlenen hattı etiketlemek/kilitlemek; göz duşu ve acil duşun yerini ve çalıştığını kontrol etmek; CIP programını ve hatları kontrol etmek. Herhangi ikisi yeterli."
+     }
     ]
    },
    "en": {
     "t": "Safety in CIP Operations",
     "metin": "## Why it matters\nDuring CIP (clean-in-place), hot caustic and acid solutions circulate under pressure. A leak, a valve opened by mistake or a lid opened during cleaning can cause serious chemical burns and eye injuries.\n\n## Before you start\n- Check the CIP program and which lines are being cleaned.\n- Tag the tanks, valves and lids on the line being cleaned; lock out the equipment.\n- Wear chemical PPE: face shield or chemical goggles, chemical gloves, apron and boots.\n- Know where the nearest eyewash and safety shower are and check that they work.\n\n## During CIP\n- Do not open tank lids, couplings, filters or sample valves while the cycle is running.\n- Connect hoses and couplings only when there is no pressure; never start the pump without checking the connection.\n- Do not touch hot surfaces or pipes with bare hands.\n- If you see a leak, keep away, stop the CIP and inform your shift supervisor.\n\n## Chemical filling and finishing\n- Transfer concentrated chemicals only through a closed filling system or pump; never mix acid and caustic.\n- Do not release the line to production before rinsing is complete and conductivity/pH has been checked.\n- Tags and locks are removed only by the person who placed them.\n\n## If chemicals splash\nRinse eyes or skin with plenty of water for at least 15 minutes, remove contaminated clothing and inform the first aid team immediately.",
-    "rules": ["Never open tank lids, couplings or valves while CIP is running.", "Wear a face shield, chemical gloves and an apron when handling chemicals.", "Do not release the line to production before rinsing and pH check are complete."],
+    "rules": [
+     "Never open tank lids, couplings or valves while CIP is running.",
+     "Wear a face shield, chemical gloves and an apron when handling chemicals.",
+     "Do not release the line to production before rinsing and pH check are complete."
+    ],
     "key": "A CIP line looks clean but carries hot chemicals; never open it before the cycle ends.",
     "tf": [
-     {"q": "A tank lid may be opened to take a sample while the CIP cycle is running.", "a": false},
-     {"q": "Acid and caustic solutions must never be mixed in the same container.", "a": true},
-     {"q": "If chemicals splash into the eyes, rinse with plenty of water for at least 15 minutes.", "a": true},
-     {"q": "Hose connections may be made while the line is under pressure.", "a": false},
-     {"q": "Tanks and valves on the line being cleaned must be tagged.", "a": true}
+     {
+      "q": "A tank lid may be opened to take a sample while the CIP cycle is running.",
+      "a": false
+     },
+     {
+      "q": "Acid and caustic solutions must never be mixed in the same container.",
+      "a": true
+     },
+     {
+      "q": "If chemicals splash into the eyes, rinse with plenty of water for at least 15 minutes.",
+      "a": true
+     },
+     {
+      "q": "Hose connections may be made while the line is under pressure.",
+      "a": false
+     },
+     {
+      "q": "Tanks and valves on the line being cleaned must be tagged.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "You notice a leak on the line during CIP. What do you do?", "opts": ["Try to block the leak by hand", "Stop the CIP, keep away and inform my supervisor", "Wait until the cycle ends", "Spray water on the leak"], "a": 1},
-     {"q": "How should concentrated chemicals be filled?", "opts": ["By carrying them in a bucket", "With a closed filling system or pump", "By pouring directly from the drum", "By pouring acid and caustic together"], "a": 1},
-     {"q": "When can the line be released to production?", "opts": ["When the caustic step ends", "After rinsing is complete and pH/conductivity is checked", "10 minutes after CIP starts", "At shift change"], "a": 1}
+     {
+      "q": "You notice a leak on the line during CIP. What do you do?",
+      "opts": [
+       "Try to block the leak by hand",
+       "Stop the CIP, keep away and inform my supervisor",
+       "Wait until the cycle ends",
+       "Spray water on the leak"
+      ],
+      "a": 1
+     },
+     {
+      "q": "How should concentrated chemicals be filled?",
+      "opts": [
+       "By carrying them in a bucket",
+       "With a closed filling system or pump",
+       "By pouring directly from the drum",
+       "By pouring acid and caustic together"
+      ],
+      "a": 1
+     },
+     {
+      "q": "When can the line be released to production?",
+      "opts": [
+       "When the caustic step ends",
+       "After rinsing is complete and pH/conductivity is checked",
+       "10 minutes after CIP starts",
+       "At shift change"
+      ],
+      "a": 1
+     }
     ],
     "classic": [
-     {"q": "Write two safety checks you must do before starting a CIP operation.", "key": "Wear proper PPE (face shield, chemical gloves, apron); tag/lock out the line being cleaned; check the location and function of the eyewash and safety shower; check the CIP program and lines. Any two are enough."}
+     {
+      "q": "Write two safety checks you must do before starting a CIP operation.",
+      "key": "Wear proper PPE (face shield, chemical gloves, apron); tag/lock out the line being cleaned; check the location and function of the eyewash and safety shower; check the CIP program and lines. Any two are enough."
+     }
     ]
    }
   },
@@ -49,43 +147,141 @@
    "tr": {
     "t": "Atıkların Depolanmasında İş Güvenliği",
     "metin": "## Neden önemli?\nYanlış depolanan atıklar yangına, kimyasal tepkimeye, kayma-düşme kazalarına ve çevre kirliliğine yol açar. Atık alanı da bir çalışma alanıdır ve aynı özeni ister.\n\n## Ayrıştırma ve etiketleme\n- Atıkları türüne göre ayırın: tehlikeli, tehlikesiz, ambalaj, organik.\n- Her konteyner ve varil üzerinde atığın türü ve tarihi yazan etiket olmalı.\n- Etiketsiz ya da içeriği bilinmeyen atığı taşımayın; amirinize bildirin.\n\n## Depolama kuralları\n- Tehlikeli sıvı atıkları sızdırmaz, kapağı kapalı kaplarda ve taşma havuzu (döküntü paleti) üzerinde tutun.\n- Birbiriyle tepkimeye girebilecek atıkları (asit-baz, yanıcı-oksitleyici) yan yana koymayın.\n- Konteynerleri aşırı doldurmayın; istif yüksekliğine ve dengesine dikkat edin.\n- Atık alanında yangın söndürücü, döküntü kiti ve geçiş yolları her zaman erişilebilir olmalı.\n\n## Taşıma\n- Atık varillerini forklift veya varil taşıyıcıyla taşıyın, yuvarlamayın.\n- Atık taşırken eldiven ve gerekirse gözlük kullanın.\n- Kırık cam, metal gibi kesici atıkları ayrı ve dayanıklı kaplara koyun.\n\n## Döküntü olursa\nAlanı çevirin, uygun KKD ile döküntü kitini kullanın, kanalizasyona akmasını engelleyin ve olayı bildirin.",
-    "rules": ["Atıkları türüne göre ayırın ve her kabı etiketleyin.", "Tehlikeli sıvı atıkları kapalı kapta ve döküntü paleti üzerinde depolayın.", "Tepkimeye girebilecek atıkları yan yana koymayın."],
+    "rules": [
+     "Atıkları türüne göre ayırın ve her kabı etiketleyin.",
+     "Tehlikeli sıvı atıkları kapalı kapta ve döküntü paleti üzerinde depolayın.",
+     "Tepkimeye girebilecek atıkları yan yana koymayın."
+    ],
     "key": "Etiketsiz atık, içeriği bilinmeyen bir risktir; taşımadan önce sorun.",
     "tf": [
-     {"q": "Her atık konteynerinde atığın türünü belirten etiket bulunmalıdır.", "a": true},
-     {"q": "Asidik ve bazik atıklar aynı rafta yan yana depolanabilir.", "a": false},
-     {"q": "Tehlikeli sıvı atıklar döküntü paleti üzerinde depolanmalıdır.", "a": true},
-     {"q": "Dolu atık varilleri yere yatırılıp yuvarlanarak taşınabilir.", "a": false},
-     {"q": "Atık alanındaki yangın söndürücünün önü boş tutulmalıdır.", "a": true}
+     {
+      "q": "Her atık konteynerinde atığın türünü belirten etiket bulunmalıdır.",
+      "a": true
+     },
+     {
+      "q": "Asidik ve bazik atıklar aynı rafta yan yana depolanabilir.",
+      "a": false
+     },
+     {
+      "q": "Tehlikeli sıvı atıklar döküntü paleti üzerinde depolanmalıdır.",
+      "a": true
+     },
+     {
+      "q": "Dolu atık varilleri yere yatırılıp yuvarlanarak taşınabilir.",
+      "a": false
+     },
+     {
+      "q": "Atık alanındaki yangın söndürücünün önü boş tutulmalıdır.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "İçeriği bilinmeyen etiketsiz bir atık bidonu buldunuz. Ne yaparsınız?", "opts": ["Genel çöpe atarım", "Taşımam, amirime bildiririm", "Açıp koklayarak anlamaya çalışırım", "Lavaboya dökerim"], "a": 1},
-     {"q": "Tehlikeli sıvı atık nasıl depolanmalıdır?", "opts": ["Ağzı açık kovada", "Kapağı kapalı, sızdırmaz kapta ve döküntü paleti üzerinde", "Yağmur alan açık alanda", "Yanıcı maddelerin yanında"], "a": 1},
-     {"q": "Kırık cam ve metal parçalar nereye atılmalıdır?", "opts": ["Naylon çöp torbasına", "Ayrı ve dayanıklı kesici atık kabına", "Kâğıt atık kutusuna", "Organik atık konteynerine"], "a": 1}
+     {
+      "q": "İçeriği bilinmeyen etiketsiz bir atık bidonu buldunuz. Ne yaparsınız?",
+      "opts": [
+       "Genel çöpe atarım",
+       "Taşımam, amirime bildiririm",
+       "Açıp koklayarak anlamaya çalışırım",
+       "Lavaboya dökerim"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Tehlikeli sıvı atık nasıl depolanmalıdır?",
+      "opts": [
+       "Ağzı açık kovada",
+       "Kapağı kapalı, sızdırmaz kapta ve döküntü paleti üzerinde",
+       "Yağmur alan açık alanda",
+       "Yanıcı maddelerin yanında"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Kırık cam ve metal parçalar nereye atılmalıdır?",
+      "opts": [
+       "Naylon çöp torbasına",
+       "Ayrı ve dayanıklı kesici atık kabına",
+       "Kâğıt atık kutusuna",
+       "Organik atık konteynerine"
+      ],
+      "a": 1
+     }
     ],
     "classic": [
-     {"q": "Atık alanında sıvı bir döküntü olduğunda yapılması gerekenleri yazın.", "key": "Alanı çevirmek/insanları uzak tutmak, uygun KKD giymek, döküntü kitiyle emmek, kanalizasyona akmasını engellemek ve olayı amire/İSG'ye bildirmek."}
+     {
+      "q": "Atık alanında sıvı bir döküntü olduğunda yapılması gerekenleri yazın.",
+      "key": "Alanı çevirmek/insanları uzak tutmak, uygun KKD giymek, döküntü kitiyle emmek, kanalizasyona akmasını engellemek ve olayı amire/İSG'ye bildirmek."
+     }
     ]
    },
    "en": {
     "t": "Safe Storage of Waste",
     "metin": "## Why it matters\nWaste stored the wrong way can cause fires, chemical reactions, slips and trips, and environmental pollution. The waste area is a workplace too and needs the same care.\n\n## Sorting and labelling\n- Separate waste by type: hazardous, non-hazardous, packaging, organic.\n- Every container and drum must have a label showing the waste type and date.\n- Do not move unlabelled waste or waste with unknown contents; report it to your supervisor.\n\n## Storage rules\n- Keep hazardous liquid waste in leak-proof, closed containers on a spill pallet.\n- Do not store waste that can react together (acid–base, flammable–oxidiser) side by side.\n- Do not overfill containers; watch stack height and stability.\n- Fire extinguishers, spill kits and walkways in the waste area must always be accessible.\n\n## Handling\n- Move waste drums with a forklift or drum trolley; do not roll them.\n- Wear gloves, and goggles when needed, when handling waste.\n- Put sharp waste such as broken glass and metal in separate, sturdy containers.\n\n## If there is a spill\nCordon off the area, use the spill kit with proper PPE, prevent it from reaching drains and report the incident.",
-    "rules": ["Sort waste by type and label every container.", "Store hazardous liquid waste in closed containers on a spill pallet.", "Never store waste that can react together side by side."],
+    "rules": [
+     "Sort waste by type and label every container.",
+     "Store hazardous liquid waste in closed containers on a spill pallet.",
+     "Never store waste that can react together side by side."
+    ],
     "key": "Unlabelled waste is an unknown risk; ask before you move it.",
     "tf": [
-     {"q": "Every waste container must carry a label showing the type of waste.", "a": true},
-     {"q": "Acidic and alkaline waste may be stored side by side on the same shelf.", "a": false},
-     {"q": "Hazardous liquid waste must be stored on a spill pallet.", "a": true},
-     {"q": "Full waste drums may be laid down and rolled to move them.", "a": false},
-     {"q": "The fire extinguisher in the waste area must be kept clear.", "a": true}
+     {
+      "q": "Every waste container must carry a label showing the type of waste.",
+      "a": true
+     },
+     {
+      "q": "Acidic and alkaline waste may be stored side by side on the same shelf.",
+      "a": false
+     },
+     {
+      "q": "Hazardous liquid waste must be stored on a spill pallet.",
+      "a": true
+     },
+     {
+      "q": "Full waste drums may be laid down and rolled to move them.",
+      "a": false
+     },
+     {
+      "q": "The fire extinguisher in the waste area must be kept clear.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "You find an unlabelled waste can with unknown contents. What do you do?", "opts": ["Throw it in general waste", "Do not move it and report it to my supervisor", "Open it and smell it", "Pour it down the sink"], "a": 1},
-     {"q": "How should hazardous liquid waste be stored?", "opts": ["In an open bucket", "In a closed, leak-proof container on a spill pallet", "Outdoors in the rain", "Next to flammable materials"], "a": 1},
-     {"q": "Where should broken glass and metal pieces go?", "opts": ["Into a plastic bin bag", "Into a separate, sturdy sharps container", "Into the paper bin", "Into the organic waste container"], "a": 1}
+     {
+      "q": "You find an unlabelled waste can with unknown contents. What do you do?",
+      "opts": [
+       "Throw it in general waste",
+       "Do not move it and report it to my supervisor",
+       "Open it and smell it",
+       "Pour it down the sink"
+      ],
+      "a": 1
+     },
+     {
+      "q": "How should hazardous liquid waste be stored?",
+      "opts": [
+       "In an open bucket",
+       "In a closed, leak-proof container on a spill pallet",
+       "Outdoors in the rain",
+       "Next to flammable materials"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Where should broken glass and metal pieces go?",
+      "opts": [
+       "Into a plastic bin bag",
+       "Into a separate, sturdy sharps container",
+       "Into the paper bin",
+       "Into the organic waste container"
+      ],
+      "a": 1
+     }
     ],
     "classic": [
-     {"q": "Write what must be done when a liquid spill occurs in the waste area.", "key": "Cordon off the area/keep people away, wear proper PPE, absorb with the spill kit, prevent it from reaching drains and report it to the supervisor/HSE."}
+     {
+      "q": "Write what must be done when a liquid spill occurs in the waste area.",
+      "key": "Cordon off the area/keep people away, wear proper PPE, absorb with the spill kit, prevent it from reaching drains and report it to the supervisor/HSE."
+     }
     ]
    }
   },
@@ -93,43 +289,141 @@
    "tr": {
     "t": "Manyetik Ekipmanlarla Çalışmada İş Güvenliği",
     "metin": "## Neden önemli?\nHatlardaki mıknatıs çubukları ve manyetik ayırıcılar metal parçaları yakalar. Bu mıknatıslar çok güçlüdür; parmak sıkışmasına, metal aletlerin aniden çekilmesine ve tıbbi cihazların (kalp pili gibi) etkilenmesine yol açabilir.\n\n## Kimler dikkat etmeli?\n- Kalp pili veya vücudunda elektronik/metal implant olan kişiler güçlü mıknatıslarla çalışmamalı ve en az 30 cm uzak durmalıdır. Durumunuzu amirinize bildirin.\n- Mıknatısın yanına telefon, kart veya elektronik cihaz yaklaştırmayın.\n\n## Kontrol ve temizlik sırasında\n- Kontrolden önce hattı durdurun ve ürün akışını kesin.\n- Mıknatıs çubuklarını sökerken iki elle, yavaşça ve parmaklarınızı çubuklar arasına sokmadan tutun.\n- Kesilmeye dayanıklı eldiven kullanın; yakalanan metal parçalar keskin olabilir.\n- Çubukları metal tezgâha değil, ahşap veya plastik yüzeye koyun.\n- İki mıknatısı birbirine yaklaştırmayın; aniden yapışıp parmak sıkıştırabilir.\n\n## Bulguları kaydetme\n- Yakalanan metal parçaları kayda alın ve kalite prosedürüne göre saklayın.\n- Kırık, çatlak veya yerinden oynamış mıknatısı kullanmayın, bildirin.\n\n## Unutmayın\nMıknatısı yerine taktıktan sonra tüm parçaların doğru oturduğunu kontrol edin ve hattı ancak ondan sonra çalıştırın.",
-    "rules": ["Kontrol ve temizlikten önce hattı durdurun.", "Mıknatıs çubuklarını kesilmeye dayanıklı eldivenle, parmaklarınızı araya sokmadan tutun.", "Kalp pili veya implantı olan kişiler güçlü mıknatıslardan uzak durmalıdır."],
+    "rules": [
+     "Kontrol ve temizlikten önce hattı durdurun.",
+     "Mıknatıs çubuklarını kesilmeye dayanıklı eldivenle, parmaklarınızı araya sokmadan tutun.",
+     "Kalp pili veya implantı olan kişiler güçlü mıknatıslardan uzak durmalıdır."
+    ],
     "key": "Mıknatıs görünmez bir kuvvettir; parmağınızı iki çekim arasına koymayın.",
     "tf": [
-     {"q": "Kalp pili olan kişiler güçlü mıknatıslarla çalışmamalıdır.", "a": true},
-     {"q": "Mıknatıs çubukları hat çalışırken sökülebilir.", "a": false},
-     {"q": "İki güçlü mıknatıs birbirine yaklaştırılırsa parmak sıkışması olabilir.", "a": true},
-     {"q": "Sökülen mıknatıs çubukları metal tezgâh üzerine bırakılmalıdır.", "a": false},
-     {"q": "Mıknatısın yakaladığı metal parçalar keskin olabileceği için eldiven kullanılmalıdır.", "a": true}
+     {
+      "q": "Kalp pili olan kişiler güçlü mıknatıslarla çalışmamalıdır.",
+      "a": true
+     },
+     {
+      "q": "Mıknatıs çubukları hat çalışırken sökülebilir.",
+      "a": false
+     },
+     {
+      "q": "İki güçlü mıknatıs birbirine yaklaştırılırsa parmak sıkışması olabilir.",
+      "a": true
+     },
+     {
+      "q": "Sökülen mıknatıs çubukları metal tezgâh üzerine bırakılmalıdır.",
+      "a": false
+     },
+     {
+      "q": "Mıknatısın yakaladığı metal parçalar keskin olabileceği için eldiven kullanılmalıdır.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "Mıknatıs kontrolüne başlamadan önce ilk ne yapılmalıdır?", "opts": ["Hattı durdurmak ve ürün akışını kesmek", "Mıknatısı sallayarak temizlemek", "Telefonla fotoğraf çekmek", "Çubukları birbirine yaklaştırmak"], "a": 0},
-     {"q": "Sökülen mıknatıs çubukları nereye konmalıdır?", "opts": ["Metal tezgâha", "Ahşap veya plastik yüzeye", "Yere", "Başka bir mıknatısın yanına"], "a": 1},
-     {"q": "Çatlak bir mıknatıs çubuğu fark ettiniz. Ne yaparsınız?", "opts": ["Bantlayıp kullanırım", "Kullanmam ve bildiririm", "Bir sonraki temizliğe kadar beklerim", "Ters çevirip takarım"], "a": 1}
+     {
+      "q": "Mıknatıs kontrolüne başlamadan önce ilk ne yapılmalıdır?",
+      "opts": [
+       "Hattı durdurmak ve ürün akışını kesmek",
+       "Mıknatısı sallayarak temizlemek",
+       "Telefonla fotoğraf çekmek",
+       "Çubukları birbirine yaklaştırmak"
+      ],
+      "a": 0
+     },
+     {
+      "q": "Sökülen mıknatıs çubukları nereye konmalıdır?",
+      "opts": [
+       "Metal tezgâha",
+       "Ahşap veya plastik yüzeye",
+       "Yere",
+       "Başka bir mıknatısın yanına"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Çatlak bir mıknatıs çubuğu fark ettiniz. Ne yaparsınız?",
+      "opts": [
+       "Bantlayıp kullanırım",
+       "Kullanmam ve bildiririm",
+       "Bir sonraki temizliğe kadar beklerim",
+       "Ters çevirip takarım"
+      ],
+      "a": 1
+     }
     ],
     "classic": [
-     {"q": "Manyetik ekipmanlarla çalışırken oluşabilecek iki riski yazın.", "key": "Parmak sıkışması (iki mıknatıs ya da mıknatıs-metal arası), metal aletlerin aniden çekilmesi, keskin metal parçalarla kesilme, kalp pili/implantların etkilenmesi, elektronik cihazların bozulması. Herhangi ikisi yeterli."}
+     {
+      "q": "Manyetik ekipmanlarla çalışırken oluşabilecek iki riski yazın.",
+      "key": "Parmak sıkışması (iki mıknatıs ya da mıknatıs-metal arası), metal aletlerin aniden çekilmesi, keskin metal parçalarla kesilme, kalp pili/implantların etkilenmesi, elektronik cihazların bozulması. Herhangi ikisi yeterli."
+     }
     ]
    },
    "en": {
     "t": "Working Safely with Magnetic Equipment",
     "metin": "## Why it matters\nMagnet bars and magnetic separators on the lines catch metal particles. These magnets are very strong; they can trap fingers, suddenly pull metal tools and affect medical devices such as pacemakers.\n\n## Who must take care?\n- People with a pacemaker or an electronic/metal implant must not work with strong magnets and should keep at least 30 cm away. Tell your supervisor.\n- Keep phones, cards and electronic devices away from magnets.\n\n## During checks and cleaning\n- Stop the line and cut the product flow before checking.\n- Remove magnet bars slowly with both hands, without putting your fingers between the bars.\n- Wear cut-resistant gloves; captured metal particles can be sharp.\n- Place bars on a wooden or plastic surface, not on a metal bench.\n- Never bring two magnets close together; they can snap together and trap fingers.\n\n## Recording findings\n- Record captured metal particles and keep them according to the quality procedure.\n- Do not use a broken, cracked or loose magnet; report it.\n\n## Remember\nAfter refitting the magnet, check that all parts are seated correctly before restarting the line.",
-    "rules": ["Stop the line before checking or cleaning magnets.", "Handle magnet bars with cut-resistant gloves and keep fingers out from between them.", "People with a pacemaker or implant must keep away from strong magnets."],
+    "rules": [
+     "Stop the line before checking or cleaning magnets.",
+     "Handle magnet bars with cut-resistant gloves and keep fingers out from between them.",
+     "People with a pacemaker or implant must keep away from strong magnets."
+    ],
     "key": "A magnet is an invisible force; never put your finger between two pulls.",
     "tf": [
-     {"q": "People with a pacemaker must not work with strong magnets.", "a": true},
-     {"q": "Magnet bars may be removed while the line is running.", "a": false},
-     {"q": "Two strong magnets brought close together can trap fingers.", "a": true},
-     {"q": "Removed magnet bars should be placed on a metal bench.", "a": false},
-     {"q": "Gloves should be worn because metal particles captured by the magnet can be sharp.", "a": true}
+     {
+      "q": "People with a pacemaker must not work with strong magnets.",
+      "a": true
+     },
+     {
+      "q": "Magnet bars may be removed while the line is running.",
+      "a": false
+     },
+     {
+      "q": "Two strong magnets brought close together can trap fingers.",
+      "a": true
+     },
+     {
+      "q": "Removed magnet bars should be placed on a metal bench.",
+      "a": false
+     },
+     {
+      "q": "Gloves should be worn because metal particles captured by the magnet can be sharp.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "What should be done first before a magnet check?", "opts": ["Stop the line and cut the product flow", "Shake the magnet to clean it", "Take a photo with your phone", "Bring the bars close together"], "a": 0},
-     {"q": "Where should removed magnet bars be placed?", "opts": ["On a metal bench", "On a wooden or plastic surface", "On the floor", "Next to another magnet"], "a": 1},
-     {"q": "You notice a cracked magnet bar. What do you do?", "opts": ["Tape it and use it", "Do not use it and report it", "Wait until the next cleaning", "Turn it around and refit it"], "a": 1}
+     {
+      "q": "What should be done first before a magnet check?",
+      "opts": [
+       "Stop the line and cut the product flow",
+       "Shake the magnet to clean it",
+       "Take a photo with your phone",
+       "Bring the bars close together"
+      ],
+      "a": 0
+     },
+     {
+      "q": "Where should removed magnet bars be placed?",
+      "opts": [
+       "On a metal bench",
+       "On a wooden or plastic surface",
+       "On the floor",
+       "Next to another magnet"
+      ],
+      "a": 1
+     },
+     {
+      "q": "You notice a cracked magnet bar. What do you do?",
+      "opts": [
+       "Tape it and use it",
+       "Do not use it and report it",
+       "Wait until the next cleaning",
+       "Turn it around and refit it"
+      ],
+      "a": 1
+     }
     ],
     "classic": [
-     {"q": "Write two risks that can occur when working with magnetic equipment.", "key": "Finger trapping (between two magnets or magnet and metal), metal tools being pulled suddenly, cuts from sharp metal particles, effects on pacemakers/implants, damage to electronic devices. Any two are enough."}
+     {
+      "q": "Write two risks that can occur when working with magnetic equipment.",
+      "key": "Finger trapping (between two magnets or magnet and metal), metal tools being pulled suddenly, cuts from sharp metal particles, effects on pacemakers/implants, damage to electronic devices. Any two are enough."
+     }
     ]
    }
   },
@@ -137,43 +431,141 @@
    "tr": {
     "t": "Bakım Aşamasında İş Güvenliği",
     "metin": "## Neden önemli?\nBakım çalışmaları, makinelerin koruyucularının açıldığı ve normal güvenlik sistemlerinin devre dışı kaldığı anlardır. Kazaların önemli bir kısmı bakım sırasında, enerjisi kesilmemiş ekipmanda olur.\n\n## Planlama\n- İşe başlamadan iş izni alın ve riskleri ekip arkadaşlarınızla konuşun.\n- Gerekli takım, yedek parça ve KKD'yi önceden hazırlayın.\n- Üretim sorumlusunu bilgilendirin; çalışma alanını şeritle ayırın.\n\n## Enerji izolasyonu (Kilitle-Etiketle)\n- Elektrik, basınçlı hava, buhar, hidrolik ve yerçekimi enerjilerinin hepsini kesin.\n- Her çalışan kendi kilidini ve etiketini takar.\n- Enerjinin gerçekten kesildiğini çalıştırma butonuyla ve ölçümle doğrulayın (sıfır enerji kontrolü).\n- Basınçlı hatlarda kalan basıncı boşaltın, hareketli parçaları sabitleyin.\n\n## Çalışma sırasında\n- Koruyucuları yalnızca enerji kesilmişken açın.\n- Yüksekte çalışmada uygun platform ve emniyet kemeri kullanın.\n- Sıcak iş (kaynak, taşlama) varsa sıcak iş izni ve yangın söndürücü bulundurun.\n\n## İşi bitirirken\n- Tüm koruyucuları yerine takın, takımları ve artıkları toplayın.\n- Kilidi ancak takan kişi çıkarır; ekipmanı çalıştırmadan önce herkesin uzakta olduğunu kontrol edin.\n- Yapılan işi ve varsa eksikleri kayda geçirin.",
-    "rules": ["Bakımdan önce tüm enerjileri kesin, kendi kilidinizi ve etiketinizi takın.", "Sıfır enerji kontrolü yapmadan işe başlamayın.", "İş bitince koruyucuları takın; kilidi yalnızca takan kişi çıkarır."],
+    "rules": [
+     "Bakımdan önce tüm enerjileri kesin, kendi kilidinizi ve etiketinizi takın.",
+     "Sıfır enerji kontrolü yapmadan işe başlamayın.",
+     "İş bitince koruyucuları takın; kilidi yalnızca takan kişi çıkarır."
+    ],
     "key": "Kilit sizin hayat sigortanız; anahtarı başkasına vermeyin.",
     "tf": [
-     {"q": "Bakımdan önce sadece elektrik enerjisini kesmek yeterlidir.", "a": false},
-     {"q": "Kilitleme sisteminde her çalışan kendi kilidini takmalıdır.", "a": true},
-     {"q": "Başkasının taktığı kilit, iş bitti diye başka biri tarafından çıkarılabilir.", "a": false},
-     {"q": "Basınçlı hatlarda çalışmadan önce kalan basınç boşaltılmalıdır.", "a": true},
-     {"q": "İş bittikten sonra makine koruyucuları yerine takılmalıdır.", "a": true}
+     {
+      "q": "Bakımdan önce sadece elektrik enerjisini kesmek yeterlidir.",
+      "a": false
+     },
+     {
+      "q": "Kilitleme sisteminde her çalışan kendi kilidini takmalıdır.",
+      "a": true
+     },
+     {
+      "q": "Başkasının taktığı kilit, iş bitti diye başka biri tarafından çıkarılabilir.",
+      "a": false
+     },
+     {
+      "q": "Basınçlı hatlarda çalışmadan önce kalan basınç boşaltılmalıdır.",
+      "a": true
+     },
+     {
+      "q": "İş bittikten sonra makine koruyucuları yerine takılmalıdır.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "Enerjinin gerçekten kesildiği nasıl doğrulanır?", "opts": ["Makinenin sessiz olmasıyla", "Çalıştırma butonu ve ölçümle sıfır enerji kontrolü yaparak", "Panoya bakarak", "Operatöre sorarak"], "a": 1},
-     {"q": "Hangisi bakım öncesi kesilmesi gereken enerjilerden biri değildir?", "opts": ["Basınçlı hava", "Hidrolik", "Buhar", "Aydınlatma tabelası"], "a": 3},
-     {"q": "Kaynak gibi sıcak işlerde ek olarak ne gerekir?", "opts": ["Sıcak iş izni ve yangın söndürücü", "Sadece eldiven", "Hiçbir şey", "Müzik"], "a": 0}
+     {
+      "q": "Enerjinin gerçekten kesildiği nasıl doğrulanır?",
+      "opts": [
+       "Makinenin sessiz olmasıyla",
+       "Çalıştırma butonu ve ölçümle sıfır enerji kontrolü yaparak",
+       "Panoya bakarak",
+       "Operatöre sorarak"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Hangisi bakım öncesi kesilmesi gereken enerjilerden biri değildir?",
+      "opts": [
+       "Basınçlı hava",
+       "Hidrolik",
+       "Buhar",
+       "Aydınlatma tabelası"
+      ],
+      "a": 3
+     },
+     {
+      "q": "Kaynak gibi sıcak işlerde ek olarak ne gerekir?",
+      "opts": [
+       "Sıcak iş izni ve yangın söndürücü",
+       "Sadece eldiven",
+       "Hiçbir şey",
+       "Müzik"
+      ],
+      "a": 0
+     }
     ],
     "classic": [
-     {"q": "Kilitle-Etiketle uygulamasının adımlarını kısaca yazın.", "key": "Ekipmanı durdurmak, tüm enerji kaynaklarını (elektrik, hava, buhar, hidrolik, yerçekimi) kesmek, her çalışanın kendi kilidini ve etiketini takması, kalan enerjiyi boşaltmak, sıfır enerji kontrolüyle doğrulamak; iş bitince kilidi takan kişinin çıkarması."}
+     {
+      "q": "Kilitle-Etiketle uygulamasının adımlarını kısaca yazın.",
+      "key": "Ekipmanı durdurmak, tüm enerji kaynaklarını (elektrik, hava, buhar, hidrolik, yerçekimi) kesmek, her çalışanın kendi kilidini ve etiketini takması, kalan enerjiyi boşaltmak, sıfır enerji kontrolüyle doğrulamak; iş bitince kilidi takan kişinin çıkarması."
+     }
     ]
    },
    "en": {
     "t": "Safety During Maintenance",
     "metin": "## Why it matters\nMaintenance is when machine guards are opened and normal safety systems are out of action. Many accidents happen during maintenance on equipment whose energy has not been isolated.\n\n## Planning\n- Get a work permit before starting and discuss the risks with your team.\n- Prepare tools, spare parts and PPE in advance.\n- Inform the production supervisor; cordon off the work area.\n\n## Energy isolation (Lockout-Tagout)\n- Isolate all energy: electrical, compressed air, steam, hydraulic and gravity.\n- Every worker fits their own lock and tag.\n- Verify that energy is really isolated with the start button and by measurement (zero-energy check).\n- Release residual pressure in pressurised lines and secure moving parts.\n\n## During the work\n- Open guards only when energy is isolated.\n- Use a suitable platform and safety harness when working at height.\n- For hot work (welding, grinding), have a hot work permit and a fire extinguisher.\n\n## Finishing the job\n- Refit all guards, collect tools and debris.\n- Only the person who fitted a lock removes it; check that everyone is clear before starting the equipment.\n- Record the work done and any open points.",
-    "rules": ["Isolate all energy before maintenance and fit your own lock and tag.", "Never start work without a zero-energy check.", "Refit guards when finished; only the person who fitted a lock removes it."],
+    "rules": [
+     "Isolate all energy before maintenance and fit your own lock and tag.",
+     "Never start work without a zero-energy check.",
+     "Refit guards when finished; only the person who fitted a lock removes it."
+    ],
     "key": "Your lock is your life insurance; never hand the key to someone else.",
     "tf": [
-     {"q": "Isolating only electrical energy is enough before maintenance.", "a": false},
-     {"q": "In lockout, every worker must fit their own lock.", "a": true},
-     {"q": "Someone else's lock may be removed by another person once the job is done.", "a": false},
-     {"q": "Residual pressure must be released before working on pressurised lines.", "a": true},
-     {"q": "Machine guards must be refitted after the job is finished.", "a": true}
+     {
+      "q": "Isolating only electrical energy is enough before maintenance.",
+      "a": false
+     },
+     {
+      "q": "In lockout, every worker must fit their own lock.",
+      "a": true
+     },
+     {
+      "q": "Someone else's lock may be removed by another person once the job is done.",
+      "a": false
+     },
+     {
+      "q": "Residual pressure must be released before working on pressurised lines.",
+      "a": true
+     },
+     {
+      "q": "Machine guards must be refitted after the job is finished.",
+      "a": true
+     }
     ],
     "mc": [
-     {"q": "How do you verify that energy is really isolated?", "opts": ["The machine is quiet", "Zero-energy check with the start button and measurement", "By looking at the panel", "By asking the operator"], "a": 1},
-     {"q": "Which of these is NOT an energy that must be isolated before maintenance?", "opts": ["Compressed air", "Hydraulic", "Steam", "An illuminated sign"], "a": 3},
-     {"q": "What is additionally required for hot work such as welding?", "opts": ["A hot work permit and a fire extinguisher", "Only gloves", "Nothing", "Music"], "a": 0}
+     {
+      "q": "How do you verify that energy is really isolated?",
+      "opts": [
+       "The machine is quiet",
+       "Zero-energy check with the start button and measurement",
+       "By looking at the panel",
+       "By asking the operator"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Which of these is NOT an energy that must be isolated before maintenance?",
+      "opts": [
+       "Compressed air",
+       "Hydraulic",
+       "Steam",
+       "An illuminated sign"
+      ],
+      "a": 3
+     },
+     {
+      "q": "What is additionally required for hot work such as welding?",
+      "opts": [
+       "A hot work permit and a fire extinguisher",
+       "Only gloves",
+       "Nothing",
+       "Music"
+      ],
+      "a": 0
+     }
     ],
     "classic": [
-     {"q": "Briefly write the steps of Lockout-Tagout.", "key": "Stop the equipment, isolate all energy sources (electrical, air, steam, hydraulic, gravity), each worker fits their own lock and tag, release residual energy, verify with a zero-energy check; when finished the person who fitted the lock removes it."}
+     {
+      "q": "Briefly write the steps of Lockout-Tagout.",
+      "key": "Stop the equipment, isolate all energy sources (electrical, air, steam, hydraulic, gravity), each worker fits their own lock and tag, release residual energy, verify with a zero-energy check; when finished the person who fitted the lock removes it."
+     }
     ]
    }
   },
@@ -181,43 +573,283 @@
    "tr": {
     "t": "Numune Kesme ve Ayıklamada İş Güvenliği",
     "metin": "## Neden önemli?\nNumune kesme ve ayıklama işlerinde bıçak, makas ve maket bıçağı sık kullanılır. Kesik yaralanmaları laboratuvardaki en yaygın kazalardandır; ayrıca uzun süre aynı duruşta çalışmak bilek ve sırt ağrısına yol açar.\n\n## Doğru alet ve KKD\n- İşe uygun, keskin ve sapı sağlam bıçak kullanın; kör bıçak daha fazla güç ister ve kayar.\n- Bıçak kullanan elde değil, numuneyi tutan elde kesilmeye dayanıklı eldiven kullanın; mümkünse iki elde.\n- Maket bıçağı yerine mümkünse güvenlikli (otomatik geri çekilen) bıçak kullanın.\n\n## Kesme tekniği\n- Numuneyi kaymaz bir kesme tahtası üzerine koyun.\n- Kesme yönü her zaman vücudunuzdan ve elinizden dışarı doğru olsun.\n- Numuneyi tutan parmaklarınızı kıvırın (pençe tutuşu).\n- Düşen bıçağı yakalamaya çalışmayın; geri çekilin.\n\n## Saklama ve temizlik\n- Bıçağı tezgâh kenarında veya lavabo içinde bırakmayın; bıçaklıkta saklayın.\n- Bıçağı yıkarken keskin tarafı dışarı bakacak şekilde, tek tek yıkayın.\n- Kırık bıçak ucu ve jiletleri kesici atık kutusuna atın.\n\n## Ergonomi\nTezgâh yüksekliğini dirsek seviyesine göre ayarlayın, ara verin ve bileklerinizi esnetin.",
-    "rules": ["Numuneyi tutan elde kesilmeye dayanıklı eldiven kullanın.", "Her zaman vücudunuzdan dışarı doğru kesin.", "Bıçağı lavaboda veya tezgâh kenarında bırakmayın, bıçaklıkta saklayın."],
+    "rules": [
+     "Numuneyi tutan elde kesilmeye dayanıklı eldiven kullanın.",
+     "Her zaman vücudunuzdan dışarı doğru kesin.",
+     "Bıçağı lavaboda veya tezgâh kenarında bırakmayın, bıçaklıkta saklayın."
+    ],
     "key": "Keskin bıçak, kör bıçaktan daha güvenlidir; düşen bıçağı asla tutmayın.",
     "tf": [
-     {"q": "Kör bıçak, keskin bıçaktan daha güvenlidir.", "a": false},
-     {"q": "Kesme işlemi vücuttan dışarı doğru yapılmalıdır.", "a": true},
-     {"q": "Düşen bir bıçak elle yakalanmaya çalışılmalıdır.", "a": false},
-     {"q": "Kırık bıçak uçları kesici atık kutusuna atılmalıdır.", "a": true},
-     {"q": "Bıçaklar yıkanmak üzere köpüklü lavabonun içinde bekletilebilir.", "a": false}
+     {
+      "q": "Kör bıçak, keskin bıçaktan daha güvenlidir.",
+      "a": false
+     },
+     {
+      "q": "Kesme işlemi vücuttan dışarı doğru yapılmalıdır.",
+      "a": true
+     },
+     {
+      "q": "Düşen bir bıçak elle yakalanmaya çalışılmalıdır.",
+      "a": false
+     },
+     {
+      "q": "Kırık bıçak uçları kesici atık kutusuna atılmalıdır.",
+      "a": true
+     },
+     {
+      "q": "Bıçaklar yıkanmak üzere köpüklü lavabonun içinde bekletilebilir.",
+      "a": false
+     }
     ],
     "mc": [
-     {"q": "Kesilmeye dayanıklı eldiven özellikle hangi elde kullanılmalıdır?", "opts": ["Numuneyi tutan elde", "Sadece bıçağı tutan elde", "Hiçbir elde", "Sadece temizlikte"], "a": 0},
-     {"q": "Numune kesilirken hangisi doğrudur?", "opts": ["Numune elde havada tutulur", "Numune kaymaz bir kesme tahtasına konur", "Kesme kendine doğru yapılır", "Kör bıçak tercih edilir"], "a": 1},
-     {"q": "Kullanılmayan bıçak nerede saklanmalıdır?", "opts": ["Tezgâh kenarında", "Lavabo içinde", "Bıçaklıkta", "Önlük cebinde"], "a": 2}
+     {
+      "q": "Kesilmeye dayanıklı eldiven özellikle hangi elde kullanılmalıdır?",
+      "opts": [
+       "Numuneyi tutan elde",
+       "Sadece bıçağı tutan elde",
+       "Hiçbir elde",
+       "Sadece temizlikte"
+      ],
+      "a": 0
+     },
+     {
+      "q": "Numune kesilirken hangisi doğrudur?",
+      "opts": [
+       "Numune elde havada tutulur",
+       "Numune kaymaz bir kesme tahtasına konur",
+       "Kesme kendine doğru yapılır",
+       "Kör bıçak tercih edilir"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Kullanılmayan bıçak nerede saklanmalıdır?",
+      "opts": [
+       "Tezgâh kenarında",
+       "Lavabo içinde",
+       "Bıçaklıkta",
+       "Önlük cebinde"
+      ],
+      "a": 2
+     }
     ],
     "classic": [
-     {"q": "Numune keserken kesik yaralanmasını önlemek için alınacak üç önlemi yazın.", "key": "Keskin ve uygun bıçak kullanmak, kesilmeye dayanıklı eldiven, kaymaz kesme tahtası, vücuttan dışarı kesmek, pençe tutuşu, düşen bıçağı tutmamak, bıçağı bıçaklıkta saklamak. Herhangi üçü yeterli."}
+     {
+      "q": "Numune keserken kesik yaralanmasını önlemek için alınacak üç önlemi yazın.",
+      "key": "Keskin ve uygun bıçak kullanmak, kesilmeye dayanıklı eldiven, kaymaz kesme tahtası, vücuttan dışarı kesmek, pençe tutuşu, düşen bıçağı tutmamak, bıçağı bıçaklıkta saklamak. Herhangi üçü yeterli."
+     }
     ]
    },
    "en": {
     "t": "Safe Sample Cutting and Sorting",
     "metin": "## Why it matters\nKnives, scissors and box cutters are used often when cutting and sorting samples. Cuts are among the most common laboratory injuries, and working in the same posture for long periods causes wrist and back pain.\n\n## The right tool and PPE\n- Use a knife suited to the job, sharp and with a firm handle; a blunt knife needs more force and slips.\n- Wear a cut-resistant glove on the hand holding the sample, and on both hands if possible.\n- Use a safety knife (self-retracting) instead of a box cutter where possible.\n\n## Cutting technique\n- Place the sample on a non-slip cutting board.\n- Always cut away from your body and your hand.\n- Curl the fingers holding the sample (claw grip).\n- Never try to catch a falling knife; step back.\n\n## Storage and cleaning\n- Do not leave knives at the bench edge or in the sink; keep them in a knife holder.\n- Wash knives one at a time with the sharp edge facing away from you.\n- Dispose of broken blades and razor blades in the sharps container.\n\n## Ergonomics\nAdjust the bench height to your elbow level, take breaks and stretch your wrists.",
-    "rules": ["Wear a cut-resistant glove on the hand holding the sample.", "Always cut away from your body.", "Never leave knives in the sink or at the bench edge; keep them in a knife holder."],
+    "rules": [
+     "Wear a cut-resistant glove on the hand holding the sample.",
+     "Always cut away from your body.",
+     "Never leave knives in the sink or at the bench edge; keep them in a knife holder."
+    ],
     "key": "A sharp knife is safer than a blunt one; never catch a falling knife.",
     "tf": [
-     {"q": "A blunt knife is safer than a sharp knife.", "a": false},
-     {"q": "Cutting should be done away from the body.", "a": true},
-     {"q": "You should try to catch a falling knife with your hand.", "a": false},
-     {"q": "Broken blade tips must go into the sharps container.", "a": true},
-     {"q": "Knives may be left in a soapy sink to be washed later.", "a": false}
+     {
+      "q": "A blunt knife is safer than a sharp knife.",
+      "a": false
+     },
+     {
+      "q": "Cutting should be done away from the body.",
+      "a": true
+     },
+     {
+      "q": "You should try to catch a falling knife with your hand.",
+      "a": false
+     },
+     {
+      "q": "Broken blade tips must go into the sharps container.",
+      "a": true
+     },
+     {
+      "q": "Knives may be left in a soapy sink to be washed later.",
+      "a": false
+     }
     ],
     "mc": [
-     {"q": "On which hand is a cut-resistant glove especially needed?", "opts": ["The hand holding the sample", "Only the hand holding the knife", "Neither hand", "Only during cleaning"], "a": 0},
-     {"q": "Which is correct when cutting a sample?", "opts": ["Hold the sample in the air", "Place the sample on a non-slip cutting board", "Cut towards yourself", "Prefer a blunt knife"], "a": 1},
-     {"q": "Where should an unused knife be kept?", "opts": ["At the bench edge", "In the sink", "In a knife holder", "In your coat pocket"], "a": 2}
+     {
+      "q": "On which hand is a cut-resistant glove especially needed?",
+      "opts": [
+       "The hand holding the sample",
+       "Only the hand holding the knife",
+       "Neither hand",
+       "Only during cleaning"
+      ],
+      "a": 0
+     },
+     {
+      "q": "Which is correct when cutting a sample?",
+      "opts": [
+       "Hold the sample in the air",
+       "Place the sample on a non-slip cutting board",
+       "Cut towards yourself",
+       "Prefer a blunt knife"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Where should an unused knife be kept?",
+      "opts": [
+       "At the bench edge",
+       "In the sink",
+       "In a knife holder",
+       "In your coat pocket"
+      ],
+      "a": 2
+     }
     ],
     "classic": [
-     {"q": "Write three precautions to prevent cuts when cutting samples.", "key": "Use a sharp, suitable knife, cut-resistant glove, non-slip cutting board, cut away from the body, claw grip, never catch a falling knife, keep knives in a holder. Any three are enough."}
+     {
+      "q": "Write three precautions to prevent cuts when cutting samples.",
+      "key": "Use a sharp, suitable knife, cut-resistant glove, non-slip cutting board, cut away from the body, claw grip, never catch a falling knife, keep knives in a holder. Any three are enough."
+     }
+    ]
+   }
+  },
+  "beyaz": {
+   "tr": {
+    "t": "Ofis Ergonomisi ve Ekranlı Araçlarla Güvenli Çalışma",
+    "metin": "## Neden önemli?\nGün boyu bilgisayar başında çalışmak boyun, sırt, bilek ve göz sorunlarına yol açar. Bu rahatsızlıklar yavaş gelişir; doğru oturma düzeni ve kısa molalarla büyük ölçüde önlenebilir.\n\n## Doğru çalışma düzeni\n- Ekranın üst kenarı göz hizasında ya da biraz altında, ekran yaklaşık bir kol boyu uzaklıkta olsun.\n- Sırtınızı sandalyeye dayayın; dizleriniz ve dirsekleriniz yaklaşık 90 derece olsun, ayaklarınız yere ya da ayak desteğine tam bassın.\n- Klavye ve mouse'u gövdenize yakın tutun; bilekleriniz düz kalsın.\n- Ekranı pencereye dik konumlayın, yansıma ve parlamayı önleyin.\n\n## Mola ve göz sağlığı\n- Her saat birkaç dakika ayağa kalkın, esneyin ve yürüyün.\n- 20-20-20 kuralı: 20 dakikada bir, 20 saniye boyunca yaklaşık 6 metre uzağa bakın.\n- Gözlerinizi kırpmayı unutmayın; gerektiğinde ekran parlaklığını ortama göre ayarlayın.\n\n## Ofiste diğer riskler\n- Kabloları geçiş yollarından uzak tutun; çekmeceleri açık bırakmayın.\n- Uzatma kablolarını birbirine eklemeyin, prizleri aşırı yüklemeyin.\n- Sahaya çıkarken saha KKD kurallarına aynen uyun.\n\n## Şikâyetiniz varsa\nSüren ağrı, uyuşma veya göz yorgunluğunu işyeri hekimine ve İSG birimine bildirin; çalışma yerinizin düzenlenmesini isteyin.",
+    "rules": [
+     "Ekranı göz hizasında, bir kol boyu uzaklıkta konumlandırın.",
+     "Sırtınızı dayayın, bileklerinizi düz tutun, ayaklarınız yere bassın.",
+     "Her saat kısa mola verin; 20-20-20 kuralını uygulayın."
+    ],
+    "key": "Doğru oturuş bugün değil, yıllar sonra sırtınıza teşekkür ettirir.",
+    "tf": [
+     {
+      "q": "Ekranın üst kenarı göz hizasında ya da biraz altında olmalıdır.",
+      "a": true
+     },
+     {
+      "q": "Bilekler klavye kullanırken yukarı doğru bükük olmalıdır.",
+      "a": false
+     },
+     {
+      "q": "20-20-20 kuralı göz yorgunluğunu azaltmaya yardımcı olur.",
+      "a": true
+     },
+     {
+      "q": "Uzatma kabloları birbirine eklenerek daha uzak prizlere ulaşılabilir.",
+      "a": false
+     },
+     {
+      "q": "Süren bel ve boyun ağrısı işyeri hekimine bildirilmelidir.",
+      "a": true
+     }
+    ],
+    "mc": [
+     {
+      "q": "Ekran ile göz arasındaki uygun mesafe yaklaşık ne kadardır?",
+      "opts": [
+       "10-20 cm",
+       "Bir kol boyu (50-70 cm)",
+       "2 metre",
+       "Mesafe önemli değildir"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Hangisi doğru oturma pozisyonudur?",
+      "opts": [
+       "Sandalyenin ucuna oturmak",
+       "Sırtı dayalı, dizler ve dirsekler yaklaşık 90 derece",
+       "Bacak bacak üstüne atmak",
+       "Ekrana doğru eğilmek"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Ekrandaki yansımayı azaltmak için ne yapılmalıdır?",
+      "opts": [
+       "Ekranı pencereye dik konumlamak",
+       "Ekranı pencereye arkası dönük koymak",
+       "Parlaklığı en yükseğe almak",
+       "Odayı tamamen karartmak"
+      ],
+      "a": 0
+     }
+    ],
+    "classic": [
+     {
+      "q": "Uzun süre bilgisayar başında çalışırken sağlığınızı korumak için alacağınız iki önlemi yazın.",
+      "key": "Ekranı göz hizasında ve bir kol boyu uzakta tutmak, sırtı dayalı doğru oturmak, bilekleri düz tutmak, düzenli mola verip esnemek, 20-20-20 kuralı, yansımayı önlemek. Herhangi ikisi yeterli."
+     }
+    ]
+   },
+   "en": {
+    "t": "Office Ergonomics and Safe Work with Display Screens",
+    "metin": "## Why it matters\nWorking at a computer all day can cause neck, back, wrist and eye problems. These develop slowly and can largely be prevented with a correct workstation set-up and short breaks.\n\n## Correct workstation\n- The top of the screen should be at or slightly below eye level, about an arm's length away.\n- Sit back against the chair; knees and elbows at about 90 degrees, feet flat on the floor or a footrest.\n- Keep the keyboard and mouse close to your body; keep your wrists straight.\n- Place the screen at a right angle to windows to avoid reflections and glare.\n\n## Breaks and eye health\n- Stand up, stretch and walk for a few minutes every hour.\n- 20-20-20 rule: every 20 minutes, look about 6 metres away for 20 seconds.\n- Remember to blink; adjust screen brightness to the room when needed.\n\n## Other office risks\n- Keep cables away from walkways; do not leave drawers open.\n- Do not daisy-chain extension leads or overload sockets.\n- When you go onto the shop floor, follow the site PPE rules in full.\n\n## If you have complaints\nReport persistent pain, numbness or eye strain to the occupational physician and the HSE team, and ask for your workstation to be adjusted.",
+    "rules": [
+     "Place the screen at eye level, about an arm's length away.",
+     "Sit back, keep your wrists straight and your feet on the floor.",
+     "Take a short break every hour and apply the 20-20-20 rule."
+    ],
+    "key": "Good posture today is something your back will thank you for years from now.",
+    "tf": [
+     {
+      "q": "The top of the screen should be at or slightly below eye level.",
+      "a": true
+     },
+     {
+      "q": "Wrists should be bent upwards when using the keyboard.",
+      "a": false
+     },
+     {
+      "q": "The 20-20-20 rule helps reduce eye strain.",
+      "a": true
+     },
+     {
+      "q": "Extension leads may be plugged into each other to reach distant sockets.",
+      "a": false
+     },
+     {
+      "q": "Persistent back and neck pain should be reported to the occupational physician.",
+      "a": true
+     }
+    ],
+    "mc": [
+     {
+      "q": "What is the right distance between the screen and your eyes?",
+      "opts": [
+       "10–20 cm",
+       "About an arm's length (50–70 cm)",
+       "2 metres",
+       "Distance does not matter"
+      ],
+      "a": 1
+     },
+     {
+      "q": "Which is the correct sitting posture?",
+      "opts": [
+       "Sitting on the edge of the chair",
+       "Back supported, knees and elbows at about 90 degrees",
+       "Crossing your legs",
+       "Leaning towards the screen"
+      ],
+      "a": 1
+     },
+     {
+      "q": "What should be done to reduce reflections on the screen?",
+      "opts": [
+       "Place the screen at a right angle to the window",
+       "Place the screen with its back to the window",
+       "Set brightness to maximum",
+       "Make the room completely dark"
+      ],
+      "a": 0
+     }
+    ],
+    "classic": [
+     {
+      "q": "Write two measures to protect your health when working at a computer for long periods.",
+      "key": "Screen at eye level and an arm's length away, sitting back correctly, straight wrists, regular breaks and stretching, the 20-20-20 rule, avoiding glare. Any two are enough."
+     }
     ]
    }
   }

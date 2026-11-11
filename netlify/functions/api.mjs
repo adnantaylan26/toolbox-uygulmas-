@@ -113,17 +113,21 @@ async function history() {
 }
 async function resolveMe(body) {
   const tc = String(body.tc || "").replace(/\D/g, "");
-  if (!/^\d{3,10}$/.test(tc)) return { error: "Geçerli bir sicil numarası girin." };
+  const en = body.lang === "en";
+  if (!/^\d{3,10}$/.test(tc)) return { error: en ? "Enter a valid employee number." : "Geçerli bir sicil numarası girin." };
   const list = (await getDoc("config/staff"))?.list || [];
   const p = list.find((x) => String(x.tc) === tc);
-  let name = p?.name || "", dk = p ? p.deptKey || L.deptKeyOf(p.dept) : null;
-  if (!p || !dk) {
-    const bdk = L.DEPTS.includes(body.dk) ? body.dk : null;
-    const bname = String(body.name || "").trim().slice(0, 80);
-    if (!bdk || (!p && !bname)) return { needInfo: true, name, dept: p?.dept || "" };
-    name = name || bname; dk = bdk;
-  }
-  return { me: { tc, name, dk, start: p?.start || "" } };
+  if (!p) return { error: en ? "This employee number is not on the staff list. Please contact the HSE officer." : "Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun." };
+  const dk = L.groupOf(p);
+  if (!dk) return { error: en ? "No toolbox group is defined for your department. Please contact the HSE officer." : "Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun." };
+  return { me: { tc, name: p.name || "", dk, dk0: p.deptKey || L.deptKeyOf(p.dept) || null, start: p.start || "" } };
+}
+// Bir dönemde kişinin grubu için konu yoksa (ör. beyaz yaka eski dönemde) eski kaydındaki / asıl departmanına düş
+async function meIn(t, me) {
+  if (!t || L.subjectsOf(t, me.dk).length) return me;
+  const prog = await getDoc(`progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`);
+  const alt = [prog?.dk, me.dk0].find((k) => k && L.subjectsOf(t, k).length);
+  return alt ? { ...me, dk: alt } : me;
 }
 async function workerState(t, me, xt) {
   const prog = (await getDoc(`progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`))?.weeks || {};
@@ -132,7 +136,8 @@ async function workerState(t, me, xt) {
   let rec = [];
   try { rec = L.recWeeks(t, me.dk, me.tc, await history()); } catch {}
   let exam = null;
-  if (xt) {
+  const mx = xt ? await meIn(xt, me) : null;
+  if (xt && L.subjectsOf(xt, mx.dk).length) {
     const xr = await getDoc(`results/${L.safeId(xt.id)}__${L.safeId(me.tc)}`);
     exam = { id: xt.id, title: xt.title, date: xt.date, fin: xr && xr.status !== "started" ? { status: xr.status, score: xr.score, passed: xr.passed, at: xr.at } : null };
   }
@@ -154,8 +159,7 @@ async function worker(p, req, url) {
   const t = inLang(t0, lang), xt = xt0 ? inLang(xt0, lang) : null;
   const who = await resolveMe(body);
   if (who.error) return err(who.error);
-  if (who.needInfo) return json({ needInfo: true, name: who.name, dept: who.dept });
-  const me = who.me, today = L.todayISO();
+  const me = await meIn(t, who.me), today = L.todayISO();
   const progKey = `progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`;
 
   if (p === "login") return json(await workerState(t, me, xt));
@@ -191,7 +195,7 @@ async function worker(p, req, url) {
   }
 
   if (p === "final/start" || p === "final/submit") {
-    if (xt && (body.topicId === xt.id || !L.finalOpenOf(t, today))) return await finalFlow(p, xt, me, body, today);
+    if (xt && (body.topicId === xt.id || !L.finalOpenOf(t, today))) return await finalFlow(p, xt, await meIn(xt, who.me), body, today);
     return await finalFlow(p, t, me, body, today);
   }
   return err("Bulunamadı", 404);

@@ -228,7 +228,7 @@ const DOHLER_LOGO="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPIAAABgCAIAAAC
 function mergeBrand(x){if(!x)return;const legacy=x.primary==="#00305e"&&x.second==="#7ab929";
   if(x.name)S.brand.name=x.name;if(!legacy){if(x.primary)S.brand.primary=x.primary;if(x.second)S.brand.second=x.second}if(x.logo)S.brand.logo=x.logo}
 const CYCLE_DAYS=35, PASS=70, IDLE_MS=180000, NET=!!window.TBX_NETLIFY;
-const DEPTS=[["bakim","Bakım"],["dial","Dial Lab"],["kalite","Kalite"],["lojistik","Lojistik"],["uretim","Üretim"]];
+const DEPTS=[["bakim","Bakım"],["dial","Dial Lab"],["kalite","Kalite"],["lojistik","Lojistik"],["uretim","Üretim"],["beyaz","Beyaz Yaka"]];
 const POOLS=[["ortak","Ortak"],...DEPTS];
 const PLAN={tf:{n:10,pt:4,l:"Doğru / Yanlış"},mc:{n:5,pt:8,l:"Çoktan seçmeli"},classic:{n:2,pt:10,l:"Klasik"}};
 const ORDER=["tf","mc","classic"];
@@ -253,9 +253,9 @@ const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Her hafta departmanın
 "Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.":"Automatic grading is not available right now. The HSE officer will check your open-ended answers; this score is provisional.","Klasik sorular":"Open-ended questions","Cevabınız: {0}":"Your answer: {0}","(boş)":"(blank)","Kontrol bekliyor":"Awaiting review","✓ Doğru":"✓ Correct","✗ Yanlış":"✗ Wrong","Beklenen: {0}":"Expected: {0}","Yanlış cevapladığınız sorular":"Questions you answered wrong",
 "Yarım kalan sınavınız aynı sorularla devam ediyor.":"Your unfinished exam continues with the same questions.","Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin.":"Could not reach the server. Check your internet connection.","Giriş yapılamadı.":"Login failed.","Bağlı":"Connected","Bağlantı hatası":"Connection error","Bağlanıyor…":"Connecting…",
 "Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.":"This employee number is not on the staff list. Enter your full name and department.","{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.":"{0}: no toolbox group is defined for your department. Select the group you attend.",
-"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
+"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
 const tx=(s,...a)=>{let o=LANG==="en"?(EN[s]??s):s;a.forEach((v,i)=>{o=o.split("{"+i+"}").join(v)});return o};
-const DEPT_EN={uretim:"Production",lojistik:"Logistics",kalite:"Quality",bakim:"Maintenance",dial:"Dial Lab",ortak:"Common"};
+const DEPT_EN={beyaz:"White collar",uretim:"Production",lojistik:"Logistics",kalite:"Quality",bakim:"Maintenance",dial:"Dial Lab",ortak:"Common"};
 const deptL=k=>LANG==="en"?(DEPT_EN[k]||deptLabel(k)):deptLabel(k);
 const fmtLong=(iso,o)=>new Date(iso+"T00:00:00").toLocaleDateString(LOC(),o);
 const langBtn=(sm)=>`<button class="btn ${sm?"":"ghost small"} lang-btn" data-act="lang" title="${LANG==="en"?"Türkçe":"English"}">${LANG==="en"?"🇹🇷 TR":"🇬🇧 EN"}</button>`;
@@ -281,7 +281,8 @@ const deptLabel=k=>(POOLS.find(d=>d[0]===k)||[null,k||"—"])[1];
 const maskTc=t=>String(t??"");
 const safeId=s=>String(s).trim().replace(/[^A-Za-z0-9_\-]/g,"_").slice(0,60);
 function deptKeyOf(text){const s=String(text||"").toLocaleLowerCase("tr");
-  if(/üret|uret|^production$/.test(s))return"uretim";if(/kalite|^quality$/.test(s))return"kalite";if(/loj|^logistic/.test(s))return"lojistik";if(s.includes("dial"))return"dial";if(/bakım|bakim|teknik|^technics$|maintenance/.test(s))return"bakim";return null}
+  if(/üret|uret|^production$/.test(s))return"uretim";if(/kalite|^quality$/.test(s))return"kalite";if(/loj|^logistic/.test(s))return"lojistik";if(s.includes("dial"))return"dial";if(/bakım|bakim|teknik|^technics$|maintenance/.test(s))return"bakim";if(/beyaz|white/.test(s))return"beyaz";return null}
+function groupOf(p){const c=String(p?.collar||"").trim().toUpperCase();if(c==="WC"||c.startsWith("BEYAZ")||c==="INTERN"||c.startsWith("STAJ"))return"beyaz";return p?.deptKey||deptKeyOf(p?.dept)}
 function tcValid(t){return /^\d{3,10}$/.test(t)}
 function hash(s){let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))|0;return(h>>>0).toString(36)}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const r=new Uint32Array(1);crypto.getRandomValues(r);const j=r[0]%(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -349,7 +350,7 @@ const isMeNet=tc=>NET&&S.wstate&&S.me&&String(tc)===String(S.me.tc);
 const progOf=(tid,tc)=>isMeNet(tc)?{weeks:S.wstate.prog||{}}:S.progMap.get(`${tid}__${tc}`);
 const isRec=(t,p,w)=>isMeNet(p.tc)?(S.wstate.rec||[]).includes(w):recSet(t).has(`${p.dk}|${w}|${p.tc}`);
 const finalOf=(tid,tc)=>isMeNet(tc)?S.wstate.fin:S.results.find(r=>r.topicId===tid&&String(r.tc)===String(tc)&&r.status!=="started");
-function staffAll(){const m=new Map();S.staff.forEach(p=>m.set(String(p.tc),{tc:String(p.tc),name:p.name,dk:p.deptKey||deptKeyOf(p.dept),start:p.start||"",inList:true}));
+function staffAll(t){const m=new Map();S.staff.forEach(p=>{let dk=groupOf(p);if(t&&dk&&!(t.subjects?.[dk]||[]).length){const pd=S.progMap.get(`${t.id}__${p.tc}`)?.dk,b=p.deptKey||deptKeyOf(p.dept);dk=[pd,b].find(k=>k&&(t.subjects?.[k]||[]).length)||dk}m.set(String(p.tc),{tc:String(p.tc),name:p.name,dk,start:p.start||"",inList:true})});
   S.progress.forEach(p=>{if(!m.has(String(p.tc)))m.set(String(p.tc),{tc:String(p.tc),name:p.name,dk:p.dk,inList:false})});
   S.results.forEach(r=>{if(!m.has(String(r.tc)))m.set(String(r.tc),{tc:String(r.tc),name:r.name,dk:r.deptKey,inList:false})});
   return[...m.values()].sort((a,b)=>String(a.name).localeCompare(String(b.name),"tr"))}
@@ -450,10 +451,7 @@ function viewWorker(){
     <form class="card stack" id="loginForm" novalidate>
       <label class="f" for="tc">${tx("Sicil numaranız")}<input type="text" id="tc" class="input-xl" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="${tx("Örn. 300141")}"></label>
       <div id="who"></div>
-      <div id="extra" class="stack" style="display:none">
-        <label class="f" for="pname">${tx("Ad Soyad")}<input type="text" id="pname" autocomplete="off"></label>
-        <label class="f" for="pdept">${tx("Departman")}<select id="pdept"><option value="">${tx("Seçin")}</option>${DEPTS.map(([k,l])=>`<option value="${k}">${deptL(k)}</option>`).join("")}</select></label>
-      </div>
+      <div id="extra" style="display:none"></div>
       <div id="startErr" class="err"></div>
       <button class="btn primary big" type="submit">${tx("Giriş")}</button>
     </form>
@@ -462,15 +460,15 @@ function viewWorker(){
 }
 function updateWho(){const inp=$("#tc");if(!inp)return;if(NET&&!S.staff.length)return;const v=inp.value.replace(/\D/g,""),box=$("#who"),extra=$("#extra");
   if(v.length<4){box.innerHTML="";extra.style.display="none";return}
-  const p=staffMap().get(v);const dk=p?(p.deptKey||deptKeyOf(p.dept)):null;
-  if(p&&dk){box.innerHTML=`<div class="who">✓ ${esc(p.name)} · ${esc(deptLabel(dk))}</div>`;extra.style.display="none"}
-  else{box.innerHTML=`<div class="who warn">${p?`${esc(p.name)} · ${esc(deptTR(p.dept))}: departmanınız için toolbox eğitimi tanımlı değil. Hangi toolbox grubuna katılıyorsanız seçin.`:"Bu sicil personel listesinde yok."} Bilgilerinizi girin.</div>`;extra.style.display="flex";if(p&&!$("#pname").value)$("#pname").value=p.name||""}}
+  const p=staffMap().get(v);const dk=p?groupOf(p):null;extra.style.display="none";
+  if(p&&dk)box.innerHTML=`<div class="who">✓ ${esc(p.name)} · ${esc(deptL(dk))}</div>`;
+  else box.innerHTML=`<div class="who warn">${p?tx("Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun."):tx("Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.")}</div>`}
 function login(){if(NET)return netLogin();
   const tc=$("#tc").value.replace(/\D/g,""),err=$("#startErr");err.textContent="";
   if(!tcValid(tc)){err.textContent=tx("Geçerli bir sicil numarası girin.");return}
-  const p=staffMap().get(tc);let name=p?.name||"",dk=p?(p.deptKey||deptKeyOf(p.dept)):null;
-  if(!p||!dk){name=$("#pname").value.trim()||name;dk=$("#pdept").value||null;
-    if(!name){err.textContent=tx("Ad soyad gerekli.");return}if(!dk){err.textContent=tx("Departmanınızı seçin.");return}}
+  const p=staffMap().get(tc);const name=p?.name||"",dk=p?groupOf(p):null;
+  if(!p){err.textContent=tx("Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.");return}
+  if(!dk){err.textContent=tx("Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.");return}
   S.me={tc,name,dk,start:p?.start||""};S.lastAct=Date.now();render(false);window.scrollTo(0,0)}
 function logout(){clearTimeout(S.resetTimer);S.wstate=null;S.me=null;S.flow=null;S.exam=null;render(false);setTimeout(()=>$("#tc")?.focus(),50)}
 
@@ -658,7 +656,7 @@ function viewExamResult(){
 function viewTakip(){
   const ts=sortedTopics();if(!ts.length)return `<div class="card empty"><h3>Henüz eğitim dönemi yok</h3><p>Konular sekmesinden yeni dönem ekleyin.</p></div>`;
   if(!S.tkTopic||!ts.find(t=>t.id===S.tkTopic))S.tkTopic=(ts.find(t=>t.active)||ts[0]).id;
-  const t=ts.find(x=>x.id===S.tkTopic),weeks=cycleWeeks(t),cols=[...weeks,"R"],people=staffAll().filter(p=>p.dk),rw=reviewWin(t),ed=examDay(t);
+  const t=ts.find(x=>x.id===S.tkTopic),weeks=cycleWeeks(t),cols=[...weeks,"R"],people=staffAll(t).filter(p=>p.dk),rw=reviewWin(t),ed=examDay(t);
   const curW=weeks.find(w=>winStatus(winOf(t,w))==="current");
   // eksikler
   const missing=[];people.forEach(p=>{const ws=subjectsOf(t,p.dk).filter(sb=>cellOf(t,p,sb.w).k==="miss");if(subjectsOf(t,p.dk).length&&cellOf(t,p,"R").k==="miss")ws.push({w:"R",t:"Tekrar haftası"});if(ws.length)missing.push({p,ws})});
@@ -723,7 +721,7 @@ function devCard(t,people,weeks){
     ${S.aiTxt?`<div class="ai-out lesson" style="font-size:.95rem">${renderContent(S.aiTxt)}</div>`:""}</div>`}
 async function aiDev(){
   const t=S.topics.find(x=>x.id===S.tkTopic);if(!t||!S.sample)return;
-  const people=staffAll().filter(p=>p.dk),weeks=cycleWeeks(t),{topics,repeat}=devStats(t,people,weeks),fs=topicStats(t);
+  const people=staffAll(t).filter(p=>p.dk),weeks=cycleWeeks(t),{topics,repeat}=devStats(t,people,weeks),fs=topicStats(t);
   const data={donem:t.title,bugun:todayISO(),personelSayisi:people.length,konular:topics.map(x=>({departman:x.dl,hafta:x.w,konu:x.t,katilimYuzde:x.completion,quizBasariYuzde:x.quizPct,quizSayisi:x.quizN,genelSinavDogruYuzde:x.finalPct})),
     ikiVeFazlaEksikKisiSayisi:repeat.length,genelSinav:{acik:!!t.finalOpen,giren:fs.n,ortalama:fs.avg,gecmeYuzde:fs.passRate}};
   S.aiBusy=true;S.aiTxt=null;render(true);
@@ -1152,7 +1150,7 @@ async function netLogin(){
   const body={tc,name:$("#pname")?.value.trim()||"",dk:$("#pdept")?.value||"",lang:LANG};
   const btn=$("#loginForm button[type=submit]");if(btn){btn.disabled=true;btn.textContent=tx("Giriş yapılıyor…")}
   try{const r=await wApi("login",body);
-    if(r.needInfo){const x=$("#extra");x.style.display="flex";if(r.name&&!$("#pname").value)$("#pname").value=r.name;
+    if(r.needInfo){
       $("#who").innerHTML=`<div class="who warn">${r.name?tx("{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.",`${esc(r.name)}${r.dept?` · ${esc(deptTR(r.dept))}`:""}`):tx("Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.")}</div>`;return}
     applyWState(r);S.lastAct=Date.now();render(false);window.scrollTo(0,0)}
   catch(e){err.textContent=e?.message||tx("Giriş yapılamadı.")}

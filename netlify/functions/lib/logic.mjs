@@ -2,8 +2,8 @@
 export const PASS = 70;
 export const PLAN = { tf: { n: 10, pt: 4 }, mc: { n: 5, pt: 8 }, classic: { n: 2, pt: 10 } };
 export const ORDER = ["tf", "mc", "classic"];
-export const DEPTS = ["bakim", "dial", "kalite", "lojistik", "uretim"];
-export const DEPT_LABEL = { bakim: "Bakım", dial: "Dial Lab", kalite: "Kalite", lojistik: "Lojistik", uretim: "Üretim", ortak: "Ortak" };
+export const DEPTS = ["bakim", "dial", "kalite", "lojistik", "uretim", "beyaz"];
+export const DEPT_LABEL = { bakim: "Bakım", dial: "Dial Lab", kalite: "Kalite", lojistik: "Lojistik", uretim: "Üretim", beyaz: "Beyaz Yaka", ortak: "Ortak" };
 
 const pad = (n) => String(n).padStart(2, "0");
 export const todayISO = () => new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Istanbul" });
@@ -16,6 +16,12 @@ const EPOCH = Date.UTC(2020, 0, 1);
 export const isoDay = (iso) => Math.round((Date.parse(iso + "T00:00:00Z") - EPOCH) / 864e5);
 export const safeId = (s) => String(s).trim().replace(/[^A-Za-z0-9_\-]/g, "_").slice(0, 60);
 
+// Toolbox grubu: beyaz yaka (WC) ve stajyerler "beyaz", mavi yaka kendi departmanı
+export function groupOf(p) {
+  const c = String(p?.collar || "").trim().toUpperCase();
+  if (c === "WC" || c.startsWith("BEYAZ") || c === "INTERN" || c.startsWith("STAJ")) return "beyaz";
+  return p?.deptKey || deptKeyOf(p?.dept);
+}
 export function deptKeyOf(text) {
   const s = String(text || "").toLocaleLowerCase("tr");
   if (/üret|uret|^production$/.test(s)) return "uretim";
@@ -23,6 +29,7 @@ export function deptKeyOf(text) {
   if (/loj|^logistic/.test(s)) return "lojistik";
   if (s.includes("dial")) return "dial";
   if (/bakım|bakim|teknik|^technics$|maintenance/.test(s)) return "bakim";
+  if (/beyaz|white/.test(s)) return "beyaz";
   return null;
 }
 

@@ -25,9 +25,10 @@ DEPTS = {
     "dial":     {"ad": "Dial Lab",     "renk": BLUE},
     "bakim":    {"ad": "Bakım",        "renk": RED},
     "kalite":   {"ad": "Kalite",       "renk": (164, 52, 147)},
+    "beyaz":    {"ad": "Beyaz Yaka",   "renk": (120, 133, 139)},
 }
 DIL = "tr"
-EN = {"Üretim": "Production", "Lojistik": "Logistics", "Dial Lab": "Dial Lab", "Bakım": "Maintenance", "Kalite": "Quality",
+EN = {"Üretim": "Production", "Lojistik": "Logistics", "Dial Lab": "Dial Lab", "Bakım": "Maintenance", "Kalite": "Quality", "Beyaz Yaka": "White collar",
       "Ana kurallar": "Key rules", "UNUTMAYIN": "REMEMBER", "HAFTA": "WEEK", "TEKRAR HAFTASI": "REVIEW WEEK",
       "5 haftanın konularını": "Review the topics", "tekrar edin": "of the last 5 weeks", "GENEL TEKRAR SINAVI": "GENERAL REVIEW EXAM",
       "Pazartesi": "Monday", "Tüm departmanlar": "All departments", "Genel tekrar sınavı": "General review exam",
