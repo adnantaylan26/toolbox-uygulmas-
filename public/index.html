@@ -188,6 +188,9 @@ tr.expanded td{background:var(--bg)}
 
 .top-inner .brand{padding-right:96px}
 
+.past-cyc summary{cursor:pointer;list-style:none;gap:8px;flex-wrap:wrap}.past-cyc summary::-webkit-details-marker{display:none}.past-cyc summary:after{content:'▾';margin-left:auto;color:var(--muted,#78858b)}.past-cyc[open] summary:after{content:'▴'}
+.wk.past{opacity:.95}
+
 /* v4: çalışan paneli ve takip */
 .hero{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:210px;height:210px;border-radius:50%;background:var(--brand-2);opacity:.9}
@@ -305,7 +308,7 @@ const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Bu işte en önemli ek
 "Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.":"Automatic grading is not available right now. The HSE officer will check your open-ended answers; this score is provisional.","Klasik sorular":"Open-ended questions","Cevabınız: {0}":"Your answer: {0}","(boş)":"(blank)","Kontrol bekliyor":"Awaiting review","✓ Doğru":"✓ Correct","✗ Yanlış":"✗ Wrong","Beklenen: {0}":"Expected: {0}","Yanlış cevapladığınız sorular":"Questions you answered wrong",
 "Yarım kalan sınavınız aynı sorularla devam ediyor.":"Your unfinished exam continues with the same questions.","Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin.":"Could not reach the server. Check your internet connection.","Giriş yapılamadı.":"Login failed.","Bağlı":"Connected","Bağlantı hatası":"Connection error","Bağlanıyor…":"Connecting…",
 "Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.":"This employee number is not on the staff list. Enter your full name and department.","{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.":"{0}: no toolbox group is defined for your department. Select the group you attend.",
-"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","📲 Uygulamayı yükleyin":"📲 Install the app","QR okutmadan, telefon veya bilgisayarınızdaki simgeden tek dokunuşla açın.":"Open it with one tap from the icon on your phone or computer — no QR scan needed.","Yükle":"Install","📲 Ana ekrana ekleyin":"📲 Add to Home Screen","Safari'de alttaki Paylaş ⬆️ düğmesine, sonra \"Ana Ekrana Ekle\"ye dokunun.":"In Safari, tap the Share ⬆️ button, then \"Add to Home Screen\".","Uygulama yüklendi. Artık ana ekrandaki simgeden açabilirsiniz.":"App installed. You can now open it from the icon on your home screen.","Dil değiştirmek için önce quizi bitirin.":"Finish the quiz before changing the language.","Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.":"This training is currently available in Turkish only. An English version will be added.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
+"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Geçmiş eğitimler":"Past trainings","Önceki dönemlerin eğitimlerini istediğiniz zaman tekrar okuyabilirsiniz.":"You can re-read the trainings of previous periods at any time.","Tamamlanmadı":"Not completed","Oku":"Read","Bu eğitim geçmiş döneme ait ({0}); tekrar okumak için açık.":"This training belongs to a past period ({0}); it is open for re-reading.","📲 Uygulamayı yükleyin":"📲 Install the app","QR okutmadan, telefon veya bilgisayarınızdaki simgeden tek dokunuşla açın.":"Open it with one tap from the icon on your phone or computer — no QR scan needed.","Yükle":"Install","📲 Ana ekrana ekleyin":"📲 Add to Home Screen","Safari'de alttaki Paylaş ⬆️ düğmesine, sonra \"Ana Ekrana Ekle\"ye dokunun.":"In Safari, tap the Share ⬆️ button, then \"Add to Home Screen\".","Uygulama yüklendi. Artık ana ekrandaki simgeden açabilirsiniz.":"App installed. You can now open it from the icon on your home screen.","Dil değiştirmek için önce quizi bitirin.":"Finish the quiz before changing the language.","Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.":"This training is currently available in Turkish only. An English version will be added.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
 const tx=(s,...a)=>{let o=LANG==="en"?(EN[s]??s):s;a.forEach((v,i)=>{o=o.split("{"+i+"}").join(v)});return o};
 const DEPT_EN={beyaz:"White collar",uretim:"Production",lojistik:"Logistics",kalite:"Quality",bakim:"Maintenance",dial:"Dial Lab",ortak:"Common"};
 const deptL=k=>LANG==="en"?(DEPT_EN[k]||deptLabel(k)):deptLabel(k);
@@ -565,16 +568,27 @@ function viewDash(){
     <div class="card stack" style="gap:8px"><div class="spread"><b>${tx("İlerlemeniz")}</b><span class="num">${tx("{0} / {1} eğitim",doneN,subs.length)}</span></div><div class="bar ok"><i style="width:${subs.length?Math.round(100*doneN/subs.length):0}%"></i></div>
       ${miss?`<div class="err">${tx("{0} eğitiminiz gecikmiş durumda. Lütfen önce onları tamamlayın.",miss)}</div>`:""}</div>
     ${subs.length?`<div class="week-list">${cards}${revCard}${finCard}</div>`:`<div class="card empty"><h3>${tx("Departmanınız için bu dönemde konu tanımlı değil")}</h3><p>${tx("İSG sorumlusuna haber verin.")}</p></div>`}
+    ${pastHtml()}
   </div>`;
 }
+function pastHtml(){const P=NET&&S.wstate?.past;if(!P||!P.length)return"";
+  return `<div class="stack" style="gap:10px;margin-top:6px"><h3 style="margin:0">${tx("Geçmiş eğitimler")}</h3><div class="muted small">${tx("Önceki dönemlerin eğitimlerini istediğiniz zaman tekrar okuyabilirsiniz.")}</div>
+  ${P.map((c,ci)=>{const subs=c.subjects?.[c.dk]||[];const done=subs.filter(sb=>c.prog?.[sb.w]||(c.rec||[]).includes(sb.w)).length;
+    const head=`<span><b>${esc(c.title)}</b> <span class="muted small">· ${tx("{0} / {1} eğitim",done,subs.length)}</span></span>${c.fin?`<span class="pill ${c.fin.passed?"ok":"bad"}">${tx("Genel sınav")}: ${c.fin.passed?tx("Geçti"):tx("Kaldı")} · ${c.fin.score}</span>`:""}`;
+    const rows=subs.map(sb=>{const e=c.prog?.[sb.w],rec=(c.rec||[]).includes(sb.w);
+      const st=e?`<span class="pill ok">${tx("Tamamlandı · {0}/{1}",e.score,e.total)}</span>`:rec?`<span class="pill ok">${tx("Toplantıya katıldınız")}</span>`:`<span class="pill">${tx("Tamamlanmadı")}</span>`;
+      return `<div class="wk done past"><div class="no"><span>${tx("Hafta")}</span><b>${sb.w}</b></div><div class="stack" style="gap:4px"><b>${esc(sb.t)}</b><div>${st}</div></div><div class="act"><button class="btn" data-act="read-past" data-tid="${esc(c.id)}" data-w="${sb.w}">${tx("Oku")}</button></div></div>`}).join("");
+    return `<details class="card past-cyc"${ci===0?" open":""}><summary class="spread">${head}</summary><div class="week-list" style="margin-top:10px">${rows}</div></details>`}).join("")}</div>`}
 function viewRead(){
-  const t=workerTopic(),w=S.flow.w,sb=subjectsOf(t,S.me.dk).find(s=>s.w===w),body=t.content?.[S.me.dk]?.[w];
-  const done=progOf(t.id,S.me.tc)?.weeks?.[w];
+  const P=S.flow.tid?(S.wstate?.past||[]).find(c=>c.id===S.flow.tid):null;
+  const t=P?{...P}:workerTopic(),dk=P?P.dk:S.me.dk,w=S.flow.w,sb=(t.subjects?.[dk]||subjectsOf(t,dk)).find(s=>s.w===w),body=t.content?.[dk]?.[w];
+  const done=P?P.prog?.[w]:progOf(t.id,S.me.tc)?.weeks?.[w];
   return `<div class="exam-wrap">
     <div><button class="btn ghost" data-act="dash">${tx("← Panele dön")}</button></div>
     <div class="stack" style="gap:4px"><span class="sec-label">${tx("Hafta")} ${w} · ${esc(deptL(S.me.dk))}</span><h1>${esc(sb?.t||"")}</h1></div>
     ${LANG==="en"&&t.lang!=="en"?`<div class="note">${tx("Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.")}</div>`:""}<div class="card"><div class="lesson">${body?renderContent(body):`<p class="muted">${tx("Bu hafta için eğitim metni henüz eklenmemiş. Toolbox toplantısında anlatılan konuya göre quizi çözebilirsiniz.")}</p>`}</div></div>
-    ${done?`<div class="note">${tx("Bu haftanın quizini tamamladınız ({0}/{1}).",done.score,done.total)}</div><button class="btn big" data-act="dash">${tx("Panele dön")}</button>`:`<button class="btn primary big" data-act="start-wq" data-w="${w}">${tx("Okudum, quiz'e geç (5 soru)")}</button>`}
+    ${P?`<div class="note">${tx("Bu eğitim geçmiş döneme ait ({0}); tekrar okumak için açık.",esc(P.title))}${done?" "+tx("Bu haftanın quizini tamamladınız ({0}/{1}).",done.score,done.total):""}</div><button class="btn big" data-act="dash">${tx("Panele dön")}</button>`
+    :done?`<div class="note">${tx("Bu haftanın quizini tamamladınız ({0}/{1}).",done.score,done.total)}</div><button class="btn big" data-act="dash">${tx("Panele dön")}</button>`:`<button class="btn primary big" data-act="start-wq" data-w="${w}">${tx("Okudum, quiz'e geç (5 soru)")}</button>`}
   </div>`;
 }
 
@@ -1291,6 +1305,7 @@ document.addEventListener("click",async ev=>{
     case"logout":logout();break;
     case"dash":S.flow=null;render(false);window.scrollTo(0,0);break;
     case"read":S.flow={kind:"read",w:+el.dataset.w};render(false);window.scrollTo(0,0);break;
+    case"read-past":S.flow={kind:"read",w:+el.dataset.w,tid:el.dataset.tid};render(false);window.scrollTo(0,0);break;
     case"start-wq":startWeekly(+el.dataset.w);break;
     case"review":S.flow={kind:"review"};render(false);window.scrollTo(0,0);break;
     case"start-review":startReview();break;

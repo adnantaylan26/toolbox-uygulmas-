@@ -135,7 +135,7 @@ async function meIn(t, me) {
   const alt = [prog?.dk, me.dk0].find((k) => k && L.subjectsOf(t, k).length);
   return alt ? { ...me, dk: alt } : me;
 }
-async function workerState(t, me, xt) {
+async function workerState(t, me, xt, lang) {
   const prog = (await getDoc(`progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`))?.weeks || {};
   const r = await getDoc(`results/${L.safeId(t.id)}__${L.safeId(me.tc)}`);
   const fin = r && r.status !== "started" ? { status: r.status, score: r.score, passed: r.passed, at: r.at } : null;
@@ -147,7 +147,24 @@ async function workerState(t, me, xt) {
     const xr = await getDoc(`results/${L.safeId(xt.id)}__${L.safeId(me.tc)}`);
     exam = { id: xt.id, title: xt.title, date: xt.date, fin: xr && xr.status !== "started" ? { status: xr.status, score: xr.score, passed: xr.passed, at: xr.at } : null };
   }
-  return { me, topic: sanTopic(t, me.dk), prog, fin, rec, exam };
+  // Geçmiş dönemler: okunabilir arşiv (kendi grubunun konuları, ilerleme ve sınav sonucu)
+  const past = [];
+  try {
+    const hist = await history();
+    const olds = (await listCol("topics")).map((x) => ({ id: x.id, ...x.data }))
+      .filter((x) => x.id !== t.id && (x.date || "") < (t.date || "")).sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 8);
+    for (const o0 of olds) {
+      const o = inLang(o0, lang), m = await meIn(o, me);
+      const subs = L.subjectsOf(o, m.dk);
+      if (!subs.length) continue;
+      const pw = (await getDoc(`progress/${L.safeId(o.id)}__${L.safeId(me.tc)}`))?.weeks || {};
+      const pr = await getDoc(`results/${L.safeId(o.id)}__${L.safeId(me.tc)}`);
+      let prec = []; try { prec = L.recWeeks(o, m.dk, me.tc, hist); } catch {}
+      past.push({ id: o.id, title: o.title, date: o.date, lang: o.lang || "tr", dk: m.dk, subjects: { [m.dk]: subs }, content: { [m.dk]: (o.content || {})[m.dk] || {} },
+        prog: pw, rec: prec, fin: pr && pr.status !== "started" ? { score: pr.score, passed: pr.passed } : null });
+    }
+  } catch {}
+  return { me, topic: sanTopic(t, me.dk), prog, fin, rec, exam, past };
 }
 
 async function worker(p, req, url) {
@@ -168,7 +185,7 @@ async function worker(p, req, url) {
   const me = await meIn(t, who.me), today = L.todayISO();
   const progKey = `progress/${L.safeId(t.id)}__${L.safeId(me.tc)}`;
 
-  if (p === "login") return json(await workerState(t, me, xt));
+  if (p === "login") return json(await workerState(t, me, xt, lang));
 
   if (p === "quiz/start" || p === "quiz/submit") {
     const w = body.w === "R" ? "R" : Number(body.w);
