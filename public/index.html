@@ -476,6 +476,7 @@ function viewWorker(){
       <div class="spread" style="align-items:flex-start"><div><div class="motto">${tx("Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.")}</div><h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div></div>
       <div class="chip-row"><span>${esc(t.title)}</span>${nowTxt?`<span>${esc(nowTxt)}</span>`:""}${ed?`<span>${tx("Genel sınav: {0}",fmtLong(ed,{day:"numeric",month:"long"}))}</span>`:""}</div>
     </div>
+    ${installHtml()}
     <form class="card stack" id="loginForm" novalidate>
       <label class="f" for="tc">${tx("Sicil numaranız")}<input type="text" id="tc" class="input-xl" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="${tx("Örn. 300141")}" value="${esc(lastTc())}"></label>
       <div id="who"></div>
@@ -483,7 +484,6 @@ function viewWorker(){
       <div id="startErr" class="err"></div>
       <button class="btn primary big" type="submit">${tx("Giriş")}</button>
     </form>
-    ${installHtml()}
     ${NET?`<div class="row" style="justify-content:center">${window.TBX.isAdmin?`<button class="btn ghost small" data-act="adm-out">${tx("Yönetici çıkışı")}</button>`:`<button class="btn ghost small" data-act="adm-in">${tx("Yönetici girişi")}</button>`}</div>`:S.kiosk?"":`<div class="row"><button class="btn" data-act="kiosk-on">Kiosk modunu aç</button><span class="muted small">Tablette sekmeleri gizler ve yapay zeka iznini önceden alır.</span></div>`}
   </div>`;
 }
