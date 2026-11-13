@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00233E">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="İSG Toolbox">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>İSG Toolbox Eğitimi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,6 +184,8 @@ tr.expanded td{background:var(--bg)}
 .hdr-lang:hover{background:rgba(255,255,255,.22)}
 .top-inner{position:relative}
 
+.install{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1.5px dashed var(--brand-2,#237f52);background:#f3faf6}
+
 /* v4: çalışan paneli ve takip */
 .hero{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:210px;height:210px;border-radius:50%;background:var(--brand-2);opacity:.9}
@@ -243,6 +253,17 @@ const LET="ABCDEFGH";
 /* ===== Dil (TR/EN) ===== */
 let LANG=(()=>{const q=new URLSearchParams(location.search).get("lang");if(q==="en"||q==="tr"){try{localStorage.setItem("tbxLang",q)}catch(e){}return q}try{const v=localStorage.getItem("tbxLang");if(v==="en"||v==="tr")return v}catch(e){}return"tr"})();
 const LOC=()=>LANG==="en"?"en-GB":"tr-TR";
+/* ===== Uygulama olarak yükleme (PWA) ===== */
+let INSTALL=null;
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const lastTc=()=>{try{return localStorage.getItem("tbxTc")||""}catch(e){return""}};
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();INSTALL=e;if(!S.me&&typeof render==="function")render(false)});
+window.addEventListener("appinstalled",()=>{INSTALL=null;if(typeof toast==="function")toast(tx("Uygulama yüklendi. Artık ana ekrandaki simgeden açabilirsiniz."));if(typeof render==="function")render(false)});
+function installHtml(){if(!NET||isStandalone())return"";
+  if(INSTALL)return `<div class="install card"><div><b>${tx("📲 Uygulamayı yükleyin")}</b><div class="muted small">${tx("QR okutmadan, telefon veya bilgisayarınızdaki simgeden tek dokunuşla açın.")}</div></div><button class="btn primary" data-act="install">${tx("Yükle")}</button></div>`;
+  if(isIOS())return `<div class="install card"><div><b>${tx("📲 Ana ekrana ekleyin")}</b><div class="muted small">${tx("Safari'de alttaki Paylaş ⬆️ düğmesine, sonra \"Ana Ekrana Ekle\"ye dokunun.")}</div></div></div>`;
+  return "";}
 const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.":"You are the most important equipment on this job. Work safely and get home to the people waiting for you.","Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.":"Read your department's training every week and take the 5-question quiz. A general review exam is held at the end of each 5-week period.",
 "Sicil numaranız":"Your employee number","Örn. 300141":"e.g. 300141","Ad Soyad":"Full name","Departman":"Department","Seçin":"Select","Giriş":"Log in","Giriş yapılıyor…":"Logging in…","Yönetici girişi":"Admin login","Yönetici çıkışı":"Admin logout",
 "Şu an aktif eğitim dönemi yok":"There is no active training period","Bu hafta: Hafta {0}":"This week: Week {0}","Bu hafta: Tekrar haftası (H{0})":"This week: Review week (W{0})","Genel tekrar sınavı açık":"General review exam is open","Genel sınav: {0}":"General exam: {0}",
@@ -260,7 +281,7 @@ const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Bu işte en önemli ek
 "Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.":"Automatic grading is not available right now. The HSE officer will check your open-ended answers; this score is provisional.","Klasik sorular":"Open-ended questions","Cevabınız: {0}":"Your answer: {0}","(boş)":"(blank)","Kontrol bekliyor":"Awaiting review","✓ Doğru":"✓ Correct","✗ Yanlış":"✗ Wrong","Beklenen: {0}":"Expected: {0}","Yanlış cevapladığınız sorular":"Questions you answered wrong",
 "Yarım kalan sınavınız aynı sorularla devam ediyor.":"Your unfinished exam continues with the same questions.","Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin.":"Could not reach the server. Check your internet connection.","Giriş yapılamadı.":"Login failed.","Bağlı":"Connected","Bağlantı hatası":"Connection error","Bağlanıyor…":"Connecting…",
 "Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.":"This employee number is not on the staff list. Enter your full name and department.","{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.":"{0}: no toolbox group is defined for your department. Select the group you attend.",
-"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Dil değiştirmek için önce quizi bitirin.":"Finish the quiz before changing the language.","Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.":"This training is currently available in Turkish only. An English version will be added.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
+"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","📲 Uygulamayı yükleyin":"📲 Install the app","QR okutmadan, telefon veya bilgisayarınızdaki simgeden tek dokunuşla açın.":"Open it with one tap from the icon on your phone or computer — no QR scan needed.","Yükle":"Install","📲 Ana ekrana ekleyin":"📲 Add to Home Screen","Safari'de alttaki Paylaş ⬆️ düğmesine, sonra \"Ana Ekrana Ekle\"ye dokunun.":"In Safari, tap the Share ⬆️ button, then \"Add to Home Screen\".","Uygulama yüklendi. Artık ana ekrandaki simgeden açabilirsiniz.":"App installed. You can now open it from the icon on your home screen.","Dil değiştirmek için önce quizi bitirin.":"Finish the quiz before changing the language.","Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.":"This training is currently available in Turkish only. An English version will be added.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
 const tx=(s,...a)=>{let o=LANG==="en"?(EN[s]??s):s;a.forEach((v,i)=>{o=o.split("{"+i+"}").join(v)});return o};
 const DEPT_EN={beyaz:"White collar",uretim:"Production",lojistik:"Logistics",kalite:"Quality",bakim:"Maintenance",dial:"Dial Lab",ortak:"Common"};
 const deptL=k=>LANG==="en"?(DEPT_EN[k]||deptLabel(k)):deptLabel(k);
@@ -456,12 +477,13 @@ function viewWorker(){
       <div class="chip-row"><span>${esc(t.title)}</span>${nowTxt?`<span>${esc(nowTxt)}</span>`:""}${ed?`<span>${tx("Genel sınav: {0}",fmtLong(ed,{day:"numeric",month:"long"}))}</span>`:""}</div>
     </div>
     <form class="card stack" id="loginForm" novalidate>
-      <label class="f" for="tc">${tx("Sicil numaranız")}<input type="text" id="tc" class="input-xl" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="${tx("Örn. 300141")}"></label>
+      <label class="f" for="tc">${tx("Sicil numaranız")}<input type="text" id="tc" class="input-xl" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="${tx("Örn. 300141")}" value="${esc(lastTc())}"></label>
       <div id="who"></div>
       <div id="extra" style="display:none"></div>
       <div id="startErr" class="err"></div>
       <button class="btn primary big" type="submit">${tx("Giriş")}</button>
     </form>
+    ${installHtml()}
     ${NET?`<div class="row" style="justify-content:center">${window.TBX.isAdmin?`<button class="btn ghost small" data-act="adm-out">${tx("Yönetici çıkışı")}</button>`:`<button class="btn ghost small" data-act="adm-in">${tx("Yönetici girişi")}</button>`}</div>`:S.kiosk?"":`<div class="row"><button class="btn" data-act="kiosk-on">Kiosk modunu aç</button><span class="muted small">Tablette sekmeleri gizler ve yapay zeka iznini önceden alır.</span></div>`}
   </div>`;
 }
@@ -1160,6 +1182,7 @@ async function netLogin(){
   try{const r=await wApi("login",body);
     if(r.needInfo){
       $("#who").innerHTML=`<div class="who warn">${r.name?tx("{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.",`${esc(r.name)}${r.dept?` · ${esc(deptTR(r.dept))}`:""}`):tx("Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.")}</div>`;return}
+    try{localStorage.setItem("tbxTc",tc)}catch(e){}
     applyWState(r);S.lastAct=Date.now();render(false);window.scrollTo(0,0)}
   catch(e){err.textContent=e?.message||tx("Giriş yapılamadı.")}
   finally{if(btn){btn.disabled=false;btn.textContent=tx("Giriş")}}}
@@ -1251,6 +1274,7 @@ document.addEventListener("click",async ev=>{
     case"wq-prev":S.flow.cur--;render(false);break;
     case"wq-finish":{if(NET){netFinishQuiz();break}const f=S.flow;f.score=f.items.filter((it,i)=>f.ans[i]===it.q.a).length;f.phase="res";saveWeekly();window.scrollTo(0,0);break}
     case"wq-save":saveWeekly();break;
+    case"install":if(INSTALL){INSTALL.prompt();try{await INSTALL.userChoice}catch(e){}INSTALL=null;render(false)}break;
     case"start-final":startFinal(el.dataset.tid||undefined);break;
     case"lang":if((S.exam&&S.exam.phase!=="result")||(S.flow?.kind==="wq"&&S.flow.phase==="q")){toast(tx("Dil değiştirmek için önce quizi bitirin."));break}
       LANG=LANG==="en"?"tr":"en";try{localStorage.setItem("tbxLang",LANG)}catch(e){}document.documentElement.lang=LANG;
@@ -1378,5 +1402,6 @@ fromHash();render(false);
   db.doc("history/meta").onSnapshot(d=>{if(!d.exists)return;const m=d.data();if(S.histMeta?.importedAt===m.importedAt)return;S.histMeta=m;loadHistFromDb(m)},()=>{});
 })();
 </script>
+<script>if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));</script>
 </body>
 </html>
