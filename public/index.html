@@ -382,7 +382,9 @@ const shufMC=q=>{const idx=shuffle(q.opts.map((_,i)=>i));return{...q,opts:idx.ma
 /* ===== Döngü / hafta takvimi ===== */
 function cycleWeeks(t){if(Array.isArray(t?.weeksPlan)&&t.weeksPlan.length)return[...t.weeksPlan];const set=new Set();DEPTS.forEach(([k])=>(t?.subjects?.[k]||[]).forEach(s=>set.add(s.w)));return[...set].sort((a,b)=>a-b)}
 function winOf(t,w){const ws=cycleWeeks(t),i=ws.indexOf(w);if(i<0||!t.date)return null;return{start:addDays(t.date,7*i),end:addDays(t.date,7*i+7)}}
-function winStatus(win){if(!win)return"current";const d=todayISO();return d<win.start?"upcoming":d<win.end?"current":"past"}
+const nowIst=()=>{try{return new Date().toLocaleString("sv-SE",{timeZone:"Europe/Istanbul"}).replace(" ","T").slice(0,16)}catch(e){return todayISO()+"T00:00"}};
+const openedEarly=start=>!!start&&nowIst()>=`${addDays(start,-3)}T15:30`;
+function winStatus(win){if(!win)return"current";const d=todayISO();return d<win.start&&!openedEarly(win.start)?"upcoming":d<win.end?"current":"past"}
 const reviewW=t=>{const ws=cycleWeeks(t);return ws.length?ws[ws.length-1]+1:null};
 function reviewWin(t){const n=cycleWeeks(t).length;if(!n||!t.date)return null;return{start:addDays(t.date,7*n),end:addDays(t.date,7*n+7)}}
 const examDay=t=>{const n=cycleWeeks(t).length;return n&&t.date?addDays(t.date,7*(n+1)):null};
@@ -539,14 +541,14 @@ function viewDash(){
     else if(rec){cls="done";stat=`<span class="pill ok">${tx("Toplantıya katıldınız")}</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">${tx("Quiz'i çöz")}</button>`}
     else if(st==="current"){cls="cur";stat=`<span class="pill active">${tx("Bu hafta")}</span>`;act=`<button class="btn primary" data-act="read" data-w="${sb.w}">${tx("Eğitime başla")}</button>`}
     else if(st==="past"){cls="miss";stat=`<span class="pill bad">${tx("Gecikti")}</span>`;act=`<button class="btn danger" data-act="read" data-w="${sb.w}">${tx("Şimdi tamamla")}</button>`}
-    else{cls="up";stat=`<span class="pill">${tx("Yakında")}</span>`;act=`<span class="muted small">${tx("{0} tarihinde açılır",fmtS(win?.start))}</span>`}
+    else{cls="up";stat=`<span class="pill">${tx("Yakında")}</span>`;act=`<span class="muted small">${tx("{0} tarihinde açılır",win?.start?fmtS(addDays(win.start,-3))+" 15:30":"")}</span>`}
     return `<div class="wk ${cls}"><div class="no"><span>${tx("Hafta")}</span><b>${sb.w}</b></div><div class="stack" style="gap:4px"><b>${esc(sb.t)}</b><div class="row" style="gap:8px">${stat}<span class="muted small">${fmtRange(win)}</span></div></div><div class="act">${act}</div></div>`}).join("");
   const rw=reviewWin(t),rst=winStatus(rw),re_=prog?.weeks?.R;let revCard="";
   if(subs.length&&rw){let cls,stat,act;
     if(re_){cls="done";stat=`<span class="pill ok">${tx("Tamamlandı · {0}/{1}",re_.score,re_.total)}</span>`;act=`<button class="btn" data-act="review">${tx("Tekrar oku")}</button>`}
     else if(rst==="current"){cls="cur";stat=`<span class="pill active">${tx("Bu hafta")}</span>`;act=`<button class="btn primary" data-act="review">${tx("Tekrar et")}</button>`}
     else if(rst==="past"){cls="miss";stat=`<span class="pill bad">${tx("Gecikti")}</span>`;act=`<button class="btn danger" data-act="review">${tx("Şimdi tamamla")}</button>`}
-    else{cls="up";stat=`<span class="pill">${tx("Yakında")}</span>`;act=`<span class="muted small">${tx("{0} tarihinde açılır",fmtS(rw.start))}</span>`}
+    else{cls="up";stat=`<span class="pill">${tx("Yakında")}</span>`;act=`<span class="muted small">${tx("{0} tarihinde açılır",fmtS(addDays(rw.start,-3))+" 15:30")}</span>`}
     revCard=`<div class="wk ${cls}"><div class="no"><span>${tx("Hafta")}</span><b>${reviewW(t)}</b></div><div class="stack" style="gap:4px"><b>${tx("Tekrar haftası · 5 konunun özeti")}</b><div class="row" style="gap:8px">${stat}<span class="muted small">${fmtRange(rw)}</span></div></div><div class="act">${act}</div></div>`}
   const finDone=(fin,title)=>{const p=fin.passed;return `<div class="wk ${p?"done":"miss"}"><div class="no"><span>${tx("Genel")}</span><b>✓</b></div><div class="stack" style="gap:4px"><b>${title}</b><div class="row" style="gap:8px"><span class="pill ${p?"ok":"bad"}">${p?tx("Geçti"):tx("Kaldı")} · ${tx("{0} puan",fin.score)}</span></div></div></div>`};
   const finOpen=(title,tid)=>`<div class="wk cur"><div class="no"><span>${tx("Genel")}</span><b>17</b></div><div class="stack" style="gap:4px"><b>${title}</b><span class="muted small">${tx("17 soru · Geçme notu {0} · Bir kez girilebilir",PASS)}</span></div><div class="act"><button class="btn primary" data-act="start-final"${tid?` data-tid="${esc(tid)}"`:""}>${tx("Sınava başla")}</button></div></div>`;

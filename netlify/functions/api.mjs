@@ -98,7 +98,7 @@ async function activeTopics() {
 // Bugün başlamış en yeni aktif dönem (yoksa en eski aktif dönem)
 async function activeTopic(today = L.todayISO()) {
   const ts = await activeTopics();
-  return ts.find((t) => (t.date || "") <= today) || ts[ts.length - 1] || null;
+  return ts.find((t) => (t.date || "") <= today || L.openedEarly(t.date)) || ts[ts.length - 1] || null;
 }
 // Genel sınavı şu an açık olan, mevcut dönemden farklı dönem (sınav Pazartesi'si yeni hafta ile çakışır)
 async function examTopic(cur, today = L.todayISO()) {

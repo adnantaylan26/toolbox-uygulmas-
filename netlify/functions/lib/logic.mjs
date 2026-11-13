@@ -59,7 +59,11 @@ export function cycleWeeks(t) { if (Array.isArray(t?.weeksPlan) && t.weeksPlan.l
 export function winOf(t, w) { const ws = cycleWeeks(t), i = ws.indexOf(w); if (i < 0 || !t.date) return null; return { start: addDays(t.date, 7 * i), end: addDays(t.date, 7 * i + 7) }; }
 export function reviewWin(t) { const n = cycleWeeks(t).length; if (!n || !t.date) return null; return { start: addDays(t.date, 7 * n), end: addDays(t.date, 7 * n + 7) }; }
 export const examDay = (t) => { const n = cycleWeeks(t).length; return n && t.date ? addDays(t.date, 7 * (n + 1)) : null; };
-export function winStatus(win, today = todayISO()) { if (!win) return "current"; return today < win.start ? "upcoming" : today < win.end ? "current" : "past"; }
+// Haftalar bir önceki Cuma 15:30'da (İstanbul) açılır
+export const OPEN_LEAD_DAYS = 3, OPEN_TIME = "15:30";
+export const nowIstanbul = () => process.env.FAKE_NOW || new Date().toLocaleString("sv-SE", { timeZone: "Europe/Istanbul" }).replace(" ", "T").slice(0, 16);
+export function openedEarly(startIso, now = nowIstanbul()) { return !!startIso && now >= `${addDays(startIso, -OPEN_LEAD_DAYS)}T${OPEN_TIME}`; }
+export function winStatus(win, today = todayISO()) { if (!win) return "current"; return today < win.start && !openedEarly(win.start) ? "upcoming" : today < win.end ? "current" : "past"; }
 export function finalOpenOf(t, today = todayISO()) {
   const m = t.finalMode || (t.finalOpen ? "open" : "auto");
   if (m === "open") return true; if (m === "closed") return false;
