@@ -4,11 +4,21 @@
   window.TBX_NETLIFY = true;
   let token = null;
   try { token = localStorage.getItem("tbx-admin-token"); } catch (e) {}
+  const LS = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; };
+  const FKEYS = ["terminal", "marmara", "karaman", "ege", "denizli", "urmia"];
+  // Çalışanın fabrikası: bağlantıdaki ?f= (fabrikaya özel QR) ya da daha önce seçilen
+  let wf = null;
+  try { const q = new URLSearchParams(location.search).get("f"); if (q && FKEYS.includes(q.toLowerCase())) { wf = q.toLowerCase(); LS("tbxF", wf); } } catch (e) {}
+  if (!wf) { const v = LS("tbxF"); if (v && FKEYS.includes(v)) wf = v; }
+  // Yöneticinin rolü ve (TİP yöneticisi için) seçili fabrikası
+  const role = LS("tbx-admin-role") || "tip", roleF = LS("tbx-admin-f");
+  let af = role === "fab" ? roleF : (LS("tbx-admin-view-f") || "terminal");
   const tokenValid = () => { if (!token) return false; const exp = +String(token).split(".")[0]; return exp > Date.now(); };
 
   async function api(path, opts = {}) {
     const headers = { "content-type": "application/json" };
-    if (tokenValid()) headers.authorization = "Bearer " + token;
+    if (tokenValid()) { headers.authorization = "Bearer " + token; if (af) headers["x-tbx-factory"] = af; }
+    if (path.startsWith("w/") && (wf || af)) path += (path.includes("?") ? "&" : "?") + "f=" + (wf || af);
     const r = await fetch("/api/" + path, { method: opts.method || (opts.body ? "POST" : "GET"), headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
     let j = {};
     try { j = await r.json(); } catch (e) {}
@@ -94,9 +104,11 @@
   const admin = tokenValid();
   const db = admin ? makeDb() : null, sample = admin ? makeSample() : null;
   window.TBX = {
-    api, isAdmin: admin,
-    async login(password) { const r = await api("admin/login", { body: { password } }); try { localStorage.setItem("tbx-admin-token", r.token); } catch (e) {} location.reload(); },
-    logout() { try { localStorage.removeItem("tbx-admin-token"); } catch (e) {} location.hash = "#calisan"; location.reload(); },
+    api, isAdmin: admin, role: admin ? role : null, factory: admin ? af : null, wf,
+    setWorkerF(k) { wf = FKEYS.includes(k) ? k : null; LS("tbxF", wf); this.wf = wf; },
+    setFactory(k) { if (role !== "tip" || !FKEYS.includes(k)) return; LS("tbx-admin-view-f", k); location.reload(); },
+    async login(password) { const r = await api("admin/login", { body: { password } }); LS("tbx-admin-token", r.token); LS("tbx-admin-role", r.role || "tip"); LS("tbx-admin-f", r.f || null); location.reload(); },
+    logout() { ["tbx-admin-token", "tbx-admin-role", "tbx-admin-f"].forEach((k) => LS(k, null)); location.hash = "#calisan"; location.reload(); },
   };
   window.claude = { use: async (n) => (n === "db" ? db : n === "sample" ? sample : n === "downloads" ? downloads : null) };
 })();

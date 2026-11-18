@@ -186,10 +186,18 @@ tr.expanded td{background:var(--bg)}
 
 .install{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1.5px dashed var(--brand-2,#237f52);background:#f3faf6}
 
-.top-inner .brand{padding-right:96px}
+.top-inner .brand{padding-right:110px}
 
 .past-cyc summary{cursor:pointer;list-style:none;gap:8px;flex-wrap:wrap}.past-cyc summary::-webkit-details-marker{display:none}.past-cyc summary:after{content:'▾';margin-left:auto;color:var(--muted,#78858b)}.past-cyc[open] summary:after{content:'▴'}
 .wk.past{opacity:.95}
+
+.fac-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fac-btn{width:100%;justify-content:center}
+.fac-chip{display:inline-block;font-size:.9rem;font-weight:600;background:rgba(255,255,255,.14);border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.linkbtn{background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+.fac-pill{margin-left:12px;font-size:.85rem;font-weight:600;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.fac-pill select{max-width:150px;background:transparent;color:#fff;border:0;font:inherit;font-weight:700;cursor:pointer}.fac-pill option{color:#000}
+.tip-tbl td{white-space:nowrap;vertical-align:middle}.tip-tbl th{white-space:normal;vertical-align:bottom;font-size:.72rem}.tip-tbl{font-size:.9rem}.tip-tbl .me-row{background:rgba(249,169,0,.10)}
+.mini-bar{display:inline-block;width:44px;height:8px;border-radius:4px;background:#e3e6e8;overflow:hidden;vertical-align:middle;margin-right:6px}.mini-bar span{display:block;height:100%}
 
 /* v4: çalışan paneli ve takip */
 .hero{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
@@ -229,9 +237,10 @@ input[type=search]{border:1px solid var(--line);background:var(--bg);border-radi
 <body>
 <header class="top">
   <div class="top-inner">
-    <div class="brand"><span id="brandMark"><div class="brand-mark"><span>!</span></div></span><b>İSG Toolbox</b><small id="conn">Bağlanıyor…</small></div>
+    <div class="brand"><span id="brandMark"><div class="brand-mark"><span>!</span></div></span><b>İSG Toolbox</b><small id="conn">Bağlanıyor…</small><span id="facBar"></span></div>
     <button type="button" class="hdr-lang" id="hdrLang" data-act="lang">🇬🇧 EN</button>
     <nav class="tabs" id="tabs">
+      <a href="#tip" data-v="tip" class="tip-tab">TİP özeti</a>
       <a href="#calisan" data-v="calisan">Çalışan girişi</a>
       <a href="#takip" data-v="takip">Takip</a>
       <a href="#konular" data-v="konular">Konular</a>
@@ -255,6 +264,39 @@ const POOLS=[["ortak","Ortak"],...DEPTS];
 const PLAN={tf:{n:10,pt:4,l:"Doğru / Yanlış"},mc:{n:5,pt:8,l:"Çoktan seçmeli"},classic:{n:2,pt:10,l:"Klasik"}};
 const ORDER=["tf","mc","classic"];
 const LET="ABCDEFGH";
+/* ===== TİP fabrikaları ===== */
+const FACTORIES=[["terminal","Terminal"],["marmara","Marmara"],["karaman","Karaman"],["ege","Ege"],["denizli","Denizli"],["urmia","Urmia (İran)"]];
+const facName=k=>(FACTORIES.find(f=>f[0]===k)||[k,k])[1];
+const isTipAdmin=()=>NET&&window.TBX?.isAdmin&&window.TBX.role!=="fab";
+const isFabAdmin=()=>NET&&window.TBX?.isAdmin&&window.TBX.role==="fab";
+function viewFactoryPicker(){return `<div class="exam-wrap"><div class="hero"><div class="logo-box">${S.brand.logo?`<img src="${esc(S.brand.logo)}" alt="${esc(S.brand.name)}">`:`<b>${esc(S.brand.name)}</b>`}</div>
+  <h1>${tx("Fabrikanızı seçin")}</h1><div class="sub">${tx("Bu seçim telefonunuzda saklanır; bir daha sorulmaz.")}</div></div>
+  <div class="fac-grid">${FACTORIES.map(([k,n])=>`<button class="btn big fac-btn" data-act="pick-f" data-k="${k}">${esc(n)}</button>`).join("")}</div></div>`}
+function factoryBar(){if(!NET||!window.TBX?.isAdmin)return"";
+  if(isFabAdmin())return `<span class="fac-pill">📍 ${esc(facName(window.TBX.factory))}</span>`;
+  return `<label class="fac-pill">📍 <select id="facSelect" data-act="noop">${FACTORIES.map(([k,n])=>`<option value="${k}" ${k===window.TBX.factory?"selected":""}>${esc(n)}</option>`).join("")}</select></label>`}
+async function loadTip(){S.tip={loading:true};render(false);try{S.tip={data:await window.TBX.api("admin/overview")}}catch(e){S.tip={error:e?.message||"Yüklenemedi"}}render(false)}
+function viewTip(){
+  if(!NET||!window.TBX?.isAdmin)return `<div class="card empty"><h3>${tx("TİP özeti yalnızca yöneticilere açıktır.")}</h3></div>`;
+  if(!S.tip){setTimeout(loadTip,0);return `<div class="empty"><h3>${tx("Yükleniyor…")}</h3></div>`}
+  if(S.tip.loading)return `<div class="empty"><h3>${tx("Yükleniyor…")}</h3></div>`;
+  if(S.tip.error)return `<div class="card empty"><h3>${esc(S.tip.error)}</h3><button class="btn" data-act="tip-reload">${tx("Yenile")}</button></div>`;
+  const D=S.tip.data,pct=(a,b)=>b?Math.round(100*a/b):null,cur=window.TBX.factory,tipA=isTipAdmin();
+  const rows=D.rows.map(r=>({...r,comp:pct(r.done,r.due),quiz:r.quizN?Math.round(100*r.quizSum/r.quizN):null,examPart:r.exam?pct(r.exam.took,r.staff):null,examPass:r.exam?pct(r.exam.passed,r.exam.took):null}));
+  const bar=v=>v==null?`<span class="muted">–</span>`:`<div class="mini-bar"><span style="width:${Math.max(2,v)}%;background:${v>=95?"var(--ok)":v>=80?"var(--accent)":"var(--bad)"}"></span></div><b class="num">%${v}</b>`;
+  const tot=rows.reduce((a,r)=>({done:a.done+r.done,due:a.due+r.due,staff:a.staff+r.staff}),{done:0,due:0,staff:0});
+  return `<div class="stack"><div><h1>${tx("TİP özeti")}</h1><div class="muted">${tx("Tüm fabrikaların bu dönemki toolbox durumu. Oranlar toplu verilir; kişi adı gösterilmez.")}</div></div>
+  <div class="grid-tiles"><div class="tile"><div class="k">${tx("TİP personeli")}</div><div class="v num">${tot.staff}</div></div><div class="tile"><div class="k">${tx("TİP tamamlama")}</div><div class="v num">${tot.due?"%"+pct(tot.done,tot.due):"–"}</div></div><div class="tile"><div class="k">${tx("Fabrika")}</div><div class="v num">${rows.filter(r=>r.staff).length} / ${rows.length}</div><div class="s">${tx("personel listesi yüklü")}</div></div></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl tip-tbl"><thead><tr><th>${tx("Fabrika")}</th><th>${tx("Personel")}</th><th>${tx("Bu dönem tamamlama")}</th><th>${tx("Quiz başarısı")}</th><th>${tx("Son genel sınav katılımı")}</th><th>${tx("Geçme oranı")}</th>${tipA?`<th>${tx("Fabrika yöneticisi")}</th>`:""}</tr></thead><tbody>
+  ${rows.map(r=>`<tr class="${r.k===cur?"me-row":""}"><td><b>${esc(r.n)}</b>${r.k===cur?` <span class="pill active">${tx("seçili")}</span>`:""}</td><td class="num">${r.staff||`<span class="muted">${tx("liste yok")}</span>`}</td><td>${r.due?`${bar(r.comp)} <span class="muted small">${r.done}/${r.due}</span>`:`<span class="muted">–</span>`}</td><td>${bar(r.quiz)}</td><td>${r.exam?`${bar(r.examPart)} <span class="muted small">${r.exam.took}/${r.staff}</span>`:`<span class="muted">–</span>`}</td><td>${r.exam&&r.exam.took?`${bar(r.examPass)}${r.exam.avg!=null?` <span class="muted small">${tx("ort.")} ${r.exam.avg}</span>`:""}`:`<span class="muted">–</span>`}</td>${tipA?`<td><button class="btn small" data-act="fac-pw" data-k="${r.k}">${(D.admins||{})[r.k]?tx("Şifreyi değiştir"):tx("Şifre belirle")}</button></td>`:""}</tr>`).join("")}
+  </tbody></table></div>
+  <div class="muted small">${tx("Tamamlama: başlamış haftalarda eğitimi tamamlayan (quiz veya toplantı kaydı) kişi-hafta oranı. Sınav: en son açılan genel tekrar sınavı.")}</div>
+  ${tipA?`<div class="note">${tx("Fabrika yöneticisi şifresi belirlediğiniz fabrikanın yöneticisi yalnızca kendi fabrikasını yönetir; diğer fabrikaları bu tabloda toplu oranlarla görür. Konular tüm fabrikalarda ortaktır ve yalnızca TİP yöneticisi değiştirir.")}</div>`:""}
+  </div>`}
+function facPwModal(k){const bg=modal(`<h3>${esc(facName(k))} · ${tx("Fabrika yöneticisi şifresi")}</h3><p class="muted small" style="margin:0">${tx("En az 8 karakter. Şifreyi fabrika yöneticisine siz iletin; sistem şifreyi göstermez. Boş bırakıp kaydederseniz bu fabrikanın yönetici girişi kapanır.")}</p><input type="password" id="facPw" autocomplete="new-password" style="width:100%"><div class="row"><button class="btn primary" id="fpOk">${tx("Kaydet")}</button><button class="btn" id="fpNo">${tx("Vazgeç")}</button></div>`);
+  bg.querySelector("#fpNo").onclick=()=>bg.remove();
+  bg.querySelector("#fpOk").onclick=async()=>{const v=bg.querySelector("#facPw").value;try{await window.TBX.api("admin/factory-password",{body:{f:k,password:v}});bg.remove();toast(v?tx("Fabrika yöneticisi şifresi kaydedildi."):tx("Fabrika yöneticisi girişi kapatıldı."));S.tip=null;render(false)}catch(e){toast(e?.message||tx("Kaydedilemedi."))}};
+  setTimeout(()=>bg.querySelector("#facPw")?.focus(),50)}
 /* ===== Dil (TR/EN) ===== */
 let LANG=(()=>{const q=new URLSearchParams(location.search).get("lang");if(q==="en"||q==="tr"){try{localStorage.setItem("tbxLang",q)}catch(e){}return q}try{const v=localStorage.getItem("tbxLang");if(v==="en"||v==="tr")return v}catch(e){}return"tr"})();
 const LOC=()=>LANG==="en"?"en-GB":"tr-TR";
@@ -308,7 +350,7 @@ const EN={"İSG Toolbox Eğitimi":"HSE Toolbox Training","Bu işte en önemli ek
 "Yapay zekaya şu an ulaşılamadı. Klasik cevaplarınızı İSG sorumlusu kontrol edecek; bu puan geçicidir.":"Automatic grading is not available right now. The HSE officer will check your open-ended answers; this score is provisional.","Klasik sorular":"Open-ended questions","Cevabınız: {0}":"Your answer: {0}","(boş)":"(blank)","Kontrol bekliyor":"Awaiting review","✓ Doğru":"✓ Correct","✗ Yanlış":"✗ Wrong","Beklenen: {0}":"Expected: {0}","Yanlış cevapladığınız sorular":"Questions you answered wrong",
 "Yarım kalan sınavınız aynı sorularla devam ediyor.":"Your unfinished exam continues with the same questions.","Sunucuya ulaşılamadı. İnternet bağlantısını kontrol edin.":"Could not reach the server. Check your internet connection.","Giriş yapılamadı.":"Login failed.","Bağlı":"Connected","Bağlantı hatası":"Connection error","Bağlanıyor…":"Connecting…",
 "Bu sicil personel listesinde yok. Ad soyad ve departmanınızı girin.":"This employee number is not on the staff list. Enter your full name and department.","{0}: departmanınız için toolbox grubu tanımlı değil. Katıldığınız grubu seçin.":"{0}: no toolbox group is defined for your department. Select the group you attend.",
-"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","Geçmiş eğitimler":"Past trainings","Önceki dönemlerin eğitimlerini istediğiniz zaman tekrar okuyabilirsiniz.":"You can re-read the trainings of previous periods at any time.","Tamamlanmadı":"Not completed","Oku":"Read","Bu eğitim geçmiş döneme ait ({0}); tekrar okumak için açık.":"This training belongs to a past period ({0}); it is open for re-reading.","📲 Uygulamayı yükleyin":"📲 Install the app","QR okutmadan, telefon veya bilgisayarınızdaki simgeden tek dokunuşla açın.":"Open it with one tap from the icon on your phone or computer — no QR scan needed.","Yükle":"Install","📲 Ana ekrana ekleyin":"📲 Add to Home Screen","Safari'de alttaki Paylaş ⬆️ düğmesine, sonra \"Ana Ekrana Ekle\"ye dokunun.":"In Safari, tap the Share ⬆️ button, then \"Add to Home Screen\".","Uygulama yüklendi. Artık ana ekrandaki simgeden açabilirsiniz.":"App installed. You can now open it from the icon on your home screen.","Dil değiştirmek için önce quizi bitirin.":"Finish the quiz before changing the language.","Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.":"This training is currently available in Turkish only. An English version will be added.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
+"Genel tekrar sınavı henüz açık değil.":"The general review exam is not open yet.","değiştir":"change","Fabrikanızı seçin":"Select your site","Bu seçim telefonunuzda saklanır; bir daha sorulmaz.":"This choice is saved on your phone and won't be asked again.","TİP özeti":"TİP overview","TİP özeti yalnızca yöneticilere açıktır.":"The TİP overview is for admins only.","Yenile":"Refresh","Tüm fabrikaların bu dönemki toolbox durumu. Oranlar toplu verilir; kişi adı gösterilmez.":"Toolbox status of all sites this period. Rates are aggregated; no names are shown.","TİP personeli":"TİP staff","TİP tamamlama":"TİP completion","Fabrika":"Site","Personel":"Staff","Bu dönem tamamlama":"Completion this period","Son genel sınav katılımı":"Latest general exam participation","Geçme oranı":"Pass rate","Fabrika yöneticisi":"Site admin","seçili":"selected","liste yok":"no list","ort.":"avg","Şifreyi değiştir":"Change password","Şifre belirle":"Set password","Tamamlama: başlamış haftalarda eğitimi tamamlayan (quiz veya toplantı kaydı) kişi-hafta oranı. Sınav: en son açılan genel tekrar sınavı.":"Completion: share of person-weeks completed (quiz or meeting record) in weeks that have started. Exam: the latest general review exam opened.","Fabrika yöneticisi şifresi belirlediğiniz fabrikanın yöneticisi yalnızca kendi fabrikasını yönetir; diğer fabrikaları bu tabloda toplu oranlarla görür. Konular tüm fabrikalarda ortaktır ve yalnızca TİP yöneticisi değiştirir.":"A site admin manages only their own site and sees other sites only as aggregated rates in this table. Topics are shared by all sites and only the TİP admin changes them.","Fabrika yöneticisi şifresi":"Site admin password","En az 8 karakter. Şifreyi fabrika yöneticisine siz iletin; sistem şifreyi göstermez. Boş bırakıp kaydederseniz bu fabrikanın yönetici girişi kapanır.":"At least 8 characters. Pass the password to the site admin yourself; the system never shows it. Saving it empty disables admin login for this site.","Kaydet":"Save","personel listesi yüklü":"staff list loaded","Fabrika yöneticisi şifresi kaydedildi.":"Site admin password saved.","Fabrika yöneticisi girişi kapatıldı.":"Site admin login disabled.","Konular TİP tarafından tüm fabrikalar için ortak yönetilir; bu ekran sizin için salt okunurdur.":"Topics are managed centrally by TİP for all sites; this screen is read-only for you.","Geçmiş eğitimler":"Past trainings","Önceki dönemlerin eğitimlerini istediğiniz zaman tekrar okuyabilirsiniz.":"You can re-read the trainings of previous periods at any time.","Tamamlanmadı":"Not completed","Oku":"Read","Bu eğitim geçmiş döneme ait ({0}); tekrar okumak için açık.":"This training belongs to a past period ({0}); it is open for re-reading.","📲 Uygulamayı yükleyin":"📲 Install the app","QR okutmadan, telefon veya bilgisayarınızdaki simgeden tek dokunuşla açın.":"Open it with one tap from the icon on your phone or computer — no QR scan needed.","Yükle":"Install","📲 Ana ekrana ekleyin":"📲 Add to Home Screen","Safari'de alttaki Paylaş ⬆️ düğmesine, sonra \"Ana Ekrana Ekle\"ye dokunun.":"In Safari, tap the Share ⬆️ button, then \"Add to Home Screen\".","Uygulama yüklendi. Artık ana ekrandaki simgeden açabilirsiniz.":"App installed. You can now open it from the icon on your home screen.","Dil değiştirmek için önce quizi bitirin.":"Finish the quiz before changing the language.","Bu eğitim henüz yalnızca Türkçe olarak hazırlanmıştır.":"This training is currently available in Turkish only. An English version will be added.","Bu sicil personel listesinde yok. Lütfen İSG sorumlusuna başvurun.":"This employee number is not on the staff list. Please contact the HSE officer.","Departmanınız için toolbox grubu tanımlı değil. Lütfen İSG sorumlusuna başvurun.":"No toolbox group is defined for your department. Please contact the HSE officer.","Bu sınava zaten girdiniz.":"You have already taken this exam.","Önceki dönemin genel tekrar sınavı · {0}":"General review exam of the previous period · {0}","Yükleniyor…":"Loading…","Veriler getiriliyor.":"Fetching data."};
 const tx=(s,...a)=>{let o=LANG==="en"?(EN[s]??s):s;a.forEach((v,i)=>{o=o.split("{"+i+"}").join(v)});return o};
 const DEPT_EN={beyaz:"White collar",uretim:"Production",lojistik:"Logistics",kalite:"Quality",bakim:"Maintenance",dial:"Dial Lab",ortak:"Common"};
 const deptL=k=>LANG==="en"?(DEPT_EN[k]||deptLabel(k)):deptLabel(k);
@@ -460,7 +502,8 @@ function topicStats(t){const all=S.results.filter(r=>r.topicId===t.id),rs=all.fi
   const n=rs.length,passed=rs.filter(r=>r.passed).length,pending=rs.filter(r=>r.classicPending).length;
   const avg=n?Math.round(rs.reduce((s,r)=>s+(r.score||0),0)/n):null;const sN=S.staff.length;
   return{all,rs,n,passed,failed:n-passed,pending,started:all.length-n,avg,passRate:n?Math.round(100*passed/n):null,part:sN?Math.min(100,Math.round(100*n/sN)):null}}
-const sortedTopics=()=>[...S.topics].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.createdAt||0)-(a.createdAt||0));
+const facSince=()=>NET&&window.TBX?.isAdmin&&window.TBX.factory&&window.TBX.factory!=="terminal"?"2026-11-16":"";
+const sortedTopics=()=>[...S.topics].filter(t=>(t.date||"")>=facSince()).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.createdAt||0)-(a.createdAt||0));
 function readiness(pools){return DEPTS.map(([k,l])=>({k,l,cells:ORDER.map(type=>{const own=(pools?.[k]?.[type]||[]).length,com=(pools?.ortak?.[type]||[]).length,n=PLAN[type].n,tot=own+com;
   return{type,own,com,tot,n,st:tot<n?"bad":tot<n*2?"warn":"ok"}})}))}
 function subjOf(topicId,dk,w){const t=S.topics.find(x=>x.id===topicId);return(t?.subjects?.[dk]||[]).find(s=>s.w===w)?.t||""}
@@ -472,11 +515,12 @@ function render(keep=true){
     const a=document.activeElement;if(a&&a.id&&main.contains(a)){focusId=a.id;try{sel=[a.selectionStart,a.selectionEnd]}catch(e){}}}
   document.body.classList.toggle("kiosk",S.kiosk||(NET&&!window.TBX.isAdmin));
   {const bb=document.querySelector(".brand b");if(bb)bb.textContent=LANG==="en"?"HSE Toolbox":"İSG Toolbox";document.documentElement.lang=LANG;const hl=$("#hdrLang");if(hl){hl.textContent=LANG==="en"?"🇹🇷 TR":"🇬🇧 EN";hl.title=LANG==="en"?"Türkçe":"English";hl.style.display=""}}
+  {const fb=$("#facBar");if(fb){const h=factoryBar();if(fb.dataset.h!==h){fb.innerHTML=h;fb.dataset.h=h}}document.querySelectorAll(".tip-tab").forEach(a=>a.style.display=NET&&window.TBX?.isAdmin?"":"none")}
   document.querySelectorAll("#tabs a").forEach(a=>a.classList.toggle("on",a.dataset.v===S.view||(S.view==="yeni"&&a.dataset.v==="konular")));
   let html;
   if(S.failed)html=`<div class="card empty"><h3>Veritabanına bağlanılamadı</h3><p>Kayıtlar için Claude hesabınızla giriş yapmış olmanız gerekiyor. Sayfayı claude.ai üzerinden açıp tekrar deneyin.</p></div>`;
   else if(!S.ready)html=`<div class="empty"><h3>Yükleniyor…</h3><p>Veriler getiriliyor.</p></div>`;
-  else html=({calisan:viewWorker,takip:viewTakip,konular:S.detailId?viewDetail:viewTopics,yeni:viewEditor,rapor:viewReport,personel:viewStaff,gecmis:viewHist}[S.view]||viewWorker)();
+  else html=({tip:viewTip,calisan:viewWorker,takip:viewTakip,konular:S.detailId?viewDetail:viewTopics,yeni:viewEditor,rapor:viewReport,personel:viewStaff,gecmis:viewHist}[S.view]||viewWorker)();
   if(S.kiosk&&!NET)html+=`<button class="btn ghost kiosk-exit" data-act="kiosk-exit">Yönetici</button>`;
   main.innerHTML=html;
   if(keep){for(const id in saved){const el=document.getElementById(id);if(!el)continue;if(el.type==="checkbox")el.checked=saved[id];else el.value=saved[id]}
@@ -495,6 +539,7 @@ function viewWorker(){
   if(S.flow?.kind==="review")return viewReview();
   if(S.flow?.kind==="wq")return viewWeeklyQuiz();
   if(S.me)return viewDash();
+  if(NET&&!window.TBX.isAdmin&&!window.TBX.wf)return viewFactoryPicker();
   const t=workerTopic();
   if(!t)return `<div class="exam-wrap"><div class="card empty"><h3>${tx("Şu an aktif eğitim dönemi yok")}</h3><p>${NET&&!window.TBX.isAdmin?"Yönetici giriş yapıp verileri yükledikten sonra eğitimler burada görünecek.":"Konular sekmesinden bir dönemi aktif yapın veya yedekten veri yükleyin."}</p>${NET?`<p>${window.TBX.isAdmin?`<a class="btn primary" href="#personel" data-act="tab" data-v="personel">Personel · yedekten yükle</a> <button class="btn" data-act="adm-out">Yönetici çıkışı</button>`:`<button class="btn primary" data-act="adm-in">Yönetici girişi</button>`}</p>`:""}</div></div>`;
   const rw=reviewWin(t),cw=cycleWeeks(t).find(w=>winStatus(winOf(t,w))==="current"),ed=examDay(t);
@@ -502,7 +547,7 @@ function viewWorker(){
   return `<div class="exam-wrap">
     <div class="hero">
       <div class="logo-box">${S.brand.logo?`<img src="${esc(S.brand.logo)}" alt="${esc(S.brand.name)}">`:`<b>${esc(S.brand.name)}</b>`}</div>
-      <div class="spread" style="align-items:flex-start"><div><div class="motto">${tx("Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.")}</div><h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div></div>
+      <div class="spread" style="align-items:flex-start"><div><div class="motto">${tx("Bu işte en önemli ekipman sensin. Güvenli çalış, akşam seni bekleyenlere sağ salim dön.")}</div>${NET&&!window.TBX.isAdmin&&window.TBX.wf?`<div class="fac-chip">📍 ${esc(facName(window.TBX.wf))} · <button class="linkbtn" data-act="wf-change">${tx("değiştir")}</button></div>`:""}<h1>${tx("İSG Toolbox Eğitimi")}</h1><div class="sub">${tx("Her hafta departmanınızın eğitimini okuyun, 5 soruluk kısa quizi çözün. Dönem sonunda genel tekrar sınavı yapılır.")}</div></div></div>
       <div class="chip-row"><span>${esc(t.title)}</span>${nowTxt?`<span>${esc(nowTxt)}</span>`:""}${ed?`<span>${tx("Genel sınav: {0}",fmtLong(ed,{day:"numeric",month:"long"}))}</span>`:""}</div>
     </div>
     ${installHtml()}
@@ -813,7 +858,8 @@ ${JSON.stringify(data)}`,{cache:false});S.aiTxt=text}
 /* ===== Konular ===== */
 function viewTopics(){
   const ts=sortedTopics();
-  return `<div class="spread"><div><h1>Eğitim dönemleri</h1><div class="muted">Her dönem 5 haftalık toolbox eğitimi ve sonunda genel tekrar sınavından oluşur</div></div><a class="btn primary" href="#yeni" data-act="new">+ Yeni dönem</a></div>
+  return `<div class="spread"><div><h1>Eğitim dönemleri</h1><div class="muted">Her dönem 5 haftalık toolbox eğitimi ve sonunda genel tekrar sınavından oluşur</div></div>${isFabAdmin()?"":`<a class="btn primary" href="#yeni" data-act="new">+ Yeni dönem</a>`}</div>
+  ${isFabAdmin()?`<div class="note">Konular TİP tarafından tüm fabrikalar için ortak yönetilir; bu ekran sizin için salt okunurdur.</div>`:""}
   ${ts.length?`<div class="topic-list">${ts.map(t=>{const s=topicStats(t),d=t.date?new Date(t.date+"T00:00:00"):null,ws=cycleWeeks(t);
     return `<button class="topic ${t.active?"is-active":""}" data-act="open" data-id="${esc(t.id)}">
       <div class="date">${d?`<span class="d">${d.getDate()}</span><span class="m">${d.toLocaleDateString(LOC(),{month:"short"})} ${d.getFullYear()}</span>`:""}</div>
@@ -951,7 +997,7 @@ function viewReport(){
   </tbody></table></div><div class="muted small">Haftalık katılım: başlamış haftalarda eğitimi tamamlayan kişi-hafta oranı.</div></div>`:`<div class="card empty"><h3>Rapor için veri yok</h3></div>`}`}
 
 /* ===== Personel ===== */
-const APP_URL=NET?location.origin+"/":"https://claude.ai/artifact/CLfsLq466znqq2C846Z4mH";
+const APP_URL=NET?location.origin+"/"+(window.TBX?.isAdmin&&window.TBX.factory?"?f="+window.TBX.factory:""):"https://claude.ai/artifact/CLfsLq466znqq2C846Z4mH";
 function applyBrand(){const r=document.documentElement.style;r.setProperty("--brand",S.brand.primary||"#00233e");r.setProperty("--brand-2",S.brand.second||"#237f52");
   const m=$("#brandMark");if(m)m.innerHTML=S.brand.logo?`<img class="brand-logo" src="${esc(S.brand.logo)}" alt="">`:`<div class="brand-mark"><span>!</span></div>`}
 async function loadQRLib(){if(window.QRCode)return window.QRCode;await new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=res;s.onerror=rej;document.head.appendChild(s)});return window.QRCode}
@@ -1316,6 +1362,10 @@ document.addEventListener("click",async ev=>{
     case"wq-finish":{if(NET){netFinishQuiz();break}const f=S.flow;f.score=f.items.filter((it,i)=>f.ans[i]===it.q.a).length;f.phase="res";saveWeekly();window.scrollTo(0,0);break}
     case"wq-save":saveWeekly();break;
     case"install":if(INSTALL){INSTALL.prompt();try{await INSTALL.userChoice}catch(e){}INSTALL=null;render(false)}break;
+    case"pick-f":window.TBX.setWorkerF(el.dataset.k);await netWorkerInit();render(false);break;
+    case"wf-change":window.TBX.setWorkerF(null);S.me=null;render(false);break;
+    case"fac-pw":facPwModal(el.dataset.k);break;
+    case"tip-reload":S.tip=null;render(false);break;
     case"start-final":startFinal(el.dataset.tid||undefined);break;
     case"lang":if((S.exam&&S.exam.phase!=="result")||(S.flow?.kind==="wq"&&S.flow.phase==="q")){toast(tx("Dil değiştirmek için önce quizi bitirin."));break}
       LANG=LANG==="en"?"tr":"en";try{localStorage.setItem("tbxLang",LANG)}catch(e){}document.documentElement.lang=LANG;
@@ -1421,7 +1471,8 @@ document.addEventListener("change",e=>{const id=e.target.id;
 document.addEventListener("pointerdown",()=>{S.lastAct=Date.now()});
 setInterval(()=>{if(S.me&&Date.now()-S.lastAct>IDLE_MS&&!(S.exam&&(S.exam.phase==="grading"||S.exam.saving))&&!(S.flow?.saving)){logout();toast("Hareketsizlik nedeniyle çıkış yapıldı.")}},15000);
 document.querySelectorAll("#tabs a").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();if((S.exam&&S.exam.phase!=="result")||(S.flow?.kind==="wq"&&S.flow.phase==="q")){toast("Önce sınavı bitirin.");return}S.detailId=null;if(a.dataset.v!=="yeni")S.ed=null;go(a.dataset.v)}));
-function fromHash(){let h=location.hash.slice(1);if(h==="sinav")h="calisan";if(S.kiosk||(NET&&!window.TBX.isAdmin)){S.view="calisan";return}if(["calisan","takip","konular","rapor","personel","yeni","gecmis"].includes(h))S.view=h}
+function fromHash(){let h=location.hash.slice(1);if(h==="sinav")h="calisan";if(S.kiosk||(NET&&!window.TBX.isAdmin)){S.view="calisan";return}if(["calisan","takip","konular","rapor","personel","yeni","gecmis","tip"].includes(h))S.view=h}
+document.addEventListener("change",e=>{if(e.target?.id==="facSelect")window.TBX.setFactory(e.target.value)});
 window.addEventListener("hashchange",()=>{if(S.exam||S.flow)return;fromHash();render(false)});
 if(NET&&!window.TBX.isAdmin&&/^#(yonetici|admin)$/.test(location.hash))setTimeout(()=>adminLoginModal(),300);
 fromHash();render(false);

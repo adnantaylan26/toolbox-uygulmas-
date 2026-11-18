@@ -1,35 +1,49 @@
 // Toolbox Eğitim API — tek Netlify Function, /api/* yollarını karşılar.
 import { getStore } from "@netlify/blobs";
 import crypto from "node:crypto";
+import { AsyncLocalStorage } from "node:async_hooks";
 import * as L from "./lib/logic.mjs";
 import CONTENT from "./lib/content.mjs";
 
 export const config = { path: "/api/*" };
 
-const store = () => getStore({ name: "toolbox", consistency: "strong" });
+// ---------- çok fabrikalı depolama: konular, marka ve fabrika ayarları ortak; geri kalan her şey fabrikanın kendi deposunda
+const CTX = new AsyncLocalStorage();
+const curF = () => CTX.getStore()?.f || "terminal";
+const isGlobal = (p) => /^topics(\/|$)/.test(p) || p === "config/brand" || p === "config/factories";
+const storeFor = (p) => getStore({ name: isGlobal(p) || curF() === "terminal" ? "toolbox" : `toolbox-${curF()}`, consistency: "strong" });
+const store = () => storeFor("");
+const inFactory = (f, fn) => CTX.run({ f }, fn);
+const pickF = (v) => (L.factoryOf(String(v || "").toLowerCase()) ? String(v).toLowerCase() : "terminal");
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 const err = (msg, status = 400, code) => json({ error: msg, code }, status);
 
 // ---------- yönetici oturumu (HMAC imzalı, 12 saat)
 const secret = () => `${process.env.SESSION_SECRET || ""}|${process.env.ADMIN_PASSWORD || ""}`;
-const sign = (exp) => crypto.createHmac("sha256", secret()).update(String(exp)).digest("hex");
+const sign = (exp, role = "", f = "") => crypto.createHmac("sha256", secret()).update(role ? `${exp}|${role}|${f}` : String(exp)).digest("hex");
+const mkToken = (role, f) => { const exp = Date.now() + 12 * 3600e3; return `${exp}.${role}.${f}.${sign(exp, role, f)}`; };
 function safeEq(a, b) { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && crypto.timingSafeEqual(x, y); }
-function isAdmin(req) {
+// Dönüş: null | { role: "tip" | "fab", f }  (eski iki parçalı jeton = TİP yöneticisi)
+function adminOf(req) {
   const t = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
-  const [exp, sig] = t.split(".");
-  if (!exp || !sig || +exp < Date.now() || !process.env.ADMIN_PASSWORD) return false;
-  return safeEq(sig, sign(exp));
+  const parts = t.split(".");
+  if (!process.env.ADMIN_PASSWORD || !parts[0] || +parts[0] < Date.now()) return null;
+  if (parts.length === 2) return safeEq(parts[1], sign(parts[0])) ? { role: "tip", f: null } : null;
+  const [exp, role, f, sig] = parts;
+  if (!["tip", "fab"].includes(role) || !safeEq(sig || "", sign(exp, role, f))) return null;
+  return { role, f: role === "fab" ? pickF(f) : null };
 }
+const hashPw = (pw, salt) => crypto.scryptSync(String(pw), salt, 32).toString("hex");
 
 // ---------- belge deposu
 const PATH_RE = /^[A-Za-z0-9_\-.~:@+]+(\/[A-Za-z0-9_\-.~:@+]+)*$/;
 const validDoc = (p) => typeof p === "string" && PATH_RE.test(p) && !p.split("/").some((s) => s === "." || s === "..") && p.split("/").length % 2 === 0;
 const validCol = (p) => typeof p === "string" && PATH_RE.test(p) && p.split("/").length % 2 === 1;
-const getDoc = (p) => store().get(p, { type: "json" });
-const setDoc = (p, d) => store().setJSON(p, d);
-const delDoc = (p) => store().delete(p);
+const getDoc = (p) => storeFor(p).get(p, { type: "json" });
+const setDoc = (p, d) => storeFor(p).setJSON(p, d);
+const delDoc = (p) => storeFor(p).delete(p);
 async function listCol(col) {
-  const { blobs } = await store().list({ prefix: col + "/" });
+  const { blobs } = await storeFor(col + "/").list({ prefix: col + "/" });
   const depth = col.split("/").length + 1;
   const keys = blobs.map((b) => b.key).filter((k) => k.split("/").length === depth);
   const docs = await Promise.all(keys.map(async (k) => ({ id: k.split("/").pop(), data: await getDoc(k) })));
@@ -93,7 +107,8 @@ function inLang(t, lang) {
 }
 async function activeTopics() {
   await syncContent();
-  return (await listCol("topics")).filter((t) => t.data.active).map((t) => ({ id: t.id, ...t.data })).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  const since = L.factoryOf(curF())?.since || "";
+  return (await listCol("topics")).filter((t) => t.data.active && (t.data.date || "") >= since).map((t) => ({ id: t.id, ...t.data })).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 }
 // Bugün başlamış en yeni aktif dönem (yoksa en eski aktif dönem)
 async function activeTopic(today = L.todayISO()) {
@@ -106,15 +121,16 @@ async function examTopic(cur, today = L.todayISO()) {
   return ts.find((t) => t.id !== cur?.id && L.finalOpenOf(t, today)) || null;
 }
 const sanTopic = (t, dk) => ({ id: t.id, lang: t.lang || "tr", title: t.title, date: t.date, active: !!t.active, weeksPlan: t.weeksPlan || null, finalMode: t.finalMode || (t.finalOpen ? "open" : "auto"), subjects: t.subjects || {}, content: dk ? { [dk]: (t.content || {})[dk] || {} } : {}, createdAt: t.createdAt || 0 });
-let histCache = null;
+const histCaches = new Map();
 async function history() {
   const meta = await getDoc("history/meta");
   if (!meta) return null;
+  const histCache = histCaches.get(curF());
   if (histCache?.importedAt === meta.importedAt) return histCache.h;
   const parts = [];
   for (let i = 0; i < (meta.chunks || 0); i++) { const d = await getDoc(`history/att_${i}`); if (d?.rows) parts.push(...d.rows); }
   const h = { catalog: meta.catalog || [], att: parts.map((s) => String(s).split(",").map(Number)) };
-  histCache = { importedAt: meta.importedAt, h };
+  histCaches.set(curF(), { importedAt: meta.importedAt, h });
   return h;
 }
 async function resolveMe(body) {
@@ -152,7 +168,7 @@ async function workerState(t, me, xt, lang) {
   try {
     const hist = await history();
     const olds = (await listCol("topics")).map((x) => ({ id: x.id, ...x.data }))
-      .filter((x) => x.id !== t.id && (x.date || "") < (t.date || "")).sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 8);
+      .filter((x) => x.id !== t.id && (x.date || "") < (t.date || "") && (x.date || "") >= (L.factoryOf(curF())?.since || "")).sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 8);
     for (const o0 of olds) {
       const o = inLang(o0, lang), m = await meIn(o, me);
       const subs = L.subjectsOf(o, m.dk);
@@ -269,49 +285,125 @@ async function importBackup(b) {
     for (let i = 0; i < chunks; i++) await setDoc(`history/att_${i}`, { rows: att.slice(i * CH, (i + 1) * CH).map((r) => r.join(",")) });
     const m = b.history.meta || {};
     await setDoc("history/meta", { chunks, catalog: b.history.catalog || [], aliases: b.history.aliases || {}, range: m.range, left: m.left || 0, rowsRaw: m.rowsRaw || att.length, variants: m.variants || 0, importedAt: Date.now(), source: m.source || "Yedekten yüklendi" });
-    histCache = null;
+    histCaches.delete(curF());
   }
   return n;
+}
+
+// ---------- TİP özeti: fabrika başına yalnızca toplu oranlar (isim yok)
+async function factoryStats() {
+  const today = L.todayISO();
+  const staff = ((await getDoc("config/staff"))?.list || []).map((p) => ({ tc: String(p.tc), dk: L.groupOf(p), start: p.start || "" })).filter((p) => p.dk);
+  const t = await activeTopic();
+  const out = { staff: staff.length, topic: t ? { id: t.id, title: t.title } : null, weeks: [], done: 0, due: 0, quizSum: 0, quizN: 0, exam: null, byDept: {} };
+  if (!t) return out;
+  const hist = await history().catch(() => null);
+  const prog = new Map((await listCol("progress")).filter((d) => d.id.startsWith(L.safeId(t.id) + "__")).map((d) => [d.id.split("__").pop(), d.data?.weeks || {}]));
+  for (const w of L.cycleWeeks(t)) {
+    const win = L.winOf(t, w), st = L.winStatus(win, today);
+    if (st === "upcoming") continue;
+    let done = 0, due = 0;
+    for (const p of staff) {
+      if (!L.subjectsOf(t, p.dk).some((s) => s.w === w)) continue;
+      if (p.start && win && p.start >= win.end) continue;
+      due++;
+      const e = prog.get(L.safeId(p.tc))?.[w];
+      let rec = false; try { rec = hist ? L.recWeeks(t, p.dk, p.tc, hist).includes(w) : false; } catch {}
+      if (e || rec) done++;
+      if (e && e.total) { out.quizSum += e.score / e.total; out.quizN++; }
+      const b = (out.byDept[p.dk] ||= { done: 0, due: 0 }); b.due++; if (e || rec) b.done++;
+    }
+    out.weeks.push({ w, status: st, done, due }); out.done += done; out.due += due;
+  }
+  // En son sınavı açılmış dönem (mevcut dönemden önceki)
+  const all = await activeTopics();
+  const xt = all.find((x) => x.id !== t.id && L.examDay && L.examDay(x) && L.examDay(x) <= today) || null;
+  if (xt) {
+    const rs = (await listCol("results")).filter((d) => d.id.startsWith(L.safeId(xt.id) + "__") && d.data?.status === "done");
+    out.exam = { id: xt.id, title: xt.title, open: L.finalOpenOf(xt, today), took: rs.length, passed: rs.filter((d) => d.data.passed).length, avg: rs.length ? Math.round(rs.reduce((a, d) => a + (d.data.score || 0), 0) / rs.length) : null };
+  }
+  return out;
 }
 
 // ---------- yönlendirici
 export default async (req) => {
   const url = new URL(req.url);
+  const p0 = url.pathname.replace(/^\/api\/?/, "");
+  // Çalışan isteklerinde fabrika: ?f= veya gövdedeki f; yönetici isteklerinde jeton / seçili fabrika
+  let f = "terminal";
+  if (p0.startsWith("w/")) {
+    let b = {}; if (req.method === "POST") { try { b = await req.clone().json(); } catch {} }
+    f = pickF(url.searchParams.get("f") || b.f);
+  } else {
+    const a = adminOf(req);
+    f = a?.role === "fab" ? a.f : pickF(req.headers.get("x-tbx-factory") || url.searchParams.get("f"));
+  }
+  return inFactory(f, () => route(req, url));
+};
+
+async function route(req, url) {
   const p = url.pathname.replace(/^\/api\/?/, "");
   try {
     if (p === "admin/login" && req.method === "POST") {
       const { password } = await req.json().catch(() => ({}));
       const pw = process.env.ADMIN_PASSWORD || "";
       if (!pw) return err("ADMIN_PASSWORD ortam değişkeni tanımlı değil.", 500);
-      if (!password || !safeEq(password, pw)) { await new Promise((r) => setTimeout(r, 800)); return err("Şifre yanlış.", 401); }
-      const exp = Date.now() + 12 * 3600e3;
-      return json({ token: `${exp}.${sign(exp)}` });
+      if (password && safeEq(password, pw)) return json({ token: mkToken("tip", ""), role: "tip", f: null });
+      const fx = (await getDoc("config/factories")) || {};
+      for (const F of L.FACTORIES) { const h = fx[F.k]; if (password && h?.salt && h?.hash && safeEq(hashPw(password, h.salt), h.hash)) return json({ token: mkToken("fab", F.k), role: "fab", f: F.k }); }
+      await new Promise((r) => setTimeout(r, 800)); return err("Şifre yanlış.", 401);
     }
     if (p.startsWith("w/")) return await worker(p.slice(2), req, url);
 
-    if (!isAdmin(req)) return err("Yönetici girişi gerekli.", 401, "unauthorized");
+    const adm = adminOf(req);
+    if (!adm) return err("Yönetici girişi gerekli.", 401, "unauthorized");
+    if (p === "admin/me") {
+      const fx = (await getDoc("config/factories")) || {};
+      return json({ role: adm.role, f: curF(), factories: L.FACTORIES.map((F) => ({ k: F.k, n: F.n, since: F.since, hasAdmin: !!fx[F.k]?.hash })) });
+    }
+    if (p === "admin/overview") {
+      const rows = [];
+      for (const F of L.FACTORIES) rows.push({ k: F.k, n: F.n, ...(await inFactory(F.k, factoryStats)) });
+      const fx = adm.role === "tip" ? (await getDoc("config/factories")) || {} : {};
+      return json({ role: adm.role, f: curF(), today: L.todayISO(), rows, admins: Object.fromEntries(Object.entries(fx).map(([k, v]) => [k, !!v?.hash])) });
+    }
+    if (p === "admin/factory-password" && req.method === "POST") {
+      if (adm.role !== "tip") return err("Bu işlem yalnızca TİP yöneticisine açık.", 403, "forbidden");
+      const { f: fk, password } = await req.json().catch(() => ({}));
+      if (!L.factoryOf(fk)) return err("Geçersiz fabrika", 400, "invalid_argument");
+      const fx = (await getDoc("config/factories")) || {};
+      if (!password) { delete fx[fk]; await setDoc("config/factories", fx); return json({ ok: true, removed: true }); }
+      if (String(password).length < 8) return err("Şifre en az 8 karakter olmalı.", 400, "invalid_argument");
+      if (safeEq(password, process.env.ADMIN_PASSWORD || "")) return err("Fabrika şifresi TİP yönetici şifresiyle aynı olamaz.", 400, "invalid_argument");
+      const salt = crypto.randomBytes(16).toString("hex");
+      fx[fk] = { salt, hash: hashPw(password, salt), setAt: Date.now() };
+      await setDoc("config/factories", fx);
+      return json({ ok: true });
+    }
     if (p === "db" && req.method === "GET") {
       const col = url.searchParams.get("col"), doc = url.searchParams.get("doc");
       if (col === "topics") await syncContent();
       if (col && validCol(col)) return json({ docs: await listCol(col) });
+      if (doc === "config/factories") return err("Geçersiz yol", 400, "invalid_argument");
       if (doc && validDoc(doc)) return json({ doc: await getDoc(doc) });
       return err("Geçersiz yol", 400, "invalid_argument");
     }
     if (p === "db" && req.method === "POST") {
       const { op, path, data } = await req.json();
       if (!validDoc(path)) return err("Geçersiz yol", 400, "invalid_argument");
+      if (adm.role !== "tip" && isGlobal(path)) return err("Konular ve ortak ayarlar yalnızca TİP yöneticisi tarafından değiştirilebilir.", 403, "forbidden");
       if (op === "set") await setDoc(path, data || {});
       else if (op === "update") { const cur = await getDoc(path); if (!cur) return err("Belge yok", 400, "invalid_argument"); await setDoc(path, L.deepMerge(cur, data)); }
       else if (op === "delete") await delDoc(path);
       else return err("Geçersiz işlem", 400, "invalid_argument");
-      if (path.startsWith("history/")) histCache = null;
+      if (path.startsWith("history/")) histCaches.delete(curF());
       return json({ ok: true });
     }
     if (p === "ai" && req.method === "POST") {
       const { prompt, maxTokens } = await req.json();
       return json({ text: await askClaude(String(prompt || "").slice(0, 200000), Math.min(Number(maxTokens) || 2000, 4000)) });
     }
-    if (p === "admin/import" && req.method === "POST") return json({ ok: true, ...(await importBackup(await req.json())) });
+    if (p === "admin/import" && req.method === "POST") { const b = await req.json(); if (adm.role !== "tip") { delete b.topics; delete b.brand; } return json({ ok: true, ...(await importBackup(b)) }); }
     return err("Bulunamadı", 404);
   } catch (e) {
     return err(e.message || "Sunucu hatası", 500, e.code || "upstream_error");

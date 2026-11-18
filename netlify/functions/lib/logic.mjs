@@ -2,6 +2,16 @@
 export const PASS = 70;
 export const PLAN = { tf: { n: 10, pt: 4 }, mc: { n: 5, pt: 8 }, classic: { n: 2, pt: 10 } };
 export const ORDER = ["tf", "mc", "classic"];
+// TİP fabrikaları. Terminal mevcut verinin sahibidir ("toolbox" deposu); diğerleri kendi depolarında, H39 ile başlar.
+export const FACTORIES = [
+  { k: "terminal", n: "Terminal", since: null },
+  { k: "marmara", n: "Marmara", since: "2026-11-16" },
+  { k: "karaman", n: "Karaman", since: "2026-11-16" },
+  { k: "ege", n: "Ege", since: "2026-11-16" },
+  { k: "denizli", n: "Denizli", since: "2026-11-16" },
+  { k: "urmia", n: "Urmia (İran)", since: "2026-11-16" },
+];
+export const factoryOf = (k) => FACTORIES.find((f) => f.k === k) || null;
 export const DEPTS = ["bakim", "dial", "kalite", "lojistik", "uretim", "beyaz"];
 export const DEPT_LABEL = { bakim: "Bakım", dial: "Dial Lab", kalite: "Kalite", lojistik: "Lojistik", uretim: "Üretim", beyaz: "Beyaz Yaka", ortak: "Ortak" };
 
